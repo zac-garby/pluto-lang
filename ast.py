@@ -154,16 +154,18 @@ class InfixExpression(Expression):
         
 class Parameter(Expression):
     """a parameter in a function definition"""
-    def __init__(self, name):
+    def __init__(self, token, name):
+        self.token = token
         self.name = name
         
     def tree(self, indent, name):
-        return "%s<%s>" % (_(indent) + n(name), self.name)
+        return "%s$%s" % (_(indent) + n(name), self.name)
         
         
 class Argument(Expression):
     """an argument in a function call"""
-    def __init__(self, value):
+    def __init__(self, token, value):
+        self.token = token
         self.value = value
         
     def tree(self, indent, name):
@@ -175,13 +177,31 @@ class Argument(Expression):
         
 class FunctionCall(Expression):
     """calls a function, using a pattern"""
-    def __init__(self, pattern):
+    def __init__(self, token, pattern):
+        self.token = token
         self.pattern = pattern
         
     def tree(self, indent, name):
         return "%sfn call\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.pattern, "pattern")
+        )
+        
+        
+class IfExpression(Expression):
+    """an if expression"""
+    def __init__(self, token, condition, consequence, alternative):
+        self.token = token
+        self.condition = condition
+        self.consequence = consequence
+        self.alternative = alternative
+        
+    def tree(self, indent, name):
+        return "%sif stmt\n%s\n%s\n%s" % (
+            _(indent) + n(name),
+            self.condition.tree(indent + 1, "condition"),
+            self.consequence.tree(indent + 1, "consequence"),
+            self.alternative.tree(indent + 1, "alternative")
         )
         
         
@@ -194,7 +214,7 @@ class ExpressionStatement(Statement):
         self.expr = expr
     
     def tree(self, indent, name):
-        expr = "none" if self.expr == None else self.expr.tree(indent + 1, "")
+        expr = (_(indent + 1) + "none") if self.expr == None else self.expr.tree(indent + 1, "")
         return "%sexpr\n%s" % (_(indent) + n(name), expr)
         
         
@@ -218,7 +238,10 @@ class BlockStatement(Statement):
         self.statements = statements
     
     def tree(self, indent, name):
-        return make_list_tree(indent, self.statements, "statements")
+        return "%sblock\n%s" % (
+            _(indent) + n(name),
+            make_list_tree(indent + 1, self.statements, "statements")
+        )
         
         
 class FunctionDefinition(Statement):
@@ -228,7 +251,8 @@ class FunctionDefinition(Statement):
         element is either an Identifier or
         a Parameter
     """
-    def __init__(self, pattern, body):
+    def __init__(self, token, pattern, body):
+        self.token = token
         self.pattern = pattern
         self.body = body
         
@@ -253,22 +277,5 @@ class ReturnStatement(Statement):
         return "%sreturn\n%s" % (
             _(indent) + n(name),
             self.value.tree(indent + 1, "value")
-        )
-                
-        
-class IfStatement(Statement):
-    """an if statement"""
-    def __init__(self, token, condition, consequence, alternative):
-        self.token = token
-        self.condition = condition
-        self.consequence = consequence
-        self.alternative = alternative
-        
-    def tree(self, indent, name):
-        return "%sif stmt\n%s\n%s\n%s" % (
-            _(indent) + n(name),
-            self.condition.tree(indent + 1, "condition"),
-            self.consequence.tree(indent + 1, "consequence"),
-            self.alternative.tree(indent + 1, "alternative")
         )
         

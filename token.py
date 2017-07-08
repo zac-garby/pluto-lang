@@ -38,6 +38,9 @@ RETURN = "return"
 TRUE   = "true"  
 FALSE  = "false"
 NULL   = "null"
+IF     = "if"
+ELSE   = "else"
+ELIF   = "elif"
 
 class Token(object):
     """a single lexical token"""
@@ -64,6 +67,9 @@ keywords = {
     "yes":    TRUE,
     "false":  FALSE,
     "no":     FALSE,
-    "null":   NULL
+    "null":   NULL,
+    "if":     IF,
+    "else":   ELSE,
+    "elif":   ELIF
 }
         

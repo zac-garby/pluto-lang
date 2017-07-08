@@ -1,14 +1,14 @@
-def <x> plus <y> {
+def $x plus $y {
   return x + y;
 }
 
-def <x> times <y> {
+def $x times $y {
   return x * y;
 }
 
-def print sum of <x> and <y> {
-  print(x + y);
+def print sum of $x and $y {
+  #print {x + y};
 }
 
-a = #5 times 10;
-b = #3 plus <a>;
+a = #{5} times {10};
+b = #{3} plus {a};

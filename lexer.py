@@ -13,7 +13,7 @@ lexical_dictionary = [
     (r"\d+(?:\.\d+)?",         o (token.NUM)),
     (r"\"((\\\"|[^\"])+)\"",   o (token.STR, 1)),
     (r"\w+",                   o (token.ID, 0, id_transformer)),
-    (r"<([^>\n]+)>",           o (token.PARAM, 1)),
+    (r"\$(\w+)",               o (token.PARAM, 1)),
     
     # Punctuation
     (r"\+",                    o (token.PLUS)),

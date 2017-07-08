@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 
 import token
-import lexer
-import parser
+import lexer as l
+import parser as p
 
 def main():
     string = input(">> ")
     string = string.replace("\\n", "\n") + ";"
             
-    tokens = lexer.lex(string)
-    p = parser.Parser(tokens)
-    program = p.parse_program()
+    tokens = l.lex(string)
+    parser = p.Parser(tokens)
+    program = parser.parse_program()
+    
     print(program)
+    print(parser.errors)
     
 if __name__ == "__main__":
     while True:

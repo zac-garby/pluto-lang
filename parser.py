@@ -52,7 +52,9 @@ class Parser(object):
             token.PLUS:  self.parse_prefix,
             
             # Constructs
-            token.LPAREN: self.parse_grouped_expr
+            token.LPAREN: self.parse_grouped_expr,
+            token.HASH:   self.parse_function_call,
+            token.IF:     self.parse_if_expr
         }
         
         self.infixes  = {
@@ -81,7 +83,25 @@ class Parser(object):
         return precedences.get(self.cur_tok.type, LOWEST)
         
     def peek_err(self, t):
-        msg = "expected next token to be %s, but got %s" % (t, self.peek_tok.type)
+        if type(t) == type([]):
+            msg = "expected any of [%s], but got %s" % (
+                ("".join(str(ty) + ", " for ty in t))[:-2],
+                self.peek_tok.type
+            )
+        else:
+            msg = "expected %s, but got %s" % (t, self.peek_tok.type)
+            
+        self.errors.append(msg)
+        
+    def cur_err(self, t):
+        if type(t) == type([]):
+            msg = "expected any of [%s], but got %s" % (
+                ("".join(str(ty) + ", " for ty in t))[:-2],
+                self.cur_tok.type
+            )
+        else:
+            msg = "expected %s, but got %s" % (t, self.cur_tok.type)
+            
         self.errors.append(msg)
         
     def no_prefix_fn_error(self, t):
@@ -112,6 +132,8 @@ class Parser(object):
             return None
         elif self.cur_is(token.RETURN):
             stmt = self.parse_return_stmt()
+        elif self.cur_is(token.DEF):
+            stmt = self.parse_def_stmt()
         else:
             stmt = self.parse_expr_stmt()
             
@@ -146,6 +168,26 @@ class Parser(object):
         self.next()
         stmt.value = self.parse_expr(LOWEST)
         
+        return stmt
+        
+    def parse_def_stmt(self):
+        stmt = ast.FunctionDefinition(self.cur_tok, [], None)
+        
+        self.next()
+        
+        while not self.cur_is(token.LBRACE):
+            tok = self.cur_tok
+                                  
+            if not self.expect_cur_any([token.ID, token.PARAM]):
+                return None
+                                
+            if tok.type == token.ID:
+                stmt.pattern.append(ast.Identifier(tok))
+            else:
+                stmt.pattern.append(ast.Parameter(tok, tok.literal))
+            
+        stmt.body = self.parse_block_statement()
+                
         return stmt
         
     def parse_expr(self, precedence):
@@ -215,6 +257,57 @@ class Parser(object):
     def parse_array(self):
         return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
         
+    def parse_function_call(self):
+        expr = ast.FunctionCall(self.cur_tok, [])
+        
+        while self.peek_in([token.ID, token.LBRACE]):
+            self.next()
+            
+            if self.cur_is(token.ID):
+                expr.pattern.append(self.parse_id())
+            elif self.cur_is(token.LBRACE):
+                arg = ast.Argument(self.cur_tok, None)
+                
+                self.next()
+                arg.value = self.parse_expr(LOWEST)
+                
+                if not self.expect(token.RBRACE):
+                    return None
+                    
+                expr.pattern.append(arg)
+            
+        print(self.cur_tok)
+                                
+        return expr
+        
+    def parse_if_expr(self):
+        expr = ast.IfExpression(self.cur_tok, None, None, None)
+        
+        self.next()
+        expr.condition = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.LBRACE):
+            return None
+            
+        expr.consequence = self.parse_block_statement()
+        
+        if self.peek_is(token.ELSE):
+            self.next()
+            
+            if not self.expect(token.LBRACE):
+                return None
+                
+            expr.alternative = self.parse_block_statement()
+        elif self.peek_is(token.ELIF):
+            self.next()
+            
+            expr.alternative = ast.BlockStatement(
+                self.cur_tok,
+                [ast.ExpressionStatement(self.cur_tok, self.parse_if_expr())]
+            )
+            
+        return expr
+        
     def parse_infix(self, left):
         expr = ast.InfixExpression(self.cur_tok, self.cur_tok.literal, left, None)
         
@@ -258,10 +351,32 @@ class Parser(object):
     def peek_is(self, t):
         return self.peek_tok.type == t
         
+    def cur_in(self, t):
+        return self.cur_tok.type in t
+        
+    def peek_in(self, t):
+        return self.peek_tok.type in t
+        
     def expect(self, t):
         if self.peek_is(t):
             self.next()
             return True
         else:
             self.peek_err(t)
+            return False
+            
+    def expect_cur_any(self, ts):
+        if self.cur_in(ts):
+            self.next()
+            return True
+        else:
+            self.cur_err(ts)
+            return False
+            
+    def expect_peek_any(self, ts):
+        if self.peek_in(ts):
+            self.next()
+            return True
+        else:
+            self.peek_err(ts)
             return False
