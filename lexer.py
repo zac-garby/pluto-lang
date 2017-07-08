@@ -27,6 +27,8 @@ lexical_dictionary = [
     (r">",                     o (token.GT)),
     (r"{",                     o (token.LBRACE)),
     (r"}",                     o (token.RBRACE)),
+    (r"[",                     o (token.LSQUARE)),
+    (r"]",                     o (token.RSQUARE)),
     (r";",                     o (token.SEMI)),
     (r"==",                    o (token.EQ)),
     (r"!=",                    o (token.N_EQ)),
