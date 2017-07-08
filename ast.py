@@ -80,6 +80,19 @@ class Null(Expression):
         return "%snull" % _(indent) + n(name)
         
         
+class Array(Expression):
+    """an array literal: [a, b, ..., n]"""
+    def __init__(self, token, elements):
+        self.token = token
+        self.elements = elements
+        
+    def tree(self, indent, name = ""):
+        return "%sarray\n%s" % (
+            _(indent) + n(name),
+            make_list_tree(indent + 1, self.elements, "elements")
+        )
+        
+        
 class AssignExpression(Expression):
     """an assign expression"""
     def __init__(self, token, name, value):
@@ -195,5 +208,22 @@ class FunctionDefinition(Statement):
             _(indent) + n(name),
             make_list_tree(indent + 1, self.pattern, "pattern"),
             self.body.tree(indent + 1, "body")
+        )
+        
+        
+class IfStatement(Statement):
+    """an if statement"""
+    def __init__(self, token, condition, consequence, alternative):
+        self.token = token
+        self.condition = condition
+        self.consequence = consequence
+        self.alternative = alternative
+        
+    def tree(self, indent, name = ""):
+        return "%sif stmt\n%s\n%s\n%s" % (
+            _(indent) + n(name),
+            self.condition.tree(indent + 1, "condition"),
+            self.consequence.tree(indent + 1, "consequence"),
+            self.alternative.tree(indent + 1, "alternative")
         )
         
