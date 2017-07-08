@@ -70,6 +70,16 @@ class Boolean(Expression):
     def tree(self, indent, name = ""):
         return "%s%s" % (_(indent) + n(name), str(self.value).lower())
         
+    
+class String(Expression):
+    """a string literal node"""
+    def __init__(self, token):
+        self.token = token
+        self.value = token.literal
+        
+    def tree(self, indent, name = ""):
+        return '%s"%s"' % (_(indent) + n(name), self.value)
+        
         
 class Null(Expression):
     """a null literal node"""
@@ -210,6 +220,19 @@ class FunctionDefinition(Statement):
             self.body.tree(indent + 1, "body")
         )
         
+
+class ReturnStatement(Statement):
+    """a return statement"""
+    def __init__(self, token, value):
+        self.token = token
+        self.value = value
+        
+    def tree(self, indent, name = ""):
+        return "%sreturn\n%s" % (
+            _(indent) + n(name),
+            self.value.tree(indent + 1, "value")
+        )
+                
         
 class IfStatement(Statement):
     """an if statement"""
