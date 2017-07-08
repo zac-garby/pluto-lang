@@ -27,15 +27,16 @@ lexical_dictionary = [
     (r">",                     o (token.GT)),
     (r"{",                     o (token.LBRACE)),
     (r"}",                     o (token.RBRACE)),
-    (r"\[",                     o (token.LSQUARE)),
+    (r"\[",                    o (token.LSQUARE)),
     (r"]",                     o (token.RSQUARE)),
     (r";",                     o (token.SEMI)),
     (r"==",                    o (token.EQ)),
     (r"!=",                    o (token.N_EQ)),
-    (r"\|\|",                    o (token.OR)),
+    (r"\|\|",                  o (token.OR)),
     (r"&&",                    o (token.AND)),
-    (r"\|",                     o (token.B_OR)),
-    (r"&",                     o (token.B_AND))
+    (r"\|",                    o (token.B_OR)),
+    (r"&",                     o (token.B_AND)),
+    (r"=",                     o (token.ASSIGN))
 ]
 
 def lex(string, col = 1, line = 1):

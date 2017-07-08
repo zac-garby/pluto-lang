@@ -29,6 +29,7 @@ OR      = "or"
 AND     = "and"
 B_OR    = "bitwise or"
 B_AND   = "bitwise and"
+ASSIGN  = "assign"
 
 # Keywords
 DEF    = "def"
