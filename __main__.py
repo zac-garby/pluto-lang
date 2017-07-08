@@ -2,18 +2,16 @@
 
 import token
 import lexer
+import parser
 
 def main():
     string = input(">> ")
-    string = string.replace("\\n", "\n")
-    
-    l = lexer.lex(string)
-    while True:
-        tok = next(l)
-        print(tok)
-        
-        if tok.type == token.EOF:
-            break
+    string = string.replace("\\n", "\n") + ";"
+            
+    tokens = lexer.lex(string)
+    p = parser.Parser(tokens)
+    program = p.parse_program()
+    print(program)
     
 if __name__ == "__main__":
     while True:

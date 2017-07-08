@@ -45,7 +45,7 @@ class Parser(object):
             token.FALSE:   self.parse_bool,
             token.NULL:    self.parse_null,
             token.LSQUARE: self.parse_array,
-            token.STRING:  self.parse_string,
+            token.STR:     self.parse_string,
             
             # Prefix operators
             token.MINUS: self.parse_prefix,
@@ -93,24 +93,24 @@ class Parser(object):
         self.peek_tok = next(self.tokens)
         
     def parse_program(self):
-        program = ast.Program()
+        prog = ast.Program([])
         
-        while not self.cur_tok_is(token.EOF):
+        while not self.cur_is(token.EOF):
             stmt = self.parse_stmt()
             
             if stmt != None:
-                program.statements.append(stmt)
+                prog.statements.append(stmt)
                 
             self.next()
             
-        return program
+        return prog
         
-    def parse_statement(self):
+    def parse_stmt(self):
         stmt = None
         
-        if self.cur_tok_is(token.SEMI):
+        if self.cur_is(token.SEMI):
             return None
-        elif self.cur_tok_is(token.RETURN):
+        elif self.cur_is(token.RETURN):
             stmt = self.parse_return_stmt()
         else:
             stmt = self.parse_expr_stmt()
@@ -121,12 +121,12 @@ class Parser(object):
         return stmt
         
     def parse_block_statement(self):
-        block = ast.BlockStatement(self.cur_tok)
+        block = ast.BlockStatement(self.cur_tok, [])
         
         self.next()
         
-        while not self.cur_tok_is(token.RBRACE) and not self.cur_tok_is(token.EOF):
-            stmt = self.parse_statement()
+        while not self.cur_is(token.RBRACE) and not self.cur_is(token.EOF):
+            stmt = self.parse_stmt()
             
             if stmt != None:
                 block.statements.append(stmt)
@@ -173,7 +173,7 @@ class Parser(object):
         return ast.Identifier(self.cur_tok)
         
     def parse_num(self):
-        lit = ast.Number(self.cur_tok)
+        lit = ast.Number(self.cur_tok, None)
         
         try:
             lit.value = float(self.cur_tok.literal)
@@ -232,17 +232,17 @@ class Parser(object):
         
         return expr
         
-    def parse_expr_list(end):
+    def parse_expr_list(self, end):
         exprs = []
 
-        if self.peek_tok_is(end):
+        if self.peek_is(end):
             self.next()
             return exprs
             
         self.next()
-        list.append(self.parse_expr(LOWEST))
+        exprs.append(self.parse_expr(LOWEST))
         
-        while self.peek_tok_is(token.COMMA):
+        while self.peek_is(token.COMMA):
             self.next()
             self.next()
             exprs.append(self.parse_expr(LOWEST))
@@ -252,14 +252,14 @@ class Parser(object):
             
         return exprs
         
-    def cur_tok_is(t):
+    def cur_is(self, t):
         return self.cur_tok.type == t
         
-    def peek_tok_is(t):
+    def peek_is(self, t):
         return self.peek_tok.type == t
         
-    def expect(t):
-        if self.peek_tok_is(t):
+    def expect(self, t):
+        if self.peek_is(t):
             self.next()
             return True
         else:

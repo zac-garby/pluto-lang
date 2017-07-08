@@ -18,25 +18,25 @@ def n(name):
     return "" if name == "" else name + " ‣ "
     
 
-def make_list_tree(indent, list, name = ""):
-    string = "%s [" % _(indent) + n(name)
+def make_list_tree(indent, list, name):
+    string = "%s[" % (_(indent) + n(name))
     
     for item in list:
-        string += "\n%s%s" % (
-            _(indent),
-            item.tree(indent + 1, "")
-        )
+        string += "\n%s" % item.tree(indent + 1, "")
         
-    return "string\n%s]" % _(indent)
+    return string + ("\n%s]" % _(indent))
     
 
 class Program(object):    
     """a program. contains a list of statements to be executed"""
-    def __init__(self, statements = []):
+    def __init__(self, statements):
         self.statements = statements
         
     def tree(self):
-        return "program\n" + "".join(stmt.tree(1) + "\n" for stmt in self.statements)
+        return "program\n" + "".join(stmt.tree(1, "") + "\n" for stmt in self.statements)
+        
+    __str__ = tree
+    __repr__ = tree
         
         
 ## Expressions ##
@@ -47,7 +47,7 @@ class Identifier(Expression):
         self.token = token
         self.value = token.literal
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%s%s" % (_(indent) + n(name), self.value)
         
 
@@ -57,7 +57,7 @@ class Number(Expression):
         self.token = token
         self.value = value
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%s%s" % (_(indent) + n(name), self.value)
         
 
@@ -67,7 +67,7 @@ class Boolean(Expression):
         self.token = token
         self.value = value
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%s%s" % (_(indent) + n(name), str(self.value).lower())
         
     
@@ -77,7 +77,7 @@ class String(Expression):
         self.token = token
         self.value = token.literal
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return '%s"%s"' % (_(indent) + n(name), self.value)
         
         
@@ -86,7 +86,7 @@ class Null(Expression):
     def __init__(self, token):
         self.token = token
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%snull" % _(indent) + n(name)
         
         
@@ -96,7 +96,9 @@ class Array(Expression):
         self.token = token
         self.elements = elements
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
+        print(self.elements)
+        
         return "%sarray\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.elements, "elements")
@@ -110,7 +112,7 @@ class AssignExpression(Expression):
         self.name = name
         self.value = value
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sassign\n%s\n%s" % (
             _(indent) + n(name),
             self.name.tree(indent + 1, "name"),
@@ -125,10 +127,27 @@ class PrefixExpression(Expression):
         self.operator = operator
         self.right = right
 
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sprefix (%s)\n%s" % (
             _(indent) + n(name),
             self.operator,
+            self.right.tree(indent + 1, "right")
+        )
+        
+        
+class InfixExpression(Expression):
+    """an infix operator expression"""
+    def __init__(self, token, operator, left, right):
+        self.token = token
+        self.operator = operator
+        self.left = left
+        self.right = right
+        
+    def tree(self, indent, name):
+        return "%sinfix (%s)\n%s\n%s" % (
+            _(indent) + n(name),
+            self.operator,
+            self.left.tree(indent + 1, "left"),
             self.right.tree(indent + 1, "right")
         )
         
@@ -138,7 +157,7 @@ class Parameter(Expression):
     def __init__(self, name):
         self.name = name
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%s<%s>" % (_(indent) + n(name), self.name)
         
         
@@ -147,7 +166,7 @@ class Argument(Expression):
     def __init__(self, value):
         self.value = value
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sarg\n%s" % (
             _(indent) + n(name),
             self.value.tree(indent + 1, "value")
@@ -159,7 +178,7 @@ class FunctionCall(Expression):
     def __init__(self, pattern):
         self.pattern = pattern
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sfn call\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.pattern, "pattern")
@@ -174,9 +193,9 @@ class ExpressionStatement(Statement):
         self.token = token
         self.expr = expr
     
-    def tree(self, indent, name = ""):
-        expr = "none" if self.expr == None else self.expr.tree(indent + 1)
-        return "%sexpression statement\n%s" % (_(indent) + n(name), expr)
+    def tree(self, indent, name):
+        expr = "none" if self.expr == None else self.expr.tree(indent + 1, "")
+        return "%sexpr\n%s" % (_(indent) + n(name), expr)
         
         
 class ReturnStatement(Statement):
@@ -185,7 +204,7 @@ class ReturnStatement(Statement):
         self.token = token
         self.expr = expr
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sreturn\n%s" % (
             _(indent) + n(name),
             self.expr.tree(indent + 1, "expr")
@@ -194,11 +213,11 @@ class ReturnStatement(Statement):
 
 class BlockStatement(Statement):
     """a list of statements"""
-    def __init__(self, token, statements = []):
+    def __init__(self, token, statements):
         self.token = token
         self.statements = statements
     
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return make_list_tree(indent, self.statements, "statements")
         
         
@@ -213,7 +232,7 @@ class FunctionDefinition(Statement):
         self.pattern = pattern
         self.body = body
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sfunction\n%s\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.pattern, "pattern"),
@@ -227,7 +246,10 @@ class ReturnStatement(Statement):
         self.token = token
         self.value = value
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
+        if self.value == None:
+            return "%sreturn" % (_(indent) + n(name))
+        
         return "%sreturn\n%s" % (
             _(indent) + n(name),
             self.value.tree(indent + 1, "value")
@@ -242,7 +264,7 @@ class IfStatement(Statement):
         self.consequence = consequence
         self.alternative = alternative
         
-    def tree(self, indent, name = ""):
+    def tree(self, indent, name):
         return "%sif stmt\n%s\n%s\n%s" % (
             _(indent) + n(name),
             self.condition.tree(indent + 1, "condition"),

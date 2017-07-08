@@ -36,7 +36,8 @@ lexical_dictionary = [
     (r"&&",                    o (token.AND)),
     (r"\|",                    o (token.B_OR)),
     (r"&",                     o (token.B_AND)),
-    (r"=",                     o (token.ASSIGN))
+    (r"=",                     o (token.ASSIGN)),
+    (r"\,",                    o (token.COMMA))
 ]
 
 def lex(string, col = 1, line = 1):

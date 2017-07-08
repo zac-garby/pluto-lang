@@ -3,10 +3,10 @@ EOF     = "EOF"
 ILLEGAL = "ILLEGAL"
 
 # Literals
-NUM   = "number"
-STR   = "string"
-ID    = "identifier"
-PARAM = "param"
+NUM    = "number"
+STR    = "string"
+ID     = "identifier"
+PARAM  = "param"
 
 # Punctuation
 PLUS    = "plus"
@@ -30,6 +30,7 @@ AND     = "and"
 B_OR    = "bitwise or"
 B_AND   = "bitwise and"
 ASSIGN  = "assign"
+COMMA   = "comma"
 
 # Keywords
 DEF    = "def"
