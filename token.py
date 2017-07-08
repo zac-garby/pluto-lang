@@ -21,7 +21,12 @@ GT     = "greater-than"
 LBRACE = "lbrace"
 RBRACE = "rbrace"
 SEMI   = "semi"
-EQ     = "equals"
+EQ     = "equal"
+N_EQ   = "not equal"
+OR     = "or"
+AND    = "and"
+B_OR   = "bitwise or"
+B_AND  = "bitwise and"
 
 # Keywords
 DEF    = "def"
