@@ -44,14 +44,19 @@ def lex(string, col = 1, line = 1):
     index = 0
     
     while True:        
-        if index < len(string):            
-            while index + 1 < len(string) and string[index].isspace():
-                index += 1
-                col += 1
-                
-                if string[index - 1] == "\n":
-                    col = 1
-                    line += 1
+        if index < len(string):
+            while string[index].isspace() or string[index] == "#":
+                if index + 1 < len(string) and string[index].isspace():
+                    index += 1
+                    col += 1
+            
+                    if string[index - 1] == "\n":
+                        col = 1
+                        line += 1
+                        
+                if index + 1 < len(string) and string[index] == "#":
+                    while index + 1 < len(string) and string[index] != "\n":
+                        index += 1
             
             found = False
             
