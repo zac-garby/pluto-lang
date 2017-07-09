@@ -45,7 +45,7 @@ def lex(string, col = 1, line = 1):
     
     while True:        
         if index < len(string):            
-            while string[index].isspace():
+            while index + 1 < len(string) and string[index].isspace():
                 index += 1
                 col += 1
                 
