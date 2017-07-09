@@ -37,6 +37,7 @@ lexical_dictionary = [
     (r"\|",                    o (token.B_OR)),
     (r"&",                     o (token.B_AND)),
     (r"=",                     o (token.ASSIGN)),
+    (r":=",                    o (token.DECLARE)),
     (r"\,",                    o (token.COMMA))
 ]
 

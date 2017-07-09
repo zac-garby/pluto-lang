@@ -30,6 +30,7 @@ AND     = "and"
 B_OR    = "bitwise-or"
 B_AND   = "bitwise-and"
 ASSIGN  = "assign"
+DECLARE = "declare"
 COMMA   = "comma"
 
 # Keywords
