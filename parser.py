@@ -187,6 +187,10 @@ class Parser(object):
                 stmt.pattern.append(ast.Parameter(tok, tok.literal))
             
         stmt.body = self.parse_block_statement()
+        
+        if len(stmt.pattern) == 0:
+            self.errors.append("expected at least one item in a pattern")
+            return None
                 
         return stmt
         
@@ -275,6 +279,10 @@ class Parser(object):
                     return None
                     
                 expr.pattern.append(arg)
+                
+        if len(expr.pattern) == 0:
+            self.errors.append("expected at least one item in a pattern")
+            return None
                                 
         return expr
         
