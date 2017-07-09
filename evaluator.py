@@ -5,7 +5,7 @@ NULL = obj.Null()
 TRUE = obj.Boolean(True)
 FALSE = obj.Boolean(False)
 
-def eval(node, ctx):    
+def eval(node, ctx):
     t = type(node)
     
     # Constructs
@@ -37,11 +37,11 @@ def eval(node, ctx):
     if t == ast.ReturnStatement:
         val = eval(node.value, ctx)
         return val if is_err(val) else obj.ReturnValue(val)
-        
+    
     if t == ast.PrefixExpression:
         right = eval(node.right, ctx)
         return right if is_err(right) else eval_prefix(node.operator, right)
-        
+    
     if t == ast.InfixExpression:
         left = eval(node.left, ctx)
         if is_err(left): return left
@@ -50,18 +50,18 @@ def eval(node, ctx):
         if is_err(right): return right
         
         return eval_infix(node.operator, left, right, ctx)
-        
+    
     if t == ast.AssignExpression:
         right = eval(node.value, ctx)
         return right if is_err(right) else eval_assign(node.name, right, ctx)
-        
-    return err("evaluation for %s not yet implemented" % t)
     
+    return err("evaluation for %s not yet implemented" % t)
+
 err = obj.Error
 
 def is_err(o):
     return False if o == None else type(o) == obj.Error
-    
+
 def eval_exprs(exprs, ctx):
     result = []
     
@@ -70,15 +70,15 @@ def eval_exprs(exprs, ctx):
         
         if is_err(o):
             return [o]
-            
-        result.append(o)
         
-    return result
+        result.append(o)
     
+    return result
+
 def eval_program(program, ctx):
     if len(program.statements) == 0:
         return NULL
-        
+    
     result = None
     
     for stmt in program.statements:
@@ -89,13 +89,13 @@ def eval_program(program, ctx):
         
         if type(result) == obj.ReturnValue:
             return result.value
-        
-    return result
     
+    return result
+
 def eval_block_stmt(block, ctx):
     if len(block.statements) == 0:
         return NULL
-        
+    
     result = None
     
     for stmt in block.statements:
@@ -106,34 +106,34 @@ def eval_block_stmt(block, ctx):
             
             if t == obj.RETURN_VALUE or t == obj.ERROR:
                 return result
-                
-    return result
     
+    return result
+
 def eval_id(node, ctx):
     val = ctx[node.value]
     
     if val != None:
         return val
-        
-    return err("%s is not defined in the current context" % node.value)
     
+    return err("%s is not defined in the current context" % node.value)
+
 def eval_prefix(op, right):
     if op == "-": return eval_minus_prefix(right)
     if op == "+": return right
     return err("unknown operator: %s%s", op, right.type)
-    
+
 def eval_minus_prefix(right):
     if right.type != obj.NUMBER: return err("unknown operator: -%s" % right.type)
     return obj.Number(-right.value)
-    
+
 def eval_assign(left, right, ctx):
     if type(left) != ast.Identifier:
         return err("cannot assign to %s, expected an identifier", left.type)
-        
+    
     ctx[left.value] = right
     
     return right
-    
+
 def eval_infix(op, left, right, ctx):
     # Boolean operators
     if op == "&&": return bool_obj(is_truthy(left) and is_truthy(right))
@@ -143,12 +143,12 @@ def eval_infix(op, left, right, ctx):
     
     if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
-        
+    
     if type(left) == obj.String and type(right) == obj.String:
         return eval_string_infix(op, left, right)
-        
-    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
     
+    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
+
 def eval_number_infix(op, left, right):
     l = left.value
     r = right.value
@@ -163,12 +163,12 @@ def eval_number_infix(op, left, right):
     if op == "|": return float(int(l) | int(r))
     
     return err("unknown operator: %s %s %s" % (left.type, op, right.type))
-    
+
 def eval_string_infix(op, left, right):
     if op == "+": return obj.String(left.value + right.value)
     
     return err("unknown operator: %s %s %s" % (left.type, op, right.type))
-    
+
 def eval_if(expr, ctx):
     condition = eval(expr.condition, ctx)
     
@@ -180,45 +180,55 @@ def eval_if(expr, ctx):
         return eval(expr.alternative, ctx)
     else:
         return NULL
-        
+
 def eval_function_def(node, ctx):
     function = obj.Function(node.pattern, node.body, ctx)
     ctx.add_function(function)
     
     return NULL
-    
+
 def eval_function_call(node, ctx):
     function = ctx.get_function(node.pattern)
     
     if function == None:
-        return err("no function matching the pattern: %s" % node.pattern)
-        
+        return err("no function matching the pattern")
+    
     args = {}
     
-    for i in range(len(node.pattern)):
-        item = node.pattern[i]
-        f_item = function.pattern[i]
+    if type(function) == obj.Function:        
+        for i in range(len(node.pattern)):
+            item = node.pattern[i]
+            f_item = function.pattern[i]
         
-        if type(item) == ast.Argument and type(f_item) == ast.Parameter:
-            args[f_item.name] = eval(item.value, ctx)
-    
-    enclosed = ctx.enclose_with_args(args)
+            if type(item) == ast.Argument and type(f_item) == ast.Parameter:
+                args[f_item.name] = eval(item.value, ctx)
+                
+        enclosed = ctx.enclose_with_args(args)
+        
+        result = eval(function.body, enclosed)
+    else:
+        for i in range(len(node.pattern)):
+            item = node.pattern[i]
+            f_item = function.pattern[i]
             
-    result = eval(function.body, enclosed)
+            if type(item) == ast.Argument and f_item[0] == "$":
+                args[f_item[1:]] = eval(item.value, ctx)
+        
+        result = function.fn(args, ctx)
     
     if result == None:
         return NULL
-        
+    
     return unwrap_return_value(result)
-        
+
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
         return o.value
-        
+    
     return o
-        
+
 def is_truthy(o):
     return not (o == NULL or o == FALSE)
-    
+
 def bool_obj(o):
     return TRUE if o else FALSE

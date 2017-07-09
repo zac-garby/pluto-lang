@@ -1,4 +1,5 @@
 import ast
+from builtin_fns import Builtin
 
 class Context(object):
     """a context, aka a scope, which stores variables and functions"""
@@ -58,9 +59,26 @@ class Context(object):
                 elif not(type(item) == ast.Argument and type(f_item) == ast.Parameter):
                     matched = False
                     
-            if matched:
-                args = {}
+            if matched:                
+                return func
                 
+        for func in Builtin.builtins:
+            if len(pattern) != len(func.pattern):
+                continue
+                
+            matched = True
+            
+            for i in range(len(pattern)):
+                item = pattern[i]
+                f_item = func.pattern[i]
+                
+                if type(item) == ast.Identifier and f_item[0] != "$":
+                    if item.value != f_item:
+                        matched = False
+                elif not(type(item) == ast.Argument and f_item[0] == "$"):
+                    matched = False
+                    
+            if matched:
                 return func
         
         return None

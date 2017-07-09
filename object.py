@@ -90,7 +90,7 @@ class String(Object):
     __eq__ = compare()
     
     def __str__(self):
-        return '"%s"' % self.value
+        return "%s" % self.value
         
         
 class Null(Object):
