@@ -10,5 +10,5 @@ def print sum of $x and $y {
   \print (x + y);
 }
 
-a = ( \(5) times (10) ) * 10;
+a = \(5) times (10) * 10;
 b = \(3 * 2) plus (a);
