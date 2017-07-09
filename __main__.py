@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-import token
-import lexer as l
-import parser as p
-import evaluator as e
-import context as c
+import lexer      as l
+import parser     as p
+import evaluator  as e
+import context    as c
 
 def main(ctx):
     string = input("⧫ ")
