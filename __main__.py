@@ -14,10 +14,10 @@ def main():
         
         while True:
             try:
-                string = input("⧫ ")
+                string = input("⧫ ") + ";"
                 execute(string, True, ctx)
             except (KeyboardInterrupt, EOFError):
-                return NULL
+                break
         
     elif len(sys.argv) == 2:
         with open(sys.argv[1], "r") as f:
