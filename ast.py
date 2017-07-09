@@ -197,7 +197,14 @@ class IfExpression(Expression):
         self.alternative = alternative
         
     def tree(self, indent, name):
-        return "%sif stmt\n%s\n%s\n%s" % (
+        if self.alternative == None:
+            return "%sif\n%s\n%s" % (
+                _(indent) + n(name),
+                self.condition.tree(indent + 1, "condition"),
+                self.consequence.tree(indent + 1, "consequence")
+            )
+            
+        return "%sif\n%s\n%s\n%s" % (
             _(indent) + n(name),
             self.condition.tree(indent + 1, "condition"),
             self.consequence.tree(indent + 1, "consequence"),
