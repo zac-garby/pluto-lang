@@ -28,3 +28,22 @@ def builtin(pattern):
 def print_builtin(args, context):
     print(args["obj"])
     return NULL
+    
+@builtin(["print", "$obj", "without", "newline"])
+def print_wn(args, context):
+    print(args["obj"], end="")
+    return NULL
+    
+@builtin(["input"])
+def input_builtin(args, context):
+    try:
+        return obj.String(input())
+    except (KeyboardInterrupt, EOFError):
+        return NULL
+        
+@builtin(["input", "with", "prompt", "$prompt"])
+def input_prompt_builtin(args, context):
+    try:
+        return obj.String(input(args["prompt"]))
+    except (KeyboardInterrupt, EOFError):
+        return NULL
