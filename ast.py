@@ -96,9 +96,7 @@ class Array(Expression):
         self.token = token
         self.elements = elements
         
-    def tree(self, indent, name):
-        print(self.elements)
-        
+    def tree(self, indent, name):        
         return "%sarray\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.elements, "elements")
