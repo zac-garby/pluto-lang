@@ -91,7 +91,7 @@ class Parser(object):
         else:
             msg = "expected %s, but got %s" % (t, self.peek_tok.type)
             
-        self.errors.append(msg)
+        self.err(msg)
         
     def cur_err(self, t):
         if type(t) == type([]):
@@ -102,10 +102,13 @@ class Parser(object):
         else:
             msg = "expected %s, but got %s" % (t, self.cur_tok.type)
             
-        self.errors.append(msg)
+        self.err(msg)
         
     def no_prefix_fn_error(self, t):
         msg = "unexpected token: %s" % t
+        self.errors.append(msg)
+        
+    def err(self, msg):
         self.errors.append(msg)
         
     def next(self):
@@ -189,7 +192,7 @@ class Parser(object):
         stmt.body = self.parse_block_statement()
         
         if len(stmt.pattern) == 0:
-            self.errors.append("expected at least one item in a pattern")
+            self.err("expected at least one item in a pattern")
             return None
                 
         return stmt
@@ -225,7 +228,7 @@ class Parser(object):
             lit.value = float(self.cur_tok.literal)
         except ValueError:
             msg = "could not parse %s as a number" % self.cur_tok.literal
-            self.errors.append(msg)
+            self.err(msg)
             return None
             
         return lit
@@ -281,7 +284,7 @@ class Parser(object):
                 expr.pattern.append(arg)
                 
         if len(expr.pattern) == 0:
-            self.errors.append("expected at least one item in a pattern")
+            self.err("expected at least one item in a pattern")
             return None
                                 
         return expr
