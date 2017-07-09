@@ -33,7 +33,7 @@ class Parser(object):
     """parses a stream of tokens into an abstract syntax tree (AST)"""
     def __init__(self, tokens):
         self.tokens   = tokens
-        self.errors  = []
+        self.errors  = [] # [(msg, start, end)]
         self.cur_tok  = None
         self.peek_tok = None
         
@@ -91,7 +91,7 @@ class Parser(object):
         else:
             msg = "expected %s, but got %s" % (t, self.peek_tok.type)
             
-        self.err(msg)
+        self.err(msg, self.peek_tok.start, self.peek_tok.end)
         
     def cur_err(self, t):
         if type(t) == type([]):
@@ -106,10 +106,17 @@ class Parser(object):
         
     def no_prefix_fn_error(self, t):
         msg = "unexpected token: %s" % t
-        self.errors.append(msg)
+        self.err(msg)
         
-    def err(self, msg):
-        self.errors.append(msg)
+    def err(self, msg, start = None, end = None):
+        if start == None:
+            start = self.cur_tok.start
+            
+        if end == None:
+            end = self.cur_tok.end
+        
+        error = (msg, start, end)
+        self.errors.append(error)
         
     def next(self):
         self.cur_tok = self.peek_tok
