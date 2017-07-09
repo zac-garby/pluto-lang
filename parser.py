@@ -33,7 +33,7 @@ class Parser(object):
     """parses a stream of tokens into an abstract syntax tree (AST)"""
     def __init__(self, tokens):
         self.tokens   = tokens
-        self.errors  = []
+        self.errors  = [] # [(msg, start, end)]
         self.cur_tok  = None
         self.peek_tok = None
         
@@ -91,7 +91,7 @@ class Parser(object):
         else:
             msg = "expected %s, but got %s" % (t, self.peek_tok.type)
             
-        self.errors.append(msg)
+        self.err(msg, self.peek_tok.start, self.peek_tok.end)
         
     def cur_err(self, t):
         if type(t) == type([]):
@@ -102,15 +102,41 @@ class Parser(object):
         else:
             msg = "expected %s, but got %s" % (t, self.cur_tok.type)
             
-        self.errors.append(msg)
+        self.err(msg)
         
     def no_prefix_fn_error(self, t):
         msg = "unexpected token: %s" % t
-        self.errors.append(msg)
+        self.err(msg)
+        
+    def err(self, msg, start = None, end = None):
+        if start == None:
+            start = self.cur_tok.start
+            
+        if end == None:
+            end = self.cur_tok.end
+        
+        error = (msg, start, end)
+        self.errors.append(error)
+        
+    def print_error(self, index = 0):
+        msg, start, end = self.errors[index]
+        
+        print('[%s:%s] to [%s:%s] -- %s' % (
+            start[0], start[1],
+            end[0], end[1],
+            msg
+        ))
+        
+    def print_errors(self):
+        for i in range(len(self.errors)):
+            self.print_error(i)
         
     def next(self):
         self.cur_tok = self.peek_tok
         self.peek_tok = next(self.tokens)
+        
+        if self.peek_tok.type == token.ILLEGAL:
+            self.err("illegal token found: '%s'" % self.peek_tok.literal, self.peek_tok.start, self.peek_tok.end)
         
     def parse_program(self):
         prog = ast.Program([])
@@ -189,7 +215,7 @@ class Parser(object):
         stmt.body = self.parse_block_statement()
         
         if len(stmt.pattern) == 0:
-            self.errors.append("expected at least one item in a pattern")
+            self.err("expected at least one item in a pattern")
             return None
                 
         return stmt
@@ -225,7 +251,7 @@ class Parser(object):
             lit.value = float(self.cur_tok.literal)
         except ValueError:
             msg = "could not parse %s as a number" % self.cur_tok.literal
-            self.errors.append(msg)
+            self.err(msg)
             return None
             
         return lit
@@ -281,7 +307,7 @@ class Parser(object):
                 expr.pattern.append(arg)
                 
         if len(expr.pattern) == 0:
-            self.errors.append("expected at least one item in a pattern")
+            self.err("expected at least one item in a pattern")
             return None
                                 
         return expr

@@ -9,11 +9,14 @@ def main():
     string = string.replace("\\n", "\n") + ";"
             
     tokens = l.lex(string)
+    
     parser = p.Parser(tokens)
     program = parser.parse_program()
     
-    print(program)
-    print(parser.errors)
+    if len(parser.errors) > 0:
+        parser.print_errors()
+    else:
+        print(program)
     
 if __name__ == "__main__":
     while True:
