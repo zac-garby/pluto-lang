@@ -11,7 +11,7 @@ NULL = "<null>"
 
 class Object(object):
     def __eq__(self, other):
-        return other.type == self.type
+        return type(other) == type(self)
     
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -23,7 +23,7 @@ class Object(object):
     
     
 def compare(prop = "value"):
-    return lambda self, other: getattr(self, prop) == getattr(other, prop) if self.type == other.type else False
+    return (lambda self, other: getattr(self, prop) == getattr(other, prop) if type(self) == type(other) else False)
 
 
 class Error(Object):
@@ -45,6 +45,7 @@ class ReturnValue(Object):
         self.value = value
     
     __eq__ = compare()
+            
     
     def __str__(self):
         return str(self.value)
@@ -108,7 +109,7 @@ class Array(Object):
         self.elements = elements
         
     def __eq__(self, other):
-        if other.type != self.type:
+        if type(other) != type(self):
             return False
         else:
             if len(self.elements) != len(other.elements):
@@ -121,5 +122,16 @@ class Array(Object):
             return True
             
     def __str__(self):
-        return "[%s]" % "".join(str(e) + ", " for e in self.elements)
+        return "[%s]" % "".join(str(e) + ", " for e in self.elements)[:-2]
+        
+        
+class Function(Object):
+    """a function object"""
+    def __init__(self, pattern, body, context):
+        self.pattern = pattern # [id|param]
+        self.body = body
+        self.context = context
+    
+    def __str__(self):
+        return "<function>"
     
