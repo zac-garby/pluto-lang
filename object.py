@@ -123,4 +123,15 @@ class Array(Object):
             
     def __str__(self):
         return "[%s]" % "".join(str(e) + ", " for e in self.elements)[:-2]
+        
+        
+class Function(Object):
+    """a function object"""
+    def __init__(self, pattern, body, context):
+        self.pattern = pattern # [id|param]
+        self.body = body
+        self.context = context
+    
+    def __str__(self):
+        return "<function>"
     

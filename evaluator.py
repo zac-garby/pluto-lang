@@ -21,6 +21,10 @@ def eval(node, ctx):
     if t == ast.Boolean:              return bool_obj(node.value)
     if t == ast.Identifier:           return eval_id(node, ctx)
     
+    # Functions
+    if t == ast.FunctionDefinition:   return eval_function_def(node, ctx)
+    if t == ast.FunctionCall:         return eval_function_call(node, ctx)
+    
     if t == ast.Array:
         elements = eval_exprs(node.elements, ctx)
         
@@ -56,7 +60,7 @@ def eval(node, ctx):
 err = obj.Error
 
 def is_err(o):
-    return False if o == None else o.type == obj.ERROR
+    return False if o == None else type(o) == obj.Error
     
 def eval_exprs(exprs, ctx):
     result = []
@@ -137,13 +141,13 @@ def eval_infix(op, left, right, ctx):
     if op == "==": return bool_obj(left == right)
     if op == "!=": return bool_obj(left != right)
     
-    if left.type == obj.NUMBER and right.type == obj.NUMBER:
+    if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
         
-    if left.type == obj.STRING and right.type == obj.STRING:
+    if type(left) == obj.String and type(right) == obj.String:
         return eval_string_infix(op, left, right)
         
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type))
+    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
     
 def eval_number_infix(op, left, right):
     l = left.value
@@ -176,6 +180,42 @@ def eval_if(expr, ctx):
         return eval(expr.alternative, ctx)
     else:
         return NULL
+        
+def eval_function_def(node, ctx):
+    function = obj.Function(node.pattern, node.body, ctx)
+    ctx.add_function(function)
+    
+    return NULL
+    
+def eval_function_call(node, ctx):
+    function = ctx.get_function(node.pattern)
+    
+    if function == None:
+        return err("no function matching the pattern: %s" % node.pattern)
+        
+    args = {}
+    
+    for i in range(len(node.pattern)):
+        item = node.pattern[i]
+        f_item = function.pattern[i]
+        
+        if type(item) == ast.Argument and type(f_item) == ast.Parameter:
+            args[f_item.name] = eval(item.value, ctx)
+    
+    enclosed = ctx.enclose_with_args(args)
+            
+    result = eval(function.body, enclosed)
+    
+    if result == None:
+        return NULL
+        
+    return unwrap_return_value(result)
+        
+def unwrap_return_value(o):
+    if type(o) == obj.ReturnValue:
+        return o.value
+        
+    return o
         
 def is_truthy(o):
     return not (o == NULL or o == FALSE)
