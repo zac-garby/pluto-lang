@@ -191,20 +191,30 @@ def eval_function_call(node, ctx):
     function = ctx.get_function(node.pattern)
     
     if function == None:
-        return err("no function matching the pattern: %s" % node.pattern)
+        return err("no function matching the pattern")
     
     args = {}
     
-    for i in range(len(node.pattern)):
-        item = node.pattern[i]
-        f_item = function.pattern[i]
+    if type(function) == obj.Function:        
+        for i in range(len(node.pattern)):
+            item = node.pattern[i]
+            f_item = function.pattern[i]
         
-        if type(item) == ast.Argument and type(f_item) == ast.Parameter:
-            args[f_item.name] = eval(item.value, ctx)
-    
-    enclosed = ctx.enclose_with_args(args)
-    
-    result = eval(function.body, enclosed)
+            if type(item) == ast.Argument and type(f_item) == ast.Parameter:
+                args[f_item.name] = eval(item.value, ctx)
+                
+        enclosed = ctx.enclose_with_args(args)
+        
+        result = eval(function.body, enclosed)
+    else:
+        for i in range(len(node.pattern)):
+            item = node.pattern[i]
+            f_item = function.pattern[i]
+            
+            if type(item) == ast.Argument and f_item[0] == "$":
+                args[f_item[1:]] = eval(item.value, ctx)
+        
+        result = function.fn(args, ctx)
     
     if result == None:
         return NULL
