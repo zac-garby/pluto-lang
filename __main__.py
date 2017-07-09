@@ -7,7 +7,7 @@ import evaluator as e
 import context as c
 
 def main(ctx):
-    string = input(">> ")
+    string = input("⧫ ")
     string = string.replace("\\n", "\n") + ";"
             
     tokens = l.lex(string)
