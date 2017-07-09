@@ -53,7 +53,7 @@ class Parser(object):
             
             # Constructs
             token.LPAREN: self.parse_grouped_expr,
-            token.SLASH:  self.parse_function_call,
+            token.BSLASH: self.parse_function_call,
             token.IF:     self.parse_if_expr
         }
         
@@ -275,8 +275,6 @@ class Parser(object):
                     return None
                     
                 expr.pattern.append(arg)
-            
-        print(self.cur_tok)
                                 
         return expr
         

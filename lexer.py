@@ -20,7 +20,7 @@ lexical_dictionary = [
     (r"-",                     o (token.MINUS)),
     (r"\*",                    o (token.STAR)),
     (r"\/",                    o (token.SLASH)),
-    (r"#",                     o (token.HASH)),
+    (r"\\",                    o (token.BSLASH)),
     (r"\(",                    o (token.LPAREN)),
     (r"\)",                    o (token.RPAREN)),
     (r"<",                     o (token.LT)),
