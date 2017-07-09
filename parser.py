@@ -118,9 +118,25 @@ class Parser(object):
         error = (msg, start, end)
         self.errors.append(error)
         
+    def print_error(self, index = 0):
+        msg, start, end = self.errors[index]
+        
+        print('[%s:%s] to [%s:%s] -- %s' % (
+            start[0], start[1],
+            end[0], end[1],
+            msg
+        ))
+        
+    def print_errors(self):
+        for i in range(len(self.errors)):
+            self.print_error(i)
+        
     def next(self):
         self.cur_tok = self.peek_tok
         self.peek_tok = next(self.tokens)
+        
+        if self.peek_tok.type == token.ILLEGAL:
+            self.err("illegal token found: '%s'" % self.peek_tok.literal, self.peek_tok.start, self.peek_tok.end)
         
     def parse_program(self):
         prog = ast.Program([])
