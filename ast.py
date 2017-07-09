@@ -117,6 +117,21 @@ class AssignExpression(Expression):
             self.value.tree(indent + 1, "value")
         )
         
+
+class DeclareExpression(Expression):
+    """a declare expression"""
+    def __init__(self, token, name, value):
+        self.token = token
+        self.name = name
+        self.value = value
+        
+    def tree(self, indent, name):
+        return "%sdeclare\n%s\n%s" % (
+            _(indent) + n(name),
+            self.name.tree(indent + 1, "name"),
+            self.value.tree(indent + 1, "value")
+        )
+        
         
 class PrefixExpression(Expression):
     """a prefix operator expression"""
