@@ -1,6 +1,6 @@
 # etc...
 EOF     = "EOF"
-ILLEGAL = "ILLEGAL"
+ILLEGAL = "illegal"
 
 # Literals
 NUM    = "number"
@@ -24,11 +24,11 @@ LSQUARE = "lsquare"
 RSQUARE = "rsquare"
 SEMI    = "semi"
 EQ      = "equal"
-N_EQ    = "not equal"
+N_EQ    = "not-equal"
 OR      = "or"
 AND     = "and"
-B_OR    = "bitwise or"
-B_AND   = "bitwise and"
+B_OR    = "bitwise-or"
+B_AND   = "bitwise-and"
 ASSIGN  = "assign"
 COMMA   = "comma"
 
