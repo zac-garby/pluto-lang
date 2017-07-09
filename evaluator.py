@@ -54,6 +54,10 @@ def eval(node, ctx):
     if t == ast.AssignExpression:
         right = eval(node.value, ctx)
         return right if is_err(right) else eval_assign(node.name, right, ctx)
+        
+    if t == ast.DeclareExpression:
+        right = eval(node.value, ctx)
+        return right if is_err(right) else eval_declare(node.name, right, ctx)
     
     return err("evaluation for %s not yet implemented" % t)
 
@@ -131,6 +135,14 @@ def eval_assign(left, right, ctx):
         return err("cannot assign to %s, expected an identifier", left.type)
     
     ctx[left.value] = right
+    
+    return right
+    
+def eval_declare(left, right, ctx):
+    if type(left) != ast.Identifier:
+        return err("cannot assign to %s, expected an identifier", left.type)
+    
+    ctx.store[left.value] = right
     
     return right
 

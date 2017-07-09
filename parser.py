@@ -2,7 +2,7 @@ import ast
 import token
 
 LOWEST      = 0  #
-ASSIGN      = 1  # =
+ASSIGN      = 1  # = or :=
 OR          = 2  # ||
 AND         = 3  # &&
 BIT_OR      = 4  # |
@@ -14,19 +14,20 @@ PRODUCT     = 9  # * or /
 PREFIX      = 10 # -x
 
 precedences = {
-    token.EQ:     EQUALS,
-    token.N_EQ:   EQUALS,
-    token.LT:     LESSGREATER,
-    token.GT:     LESSGREATER,
-    token.PLUS:   SUM,
-    token.MINUS:  SUM,
-    token.STAR:   PRODUCT,
-    token.SLASH:  PRODUCT,
-    token.ASSIGN: ASSIGN,
-    token.OR:     OR,
-    token.AND:    AND,
-    token.B_OR:   BIT_OR,
-    token.B_AND:  BIT_AND
+    token.EQ:      EQUALS,
+    token.N_EQ:    EQUALS,
+    token.LT:      LESSGREATER,
+    token.GT:      LESSGREATER,
+    token.PLUS:    SUM,
+    token.MINUS:   SUM,
+    token.STAR:    PRODUCT,
+    token.SLASH:   PRODUCT,
+    token.ASSIGN:  ASSIGN,
+    token.DECLARE: ASSIGN,
+    token.OR:      OR,
+    token.AND:     AND,
+    token.B_OR:    BIT_OR,
+    token.B_AND:   BIT_AND
 }
 
 class Parser(object):
@@ -58,19 +59,20 @@ class Parser(object):
         }
         
         self.infixes  = {
-            token.PLUS:   self.parse_infix,
-            token.MINUS:  self.parse_infix,
-            token.STAR:   self.parse_infix,
-            token.SLASH:  self.parse_infix,
-            token.EQ:     self.parse_infix,
-            token.N_EQ:   self.parse_infix,
-            token.LT:     self.parse_infix,
-            token.GT:     self.parse_infix,
-            token.OR:     self.parse_infix,
-            token.AND:    self.parse_infix,
-            token.B_OR:   self.parse_infix,
-            token.B_AND:  self.parse_infix,
-            token.ASSIGN: self.parse_assign_expr
+            token.PLUS:    self.parse_infix,
+            token.MINUS:   self.parse_infix,
+            token.STAR:    self.parse_infix,
+            token.SLASH:   self.parse_infix,
+            token.EQ:      self.parse_infix,
+            token.N_EQ:    self.parse_infix,
+            token.LT:      self.parse_infix,
+            token.GT:      self.parse_infix,
+            token.OR:      self.parse_infix,
+            token.AND:     self.parse_infix,
+            token.B_OR:    self.parse_infix,
+            token.B_AND:   self.parse_infix,
+            token.ASSIGN:  self.parse_assign_expr,
+            token.DECLARE: self.parse_declare_expr
         }
         
         self.next()
@@ -350,7 +352,15 @@ class Parser(object):
         return expr
         
     def parse_assign_expr(self, left):
-        expr = ast.AssignExpression(self.cur_precedence, left, None)
+        expr = ast.AssignExpression(self.cur_tok, left, None)
+        
+        self.next()
+        expr.value = self.parse_expr(LOWEST)
+        
+        return expr
+        
+    def parse_declare_expr(self, left):
+        expr = ast.DeclareExpression(self.cur_tok, left, None)
         
         self.next()
         expr.value = self.parse_expr(LOWEST)
