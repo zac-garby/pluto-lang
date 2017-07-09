@@ -53,7 +53,7 @@ class Parser(object):
             
             # Constructs
             token.LPAREN: self.parse_grouped_expr,
-            token.HASH:   self.parse_function_call,
+            token.SLASH:  self.parse_function_call,
             token.IF:     self.parse_if_expr
         }
         
@@ -260,18 +260,18 @@ class Parser(object):
     def parse_function_call(self):
         expr = ast.FunctionCall(self.cur_tok, [])
         
-        while self.peek_in([token.ID, token.LBRACE]):
+        while self.peek_in([token.ID, token.LPAREN]):
             self.next()
             
             if self.cur_is(token.ID):
                 expr.pattern.append(self.parse_id())
-            elif self.cur_is(token.LBRACE):
+            elif self.cur_is(token.LPAREN):
                 arg = ast.Argument(self.cur_tok, None)
                 
                 self.next()
                 arg.value = self.parse_expr(LOWEST)
                 
-                if not self.expect(token.RBRACE):
+                if not self.expect(token.RPAREN):
                     return None
                     
                 expr.pattern.append(arg)
