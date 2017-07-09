@@ -87,7 +87,7 @@ def eval_program(program, ctx):
         if is_err(result):
             return result
         
-        if result.type == obj.RETURN_VALUE:
+        if type(result) == obj.ReturnValue:
             return result.value
         
     return result
