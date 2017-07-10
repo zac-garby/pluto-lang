@@ -338,8 +338,6 @@ class Parser(object):
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
             return None
-            
-        print(expr.pattern)
                                 
         return expr
         
