@@ -98,7 +98,7 @@ Because of the function calling  syntax, you can actually define your  own pseud
 example, you could create a function which does the exact same thing as an if expression:
 
 ```
-def find whether $condition is truthy of falsey and set the result to $a or $b respectively {
+def find whether $condition is truthy or falsey and set the result to $a or $b respectively {
   if condition {
     a;
   } else {
