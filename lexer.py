@@ -16,7 +16,7 @@ lexical_dictionary = [
     (r"\$(\w+)",               o (token.PARAM, 1)),
     
     # Punctuation
-    (r"->",                    o (token.ARROW))
+    (r"->",                    o (token.ARROW)),
     (r"\+",                    o (token.PLUS)),
     (r"-",                     o (token.MINUS)),
     (r"\*",                    o (token.STAR)),
