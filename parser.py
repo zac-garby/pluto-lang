@@ -66,7 +66,8 @@ class Parser(object):
             # Constructs
             token.LPAREN: self.parse_grouped_expr,
             token.IF:     self.parse_if_expr,
-            token.BSLASH: self.parse_function_call
+            token.BSLASH: self.parse_function_call,
+            token.LBRACE: self.parse_block_literal,
         }
         
         self.infixes  = {
@@ -254,8 +255,8 @@ class Parser(object):
             
         return left
         
-    def parse_id(self):        
-        if self.peek_in(arg_tokens):
+    def parse_id(self, can_be_fn = True):        
+        if can_be_fn and self.peek_in(arg_tokens):
             return self.parse_function_call(ast.Identifier(self.cur_tok))
         
         return ast.Identifier(self.cur_tok)
@@ -394,6 +395,20 @@ class Parser(object):
         
         return expr
         
+    def parse_block_literal(self):
+        expr = ast.BlockLiteral(self.cur_tok, None, None)
+        
+        if self.peek_is(token.B_OR):
+            self.next()
+            expr.params = self.parse_params(token.B_OR)
+            
+            if not self.expect(token.ARROW):
+                return None
+            
+        expr.body = self.parse_block_statement()
+        
+        return expr
+        
     def parse_expr_list(self, end):
         exprs = []
 
@@ -413,6 +428,26 @@ class Parser(object):
             return None
             
         return exprs
+        
+    def parse_params(self, end):
+        params = []
+        
+        if self.peek_is(end):
+            self.next()
+            return params
+            
+        self.next()
+        params.append(self.parse_id(False))
+        
+        while self.peek_is(token.COMMA):
+            self.next()
+            self.next()
+            params.append(self.parse_id(False))
+            
+        if not self.expect(end):
+            return None
+            
+        return params
         
     def cur_is(self, t):
         return self.cur_tok.type == t

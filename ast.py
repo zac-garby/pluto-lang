@@ -224,6 +224,21 @@ class IfExpression(Expression):
             self.alternative.tree(indent + 1, "alternative")
         )
         
+    
+class BlockLiteral(Expression):
+    """a code block literal"""
+    def __init__(self, token, body, params):
+        self.token = token
+        self.body = body
+        self.params = params or []
+    
+    def tree(self, indent, name):
+        return "%sblock\n%s\n%s" % (
+            _(indent) + n(name),
+            self.body.tree(indent + 1, "body"),
+            make_list_tree(indent + 1, self.params, "params")
+        )
+        
         
 ## Statements ##
         
