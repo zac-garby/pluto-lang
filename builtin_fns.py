@@ -28,31 +28,31 @@ def builtin(pattern):
 ## Builtin definitions ##  
 
 @builtin("print $obj")
-def print_builtin(args, context):
+def print_obj(args, context):
     print(args["obj"])
     return NULL
     
 @builtin("print $obj without newline")
-def print_wn(args, context):
+def print_obj_without_newline(args, context):
     print(args["obj"], end="")
     return NULL
     
 @builtin("input")
-def input_builtin(args, context):
+def _input(args, context):
     try:
         return obj.String(input())
     except (KeyboardInterrupt, EOFError):
         return NULL
         
 @builtin("input with prompt $prompt")
-def input_prompt_builtin(args, context):
+def input_with_prompt_prompt(args, context):
     try:
         return obj.String(input(args["prompt"]))
     except (KeyboardInterrupt, EOFError):
         return NULL
         
 @builtin("run $block")
-def run_block_builtin(args, context):
+def run_block(args, context):
     block = args["block"]
     
     if type(block) != obj.Block:
@@ -65,7 +65,7 @@ def run_block_builtin(args, context):
     return evaluate(block.body, ctx)
     
 @builtin("run $block with $args")
-def run_block_with_args_builtin(args, context):
+def run_block_with_args(args, context):
     block = args["block"]
     b_args = args["args"]
     
