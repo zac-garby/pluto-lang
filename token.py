@@ -8,7 +8,7 @@ STR    = "string"
 ID     = "identifier"
 PARAM  = "param"
 
-# Punctuation
+# Punctuation             # lexeme
 PLUS    = "plus"          # +
 MINUS   = "minus"         # -
 STAR    = "star"          # *
