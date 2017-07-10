@@ -292,7 +292,7 @@ class Parser(object):
     def parse_function_call(self):
         expr = ast.FunctionCall(self.cur_tok, [])
         
-        while self.peek_in([token.ID, token.LPAREN]):
+        while self.peek_in([token.ID, token.LPAREN, token.NUM, token.NULL, token.TRUE, token.FALSE, token.STR, token.PARAM]):
             self.next()
             
             if self.cur_is(token.ID):
@@ -307,6 +307,16 @@ class Parser(object):
                     return None
                     
                 expr.pattern.append(arg)
+            elif self.cur_is(token.NUM):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_num()))
+            elif self.cur_is(token.NULL):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_null()))
+            elif self.cur_in([token.TRUE, token.FALSE]):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_bool()))
+            elif self.cur_is(token.STR):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_string()))
+            elif self.cur_is(token.PARAM):
+                expr.pattern.append(ast.Argument(self.cur_tok, ast.Identifier(self.cur_tok)))
                 
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
