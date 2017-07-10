@@ -1,6 +1,7 @@
 # Types which the user should never directly see
 ERROR        = "<!error>"
 RETURN_VALUE = "<!return value>"
+FUNCTION     = "<!function>"
 
 # Normal types
 NUMBER  = "<number>"
@@ -129,6 +130,7 @@ class Array(Object):
 class Function(Object):
     """a function object"""
     def __init__(self, pattern, body, context):
+        self.type = FUNCTION
         self.pattern = pattern # [id|param]
         self.body = body
         self.context = context
@@ -140,6 +142,7 @@ class Function(Object):
 class Block(Object):
     """a block object"""
     def __init__(self, params, body):
+        self.type = BLOCK
         self.params = params
         self.body = body
         
