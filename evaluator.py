@@ -35,6 +35,9 @@ def eval(node, ctx):
     
     # More complex nodes
     if t == ast.ReturnStatement:
+        if node.value == None:
+            return NULL
+        
         val = eval(node.value, ctx)
         return val if is_err(val) else obj.ReturnValue(val)
     
