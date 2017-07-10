@@ -123,6 +123,42 @@ Which, as you can probably guess, will return 5.
 
 This is really cool because, in theory, you could even define the English language as a series of functions!
 
+#### Blocks
+
+There exists a type known as a block. Here's one:
+
+```
+my_block = {
+  print "Hello, world";
+};
+```
+
+A block basically stores a block of code inside it, which can then be executed on cue, using the `run $block` builtin:
+
+```
+run $my_block;
+```
+
+This piece of code prints "Hello, world" to the console. Like functions, blocks can recieve arguments:
+
+```
+add = { |a, b| -> a + b; };
+
+run $add with ([3, 10]);
+```
+
+This block, called `add`, takes two arguments: `a`, and `b`. It then returns the sum of them. As you can see, to run a
+block with arguments, you use the `run $block with $args` builtin, providing the arguments as an array.
+
+An interesting note is that both `run $block` and `run $block with $args` are both defined as normal functions.
+
+Blocks are also used in some functions in the standard library:
+
+```
+map ({|n| -> n * n;}) over ([1, 2, 3, 4, 5]); #-> [1, 4, 9, 16, 25]
+fold ([1, 2, 3, 4, 5]) with ({|counter, n| -> counter + n;}); #-> 15
+```
+
 ### How??
 
 To use it, clone the repository and run `__main__.py`. If you  don't give in any  cmd-line arguments, it will
