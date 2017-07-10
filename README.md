@@ -69,6 +69,29 @@ double (5 + 3);
 
 This will now give you the result you wanted.
 
+Another problem you might come across is this:
+
+```
+def $a plus $b {
+  a + b;
+};
+```
+
+How would you call this? If you did the following:
+
+```
+5 plus 10;
+```
+
+You'd get an error. This is because the current grammar only allows for _implicit function calls_ if the first
+item in the pattern is an identifier, and not an argument. In this case, you need to use an _explicit function call_:
+
+```
+\5 plus 10;
+```
+
+This would work exactly as you'd expect, returning the value `15`.
+
 #### Defining your own if expression
 
 Because of the function calling  syntax, you can actually define your  own pseudo-syntactical constructs. For
