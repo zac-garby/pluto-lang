@@ -26,9 +26,9 @@ SEMI    = "semi"          # ;
 EQ      = "equal"         # ==
 N_EQ    = "not-equal"     # !=
 OR      = "or"            # ||
-AND     = "and"           # and
-B_OR    = "bitwise-or"    # or
-B_AND   = "bitwise-and"   # and
+AND     = "and"           # &&
+B_OR    = "bitwise-or"    # |
+B_AND   = "bitwise-and"   # &
 ASSIGN  = "assign"        # =
 DECLARE = "declare"       # :=
 COMMA   = "comma"         # ,
