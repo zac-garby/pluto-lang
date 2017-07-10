@@ -13,9 +13,10 @@ def $x times $y {
 };
 
 def print sum of $x and $y {
-  \print (x + y);
+  print (x + y);
 };
 
-a = \(5) times (10) * 10;
-b = \(3 * 2) plus (a);
-\print sum of (a) and (b);
+a = \5 times 10 * 10;
+b = \(3 * 2) plus $a;
+
+print sum of $a and $b;
