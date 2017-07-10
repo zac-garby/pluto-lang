@@ -30,6 +30,17 @@ precedences = {
     token.B_AND:   BIT_AND
 }
 
+arg_tokens = [
+    token.ID,
+    token.LPAREN,
+    token.NUM,
+    token.NULL,
+    token.TRUE,
+    token.FALSE,
+    token.STR,
+    token.PARAM
+]
+
 class Parser(object):
     """parses a stream of tokens into an abstract syntax tree (AST)"""
     def __init__(self, tokens):
@@ -54,8 +65,8 @@ class Parser(object):
             
             # Constructs
             token.LPAREN: self.parse_grouped_expr,
-            token.BSLASH: self.parse_function_call,
-            token.IF:     self.parse_if_expr
+            token.IF:     self.parse_if_expr,
+            token.BSLASH: self.parse_function_call
         }
         
         self.infixes  = {
@@ -243,7 +254,10 @@ class Parser(object):
             
         return left
         
-    def parse_id(self):
+    def parse_id(self):        
+        if self.peek_in(arg_tokens):
+            return self.parse_function_call(ast.Identifier(self.cur_tok))
+        
         return ast.Identifier(self.cur_tok)
         
     def parse_num(self):
@@ -289,14 +303,17 @@ class Parser(object):
     def parse_array(self):
         return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
         
-    def parse_function_call(self):
+    def parse_function_call(self, first = None):
         expr = ast.FunctionCall(self.cur_tok, [])
         
-        while self.peek_in([token.ID, token.LPAREN, token.NUM, token.NULL, token.TRUE, token.FALSE, token.STR, token.PARAM]):
+        if first != None:
+            expr.pattern.append(first)
+        
+        while self.peek_in(arg_tokens):
             self.next()
             
             if self.cur_is(token.ID):
-                expr.pattern.append(self.parse_id())
+                expr.pattern.append(ast.Identifier(self.cur_tok))
             elif self.cur_is(token.LPAREN):
                 arg = ast.Argument(self.cur_tok, None)
                 
@@ -321,6 +338,8 @@ class Parser(object):
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
             return None
+            
+        print(expr.pattern)
                                 
         return expr
         
