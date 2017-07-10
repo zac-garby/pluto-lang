@@ -1,15 +1,9 @@
 def $x plus $y {
-  # return x + y;
   x + y;
 };
 
-# testing comments
-
-
-
-
 def $x times $y {
-  return x * y; # comment after line
+  return x * y;
 };
 
 def print sum of $x and $y {
