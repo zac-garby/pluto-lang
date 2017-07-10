@@ -18,12 +18,29 @@ class Builtin(object):
 def builtin(pattern):
     pattern = pattern.split(" ")
     
-    def builtin_gen(fn):
+    def builtin_decorator(fn):
         Builtin(pattern, fn)
         return fn
         
-    return builtin_gen  
+    return builtin_decorator
     
+def arg(name, expected_type, fn_name):
+    def arg_decorator(fn):
+        def new_fn(args, context):
+            if args[name].type != expected_type:
+                return err("the $%s parameter in '%s' must be of type %s, not %s" % (
+                    name,
+                    fn_name,
+                    expected_type,
+                    args[name].type
+                ))
+            
+            return fn(args, context)
+        
+        return new_fn
+            
+    return arg_decorator
+            
     
 ## Builtin definitions ##  
 
@@ -52,6 +69,7 @@ def input_with_prompt_prompt(args, context):
         return NULL
         
 @builtin("run $block")
+@arg("block", obj.BLOCK, "run $block")
 def run_block(args, context):
     block = args["block"]
     
@@ -64,16 +82,18 @@ def run_block(args, context):
     ctx = context.enclose()
     return evaluate(block.body, ctx)
     
+def _run_block(block, args, context):
+    params = [param.value for param in block.params]
+    args_dict = dict(zip(params, args))
+    ctx = context.enclose_with_args(args_dict)
+    return evaluate(block.body, ctx)
+    
 @builtin("run $block with $args")
+@arg("block", obj.BLOCK, "run $block with $args")
+@arg("args", obj.ARRAY, "run $block with $args")
 def run_block_with_args(args, context):
     block = args["block"]
     b_args = args["args"]
-    
-    if type(block) != obj.Block:
-        return err("the $block parameter in 'run $block' must be of type <block>")
-        
-    if type(b_args) != obj.Array:
-        return err("the $args parameter in 'run $block with $args' must be of type <array>")
     
     if len(block.params) != len(b_args.elements):
         return err("the amount of arguments provided in 'run $block with $args' should match the number of parameters in the block")
@@ -83,3 +103,63 @@ def run_block_with_args(args, context):
     
     ctx = context.enclose_with_args(args_dictionary)
     return evaluate(block.body, ctx)
+    
+@builtin("map $block over $array")
+@arg("block", obj.BLOCK, "map $block over $array")
+@arg("array", obj.ARRAY, "map $block over $array")
+def map_block_over_array(args, context):
+    array = args["array"].elements
+    block = args["block"]
+    
+    result = []
+    
+    for item in array:
+        mapped = _run_block(block, [item], context)
+        
+        if mapped.type == obj.ERROR:
+            return mapped
+            
+        result.append(mapped)
+        
+    return obj.Array(result)
+
+@builtin("left fold $array with $block")
+@builtin("fold $array with $block")
+@arg("array", obj.ARRAY, "map $block over $array")
+@arg("block", obj.BLOCK, "map $block over $array")
+def fold_array_with_block(args, context):
+    array = args["array"].elements
+    block = args["block"]
+    
+    result = array[0]
+    
+    for item in array[1:]:
+        mapped = _run_block(block, [result, item], context)
+        
+        if mapped.type == obj.ERROR:
+            return mapped
+            
+        result = mapped
+        
+    return result
+
+@builtin("right fold $array with $block")
+@arg("array", obj.ARRAY, "map $block over $array")
+@arg("block", obj.BLOCK, "map $block over $array")
+def fold_array_with_block(args, context):
+    array = args["array"].elements
+    array.reverse()
+    
+    block = args["block"]
+    
+    result = array[0]
+    
+    for item in array[1:]:
+        mapped = _run_block(block, [result, item], context)
+        
+        if mapped.type == obj.ERROR:
+            return mapped
+            
+        result = mapped
+        
+    return result
