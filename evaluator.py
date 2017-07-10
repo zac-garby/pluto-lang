@@ -5,13 +5,13 @@ NULL = obj.Null()
 TRUE = obj.Boolean(True)
 FALSE = obj.Boolean(False)
 
-def eval(node, ctx):
+def evaluate(node, ctx):
     t = type(node)
     
     # Constructs
     if t == ast.Program:              return eval_program(node, ctx)
     if t == ast.BlockStatement:       return eval_block_stmt(node, ctx)
-    if t == ast.ExpressionStatement:  return eval(node.expr, ctx)
+    if t == ast.ExpressionStatement:  return evaluate(node.expr, ctx)
     if t == ast.IfExpression:         return eval_if(node, ctx)
     
     # Literals
@@ -39,28 +39,28 @@ def eval(node, ctx):
         if node.value == None:
             return NULL
         
-        val = eval(node.value, ctx)
+        val = evaluate(node.value, ctx)
         return val if is_err(val) else obj.ReturnValue(val)
     
     if t == ast.PrefixExpression:
-        right = eval(node.right, ctx)
+        right = evaluate(node.right, ctx)
         return right if is_err(right) else eval_prefix(node.operator, right)
     
     if t == ast.InfixExpression:
-        left = eval(node.left, ctx)
+        left = evaluate(node.left, ctx)
         if is_err(left): return left
         
-        right = eval(node.right, ctx)
+        right = evaluate(node.right, ctx)
         if is_err(right): return right
         
         return eval_infix(node.operator, left, right, ctx)
     
     if t == ast.AssignExpression:
-        right = eval(node.value, ctx)
+        right = evaluate(node.value, ctx)
         return right if is_err(right) else eval_assign(node.name, right, ctx)
         
     if t == ast.DeclareExpression:
-        right = eval(node.value, ctx)
+        right = evaluate(node.value, ctx)
         return right if is_err(right) else eval_declare(node.name, right, ctx)
     
     return err("evaluation for %s not yet implemented" % t)
@@ -74,7 +74,7 @@ def eval_exprs(exprs, ctx):
     result = []
     
     for expr in exprs:
-        o = eval(expr, ctx)
+        o = evaluate(expr, ctx)
         
         if is_err(o):
             return [o]
@@ -90,7 +90,7 @@ def eval_program(program, ctx):
     result = None
     
     for stmt in program.statements:
-        result = eval(stmt, ctx)
+        result = evaluate(stmt, ctx)
         
         if is_err(result):
             return result
@@ -107,7 +107,7 @@ def eval_block_stmt(block, ctx):
     result = None
     
     for stmt in block.statements:
-        result = eval(stmt, ctx)
+        result = evaluate(stmt, ctx)
         
         if result != None:
             t = result.type
@@ -186,14 +186,14 @@ def eval_string_infix(op, left, right):
     return err("unknown operator: %s %s %s" % (left.type, op, right.type))
 
 def eval_if(expr, ctx):
-    condition = eval(expr.condition, ctx)
+    condition = evaluate(expr.condition, ctx)
     
     if is_err(condition): return condition
     
     if is_truthy(condition):
-        return eval(expr.consequence, ctx)
+        return evaluate(expr.consequence, ctx)
     elif expr.alternative != None:
-        return eval(expr.alternative, ctx)
+        return evaluate(expr.alternative, ctx)
     else:
         return NULL
 
@@ -217,18 +217,18 @@ def eval_function_call(node, ctx):
             f_item = function.pattern[i]
         
             if type(item) == ast.Argument and type(f_item) == ast.Parameter:
-                args[f_item.name] = eval(item.value, ctx)
+                args[f_item.name] = evaluate(item.value, ctx)
                 
         enclosed = ctx.enclose_with_args(args)
         
-        result = eval(function.body, enclosed)
+        result = evaluate(function.body, enclosed)
     else:
         for i in range(len(node.pattern)):
             item = node.pattern[i]
             f_item = function.pattern[i]
             
             if type(item) == ast.Argument and f_item[0] == "$":
-                args[f_item[1:]] = eval(item.value, ctx)
+                args[f_item[1:]] = evaluate(item.value, ctx)
         
         result = function.fn(args, ctx)
     
