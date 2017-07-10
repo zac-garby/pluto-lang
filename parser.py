@@ -32,13 +32,15 @@ precedences = {
 
 arg_tokens = [
     token.ID,
-    token.LPAREN,
     token.NUM,
     token.NULL,
     token.TRUE,
     token.FALSE,
     token.STR,
-    token.PARAM
+    token.PARAM,
+    token.LPAREN,
+    token.LSQUARE,
+    token.LBRACE
 ]
 
 class Parser(object):
@@ -335,6 +337,10 @@ class Parser(object):
                 expr.pattern.append(ast.Argument(self.cur_tok, self.parse_string()))
             elif self.cur_is(token.PARAM):
                 expr.pattern.append(ast.Argument(self.cur_tok, ast.Identifier(self.cur_tok)))
+            elif self.cur_is(token.LSQUARE):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_array()))
+            elif self.cur_is(token.LBRACE):
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_block_literal()))
                 
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")

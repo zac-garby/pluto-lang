@@ -144,7 +144,7 @@ This piece of code prints "Hello, world" to the console. Like functions, blocks 
 ```
 add = { |a, b| -> a + b; };
 
-run $add with ([3, 10]);
+run $add with [3, 10];
 ```
 
 This block, called `add`, takes two arguments: `a`, and `b`. It then returns the sum of them. As you can see, to run a
@@ -155,8 +155,8 @@ An interesting note is that both `run $block` and `run $block with $args` are bo
 Blocks are also used in some functions in the standard library:
 
 ```
-map ({|n| -> n * n;}) over ([1, 2, 3, 4, 5]); #-> [1, 4, 9, 16, 25]
-fold ([1, 2, 3, 4, 5]) with ({|counter, n| -> counter + n;}); #-> 15
+map {|n| -> n * n;} over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
+fold [1, 2, 3, 4, 5] with {|counter, n| -> counter + n;}; #-> 15
 ```
 
 ### How??
