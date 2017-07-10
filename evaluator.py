@@ -20,6 +20,7 @@ def eval(node, ctx):
     if t == ast.String:               return obj.String(node.value)
     if t == ast.Boolean:              return bool_obj(node.value)
     if t == ast.Identifier:           return eval_id(node, ctx)
+    if t == ast.BlockLiteral:         return eval_block(node, ctx)
     
     # Functions
     if t == ast.FunctionDefinition:   return eval_function_def(node, ctx)
@@ -235,6 +236,9 @@ def eval_function_call(node, ctx):
         return NULL
     
     return unwrap_return_value(result)
+    
+def eval_block(node, ctx):
+    return obj.Block(node.params, node.body)
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
