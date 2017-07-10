@@ -17,7 +17,7 @@ def main():
             try:
                 string = input("⧫ ") + ";"
                 
-                if string == "exit":
+                if string[:-1] == "exit":
                     break
                 
                 execute(string, True, ctx)
@@ -33,11 +33,11 @@ def execute(text, print_result, ctx):
     tokens = l.lex(text)
     parser = p.Parser(tokens)
     program = parser.parse_program()
-    
+        
     if len(parser.errors) > 0:
         parser.print_errors()
     else:
-        result = e.eval(program, ctx)
+        result = e.evaluate(program, ctx)
         
         if (print_result and type(result) != o.Null) or type(result) == o.Error:
             print(result)

@@ -1,13 +1,15 @@
 # Types which the user should never directly see
-ERROR = "<!error>"
+ERROR        = "<!error>"
 RETURN_VALUE = "<!return value>"
+FUNCTION     = "<!function>"
 
 # Normal types
-NUMBER = "<number>"
+NUMBER  = "<number>"
 BOOLEAN = "<boolean>"
-STRING = "<string>"
-ARRAY = "<array>"
-NULL = "<null>"
+STRING  = "<string>"
+ARRAY   = "<array>"
+NULL    = "<null>"
+BLOCK   = "<block>"
 
 class Object(object):
     def __eq__(self, other):
@@ -128,10 +130,22 @@ class Array(Object):
 class Function(Object):
     """a function object"""
     def __init__(self, pattern, body, context):
+        self.type = FUNCTION
         self.pattern = pattern # [id|param]
         self.body = body
         self.context = context
     
     def __str__(self):
-        return "<function>"
+        return "<function instance>"
+        
+        
+class Block(Object):
+    """a block object"""
+    def __init__(self, params, body):
+        self.type = BLOCK
+        self.params = params
+        self.body = body
+        
+    def __str__(self):
+        return "<block instance>"
     

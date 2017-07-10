@@ -8,30 +8,31 @@ STR    = "string"
 ID     = "identifier"
 PARAM  = "param"
 
-# Punctuation
-PLUS    = "plus"
-MINUS   = "minus"
-STAR    = "star"
-SLASH   = "slash"
-BSLASH  = "backslash"
-LPAREN  = "lparen"
-RPAREN  = "rparen"
-LT      = "less-than"
-GT      = "greater-than"
-LBRACE  = "lbrace"
-RBRACE  = "rbrace"
-LSQUARE = "lsquare"
-RSQUARE = "rsquare"
-SEMI    = "semi"
-EQ      = "equal"
-N_EQ    = "not-equal"
-OR      = "or"
-AND     = "and"
-B_OR    = "bitwise-or"
-B_AND   = "bitwise-and"
-ASSIGN  = "assign"
-DECLARE = "declare"
-COMMA   = "comma"
+# Punctuation             # lexeme
+PLUS    = "plus"          # +
+MINUS   = "minus"         # -
+STAR    = "star"          # *
+SLASH   = "slash"         # /
+BSLASH  = "backslash"     # \
+LPAREN  = "lparen"        # (
+RPAREN  = "rparen"        # )
+LT      = "less-than"     # <
+GT      = "greater-than"  # >
+LBRACE  = "lbrace"        # {
+RBRACE  = "rbrace"        # }
+LSQUARE = "lsquare"       # [
+RSQUARE = "rsquare"       # ]
+SEMI    = "semi"          # ;
+EQ      = "equal"         # ==
+N_EQ    = "not-equal"     # !=
+OR      = "or"            # ||
+AND     = "and"           # &&
+B_OR    = "bitwise-or"    # |
+B_AND   = "bitwise-and"   # &
+ASSIGN  = "assign"        # =
+DECLARE = "declare"       # :=
+COMMA   = "comma"         # ,
+ARROW   = "arrow"         # ->
 
 # Keywords
 DEF    = "def"

@@ -16,6 +16,7 @@ lexical_dictionary = [
     (r"\$(\w+)",               o (token.PARAM, 1)),
     
     # Punctuation
+    (r"->",                    o (token.ARROW)),
     (r"\+",                    o (token.PLUS)),
     (r"-",                     o (token.MINUS)),
     (r"\*",                    o (token.STAR)),
@@ -38,7 +39,7 @@ lexical_dictionary = [
     (r"&",                     o (token.B_AND)),
     (r"=",                     o (token.ASSIGN)),
     (r":=",                    o (token.DECLARE)),
-    (r"\,",                    o (token.COMMA))
+    (r"\,",                    o (token.COMMA)),
 ]
 
 def lex(string, col = 1, line = 1):
