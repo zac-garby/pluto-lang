@@ -13,6 +13,7 @@ def evaluate(node, ctx):
     if t == ast.BlockStatement:       return eval_block_stmt(node, ctx)
     if t == ast.ExpressionStatement:  return evaluate(node.expr, ctx)
     if t == ast.IfExpression:         return eval_if(node, ctx)
+    if t == ast.WhileLoop:            return eval_while_loop(node, ctx)
     
     # Literals
     if t == ast.Null:                 return NULL
@@ -217,18 +218,27 @@ def eval_function_call(node, ctx):
             f_item = function.pattern[i]
         
             if type(item) == ast.Argument and type(f_item) == ast.Parameter:
-                args[f_item.name] = evaluate(item.value, ctx)
+                evaled = evaluate(item.value, ctx)
+                if is_err(evaled):
+                    return evaled
+                
+                args[f_item.name] = evaled
                 
         enclosed = ctx.enclose_with_args(args)
         
         result = evaluate(function.body, enclosed)
+        if is_err(result):
+            return result
     else:
         for i in range(len(node.pattern)):
             item = node.pattern[i]
             f_item = function.pattern[i]
             
             if type(item) == ast.Argument and f_item[0] == "$":
-                args[f_item[1:]] = evaluate(item.value, ctx)
+                evaled = evaluate(item.value, ctx)
+                if is_err(evaled):
+                    return evaled
+                args[f_item[1:]] = evaled
         
         result = function.fn(args, ctx)
     
@@ -239,6 +249,21 @@ def eval_function_call(node, ctx):
     
 def eval_block(node, ctx):
     return obj.Block(node.params, node.body)
+    
+def eval_while_loop(node, ctx):
+    while True:
+        condition = evaluate(node.condition, ctx)
+        if is_err(condition):
+            return condition
+            
+        if not is_truthy(condition):
+            break
+            
+        result = evaluate(node.body, ctx)
+        if is_err(result):
+            return result
+            
+    return NULL
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:

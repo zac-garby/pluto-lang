@@ -70,6 +70,7 @@ class Parser(object):
             token.IF:     self.parse_if_expr,
             token.BSLASH: self.parse_function_call,
             token.LBRACE: self.parse_block_literal,
+            token.WHILE:  self.parse_while_loop
         }
         
         self.infixes  = {
@@ -411,6 +412,19 @@ class Parser(object):
             if not self.expect(token.ARROW):
                 return None
             
+        expr.body = self.parse_block_statement()
+        
+        return expr
+        
+    def parse_while_loop(self):
+        expr = ast.WhileLoop(self.cur_tok, None, None)
+        
+        self.next()
+        expr.condition = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.LBRACE):
+            return None
+        
         expr.body = self.parse_block_statement()
         
         return expr

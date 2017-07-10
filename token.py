@@ -43,6 +43,7 @@ NULL   = "null"
 IF     = "if"
 ELSE   = "else"
 ELIF   = "elif"
+WHILE  = "while"
 
 class Token(object):
     """a single lexical token"""
@@ -72,6 +73,7 @@ keywords = {
     "null":   NULL,
     "if":     IF,
     "else":   ELSE,
-    "elif":   ELIF
+    "elif":   ELIF,
+    "while":  WHILE
 }
         

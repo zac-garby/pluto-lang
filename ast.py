@@ -18,10 +18,13 @@ def n(name):
     return "" if name == "" else name + " ‣ "
     
 
-def make_list_tree(indent, list, name):
+def make_list_tree(indent, li, name):
     string = "%s[" % (_(indent) + n(name))
     
-    for item in list:
+    if len(li) == 0:
+        return string + "]"
+    
+    for item in li:
         string += "\n%s" % item.tree(indent + 1, "")
         
     return string + ("\n%s]" % _(indent))
@@ -237,6 +240,21 @@ class BlockLiteral(Expression):
             _(indent) + n(name),
             self.body.tree(indent + 1, "body"),
             make_list_tree(indent + 1, self.params, "params")
+        )
+        
+        
+class WhileLoop(Expression):
+    """a while loop node"""
+    def __init__(self, token, condition, body):
+        self.token = token
+        self.condition = condition
+        self.body = body
+        
+    def tree(self, indent, name):
+        return "%swhile\n%s\n%s" % (
+            _(indent) + n(name),
+            self.condition.tree(indent + 1, "condition"),
+            self.body.tree(indent + 1, "body")
         )
         
         

@@ -28,3 +28,9 @@ run $a_block;
 
 # Execute the second block with two arguments
 run $add with [2, 3];
+
+a = 0;
+while a < 10 {
+  a = a + 1;
+  print $a;
+};
