@@ -125,8 +125,8 @@ def map_block_over_array(args, context):
 
 @builtin("left fold $array with $block")
 @builtin("fold $array with $block")
-@arg("array", obj.ARRAY, "map $block over $array")
-@arg("block", obj.BLOCK, "map $block over $array")
+@arg("array", obj.ARRAY, "left fold $array with $block")
+@arg("block", obj.BLOCK, "left fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].elements
     block = args["block"]
@@ -144,8 +144,8 @@ def fold_array_with_block(args, context):
     return result
 
 @builtin("right fold $array with $block")
-@arg("array", obj.ARRAY, "map $block over $array")
-@arg("block", obj.BLOCK, "map $block over $array")
+@arg("array", obj.ARRAY, "right fold $array with $block")
+@arg("block", obj.BLOCK, "right fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].elements
     array.reverse()
@@ -163,3 +163,25 @@ def fold_array_with_block(args, context):
         result = mapped
         
     return result
+    
+@builtin("append $item to $array")
+@arg("array", obj.ARRAY, "append $item to $array")
+def append_item_to_array(args, context):
+    item = args["item"]
+    array = args["array"]
+    
+    array.elements.append(item)
+    
+    return array
+    
+@builtin("index $i of $array")
+@arg("i", obj.NUMBER, "index $i of $array")
+@arg("array", obj.ARRAY, "index $i of $array")
+def index_i_of_array(args, context):
+    i = args["i"]
+    array = args["array"]
+    
+    if not i.is_integer() or not i.is_positive() or not int(i.value) < len(array.elements):
+        return err("invalid index: %s" % i)
+        
+    return array.elements[int(i.value)]
