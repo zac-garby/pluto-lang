@@ -1,7 +1,7 @@
 import object as obj
 import ast
 import context
-from evaluator import NULL, TRUE, FALSE, evaluate, err
+from evaluator import NULL, TRUE, FALSE, evaluate, err, is_truthy
 
 
 class Builtin(object):
@@ -164,6 +164,52 @@ def fold_array_with_block(args, context):
     return result
     
 @arg("array", obj.ARRAY)
+@arg("predicate", obj.BLOCK)
+@builtin("filter $array by $predicate")
+def filter_array_with_predicate(args, context):
+    array = args["array"].elements
+    predicate = args["predicate"]
+    
+    filtered = []
+    
+    for item in array:
+        result = _run_block(predicate, [item], context)
+        
+        if result.type == obj.ERROR:
+            return result
+            
+        if is_truthy(result.value):
+            filtered.append(item)
+            
+    return obj.Array(filtered)
+    
+@arg("a", obj.ARRAY)
+@arg("b", obj.ARRAY)
+@builtin("union of $a and $b")
+def union_of_a_and_b(args, context):
+    a = args["a"].elements
+    b = args["b"].elements
+    
+    result = []
+    
+    for item in a + b:
+        if item not in result:
+            result.append(item)
+            
+    return obj.Array(result)
+    
+@arg("a", obj.ARRAY)
+@arg("b", obj.ARRAY)
+@builtin("intersection of $a and $b")
+def union_of_a_and_b(args, context):
+    a = args["a"].elements
+    b = args["b"].elements
+    
+    result = [elem for elem in a if elem in b]
+    
+    return obj.Array(result)
+
+@arg("array", obj.ARRAY)
 @builtin("append $item to $array")
 def append_item_to_array(args, context):
     item = args["item"]
@@ -184,6 +230,15 @@ def index_i_of_array(args, context):
         return err("invalid index: %s" % i)
         
     return array.elements[int(i.value)]
+    
+@arg("array", obj.ARRAY)
+@builtin("$array contains $item")
+def array_contains_item(args, context):
+    return TRUE if args["item"] in args["array"].elements else FALSE
+    
+@builtin("$obj is truthy")
+def obj_is_truthy(args, context):
+    return TRUE if is_truthy(args["obj"]) else FALSE
     
 @arg("start", obj.NUMBER)
 @arg("end", obj.NUMBER)
