@@ -41,6 +41,14 @@ def evaluate(node, ctx):
             return elements[0]
         
         return obj.Array(elements)
+        
+    if t == ast.Tuple:
+        elements = eval_exprs(node.value, ctx)
+        
+        if len(elements) == 1 and is_err(elements[0]):
+            return elements[0]
+            
+        return obj.Tuple(elements)
     
     # More complex nodes
     if t == ast.ReturnStatement:

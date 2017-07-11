@@ -13,6 +13,7 @@ STRING  = "<string>"
 ARRAY   = "<array>"
 NULL    = "<null>"
 BLOCK   = "<block>"
+TUPLE   = "<tuple>"
 
 class Object(object):
     def __eq__(self, other):
@@ -97,6 +98,18 @@ class String(Object):
     def __str__(self):
         return "%s" % self.value
         
+        
+class Tuple(Object):
+    """a tuple object"""
+    def __init__(self, value):
+        self.type = TUPLE
+        self.value = value
+    
+    __eq__ = compare()
+    
+    def __str__(self):
+        return "(%s)" % "".join(str(e) + ", " for e in self.value)[:-2]    
+    
         
 class Null(Object):
     """the null object"""
