@@ -308,11 +308,8 @@ class Parser(object):
     def parse_grouped_expr(self):
         self.next()
         
-        if self.cur_is(token.COMMA):
+        if self.cur_is(token.RPAREN):
             expr = ast.Tuple(self.cur_tok, [])
-                        
-            if not self.expect(token.RPAREN):
-                return None
                 
             return expr
         
