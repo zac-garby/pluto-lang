@@ -308,9 +308,19 @@ class Parser(object):
     def parse_grouped_expr(self):
         self.next()
         
+        if self.cur_is(token.RPAREN):
+            expr = ast.Tuple(self.cur_tok, [])
+                
+            return expr
+        
         expr = self.parse_expr(LOWEST)
         
-        if not self.expect(token.RPAREN):
+        if self.peek_is(token.COMMA):
+            self.next()
+            
+            expr = ast.Tuple(expr.token, [expr] + self.parse_expr_list(token.RPAREN))
+        
+        if type(expr) != ast.Tuple and not self.expect(token.RPAREN):
             return None
             
         return expr
@@ -330,15 +340,7 @@ class Parser(object):
             if self.cur_is(token.ID):
                 expr.pattern.append(ast.Identifier(self.cur_tok))
             elif self.cur_is(token.LPAREN):
-                arg = ast.Argument(self.cur_tok, None)
-                
-                self.next()
-                arg.value = self.parse_expr(LOWEST)
-                
-                if not self.expect(token.RPAREN):
-                    return None
-                    
-                expr.pattern.append(arg)
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_grouped_expr()))
             elif self.cur_is(token.NUM):
                 expr.pattern.append(ast.Argument(self.cur_tok, self.parse_num()))
             elif self.cur_is(token.NULL):

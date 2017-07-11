@@ -13,6 +13,7 @@ STRING  = "<string>"
 ARRAY   = "<array>"
 NULL    = "<null>"
 BLOCK   = "<block>"
+TUPLE   = "<tuple>"
 
 class Object(object):
     def __eq__(self, other):
@@ -25,6 +26,11 @@ class Object(object):
         return ""
     
     __repr__ = __str__
+    
+    
+class Collection(Object):
+    def get_elements(self):
+        return []
     
     
 def compare(prop = "value"):
@@ -60,7 +66,7 @@ class Number(Object):
     """represents a number object"""
     def __init__(self, value):
         self.type = NUMBER
-        self.value = value
+        self.value = float(value)
         
     __eq__ = compare()
             
@@ -86,17 +92,39 @@ class Boolean(Object):
         return str(self.value).lower()
         
         
-class String(Object):
+class String(Collection):
     """a string object"""
     def __init__(self, value):
         self.type = STRING
-        self.value = value
+        
+        if type(value) == list:
+            self.value = "".join(str(e) for e in value)
+        else:
+            self.value = value
         
     __eq__ = compare()
     
     def __str__(self):
         return "%s" % self.value
         
+    def get_elements(self):
+        return [String(ch) for ch in list(self.value)]
+        
+        
+class Tuple(Collection):
+    """a tuple object"""
+    def __init__(self, value):
+        self.type = TUPLE
+        self.value = value
+    
+    __eq__ = compare()
+    
+    def __str__(self):
+        return "(%s)" % "".join(str(e) + ", " for e in self.value)[:-2]
+        
+    def get_elements(self):
+        return self.value
+    
         
 class Null(Object):
     """the null object"""
@@ -107,27 +135,19 @@ class Null(Object):
         return "null" 
         
         
-class Array(Object):
+class Array(Collection):
     """an array object"""
     def __init__(self, elements):
         self.type = ARRAY
         self.elements = elements
         
-    def __eq__(self, other):
-        if type(other) != type(self):
-            return False
-        else:
-            if len(self.elements) != len(other.elements):
-                return False
-                
-            for i in range(len(self.elements)):
-                if self.elements[i] != other.elements[i]:
-                    return False
-                    
-            return True
+    __eq__ = compare("elements")
             
     def __str__(self):
         return "[%s]" % "".join(str(e) + ", " for e in self.elements)[:-2]
+        
+    def get_elements(self):
+        return self.elements
         
         
 class Function(Object):

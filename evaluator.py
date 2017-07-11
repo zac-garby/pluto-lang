@@ -41,6 +41,14 @@ def evaluate(node, ctx):
             return elements[0]
         
         return obj.Array(elements)
+        
+    if t == ast.Tuple:
+        elements = eval_exprs(node.value, ctx)
+        
+        if len(elements) == 1 and is_err(elements[0]):
+            return elements[0]
+            
+        return obj.Tuple(elements)
     
     # More complex nodes
     if t == ast.ReturnStatement:
@@ -287,10 +295,8 @@ def eval_for_loop(node, ctx):
         return collection
     
     items = None
-    if type(collection) == obj.Array:
-        items = collection.elements
-    elif type(collection) == obj.String:
-        items = [obj.String(ch) for ch in list(collection.value)]
+    if isinstance(collection, obj.Collection):
+        items = collection.get_elements()
         
     if items == None:
         return err("cannot use a for loop over a collection of type %s" % collection.type)
@@ -320,7 +326,7 @@ def is_truthy(o):
         o == NULL or
         o == FALSE or
         type(o) == obj.Number and o.value == 0 or
-        type(o) == obj.String and o.value == ""
+        isinstance(o, obj.Collection) and len(o.get_elements()) == 0
     )
 
 def bool_obj(o):
