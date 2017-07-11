@@ -170,14 +170,14 @@ def eval_declare(left, right, ctx):
     return right
 
 def eval_infix(op, left, right, ctx):
+    if isinstance(left, obj.Collection) and isinstance(right, obj.Collection):
+        return eval_collection_infix(op, left, right, ctx)
+    
     # Boolean operators
     if op == "&&": return bool_obj(is_truthy(left) and is_truthy(right))
     if op == "||": return bool_obj(is_truthy(left) or is_truthy(right))
     if op == "==": return bool_obj(left == right)
     if op == "!=": return bool_obj(left != right)
-    
-    if isinstance(left, obj.Collection) and isinstance(right, obj.Collection):
-        return eval_collection_infix(op, left, right, ctx)
     
     if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
@@ -203,6 +203,9 @@ def eval_collection_infix(op, left, right, ctx):
     l = left.get_elements()
     r = right.get_elements()
     
+    if op == "==": return bool_obj(left == right)
+    if op == "!=": return bool_obj(left != right)
+    
     if op == "+":  return type(left)(l + r)
     if op == "-":  return type(left)([e for e in l if e not in r])
     if op in "&&": return type(left)([e for e in l if e in r])
@@ -215,6 +218,8 @@ def eval_collection_infix(op, left, right, ctx):
                 result.append(elem)
                 
         return type(left)(result)
+        
+    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
 
 def eval_if(expr, ctx):
     condition = evaluate(expr.condition, ctx)
