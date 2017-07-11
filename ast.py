@@ -349,3 +349,20 @@ class ReturnStatement(Statement):
             self.value.tree(indent + 1, "value")
         )
         
+
+class NextStatement(Statement):
+    """the next statement"""
+    def __init__(self, token):
+        self.token = token
+        
+    def tree(self, indent, name):
+        return "%snext" % (_(indent) + n(name))
+        
+
+class BreakStatement(Statement):
+    """the break statement"""
+    def __init__(self, token):
+        self.token = token
+        
+    def tree(self, indent, name):
+        return "%sbreak" % (_(indent) + n(name))
