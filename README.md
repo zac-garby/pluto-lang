@@ -155,8 +155,8 @@ An interesting note is that both `run $block` and `run $block with $args` are bo
 Blocks are also used in some functions in the standard library:
 
 ```
-map {|n| -> n * n;} over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
-fold [1, 2, 3, 4, 5] with {|counter, n| -> counter + n;}; #-> 15
+map { |n| -> n * n; } over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
+fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n; }; #-> 15
 ```
 
 ### How??
