@@ -197,6 +197,15 @@ for i : a_tuple {
 };
 ```
 
+##### Operators on collections
+
+A few operators are defined on collections:
+
+ - `+` - adds the two collections together
+ - `-` - returns the first list with all shared elements removed
+ - `&` or `&&` - returns the intersection of the two collections
+ - `|` or `||` - returns the union of the two collections
+
 ### How??
 
 To use it, clone the repository and run `__main__.py`. If you  don't give in any  cmd-line arguments, it will
