@@ -46,6 +46,8 @@ ELSE   = "else"
 ELIF   = "elif"
 WHILE  = "while"
 FOR    = "for"
+NEXT   = "next"
+BREAK  = "break"
 
 class Token(object):
     """a single lexical token"""
@@ -77,6 +79,8 @@ keywords = {
     "else":   ELSE,
     "elif":   ELIF,
     "while":  WHILE,
-    "for":    FOR
+    "for":    FOR,
+    "next":   NEXT,
+    "break":  BREAK
 }
         
