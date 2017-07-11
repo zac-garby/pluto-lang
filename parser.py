@@ -178,6 +178,10 @@ class Parser(object):
             stmt = self.parse_return_stmt()
         elif self.cur_is(token.DEF):
             stmt = self.parse_def_stmt()
+        elif self.cur_is(token.NEXT):
+            stmt = self.parse_next_stmt()
+        elif self.cur_is(token.BREAK):
+            stmt = self.parse_break_stmt()
         else:
             stmt = self.parse_expr_stmt()
             
@@ -237,6 +241,12 @@ class Parser(object):
             return None
                 
         return stmt
+        
+    def parse_next_stmt(self):
+        return ast.NextStatement(self.cur_tok)
+        
+    def parse_break_stmt(self):
+        return ast.BreakStatement(self.cur_tok)
         
     def parse_expr(self, precedence):
         prefix = self.prefixes.get(self.cur_tok.type, None)

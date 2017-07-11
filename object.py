@@ -3,6 +3,9 @@ ERROR        = "<!error>"
 RETURN_VALUE = "<!return value>"
 FUNCTION     = "<!function>"
 
+NEXT         = "<next>"
+BREAK        = "<break>"
+
 # Normal types
 NUMBER  = "<number>"
 BOOLEAN = "<boolean>"
@@ -148,4 +151,21 @@ class Block(Object):
         
     def __str__(self):
         return "<block instance>"
-    
+        
+        
+class Next(Object):
+    """result of the next; statement"""
+    def __init__(self):
+        self.type = NEXT
+        
+    def __str__(self):
+        return "<next>"
+        
+        
+class Break(Object):
+    """result of the break; statement"""
+    def __init__(self):
+        self.type = BREAK
+        
+    def __str__(self):
+        return "<break>"

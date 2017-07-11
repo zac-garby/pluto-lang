@@ -1,9 +1,12 @@
 import object as obj
 import ast
 
-NULL = obj.Null()
-TRUE = obj.Boolean(True)
+NULL  = obj.Null()
+TRUE  = obj.Boolean(True)
 FALSE = obj.Boolean(False)
+
+NEXT  = obj.Next()
+BREAK = obj.Break()
 
 def evaluate(node, ctx):
     t = type(node)
@@ -23,6 +26,9 @@ def evaluate(node, ctx):
     if t == ast.Boolean:              return bool_obj(node.value)
     if t == ast.Identifier:           return eval_id(node, ctx)
     if t == ast.BlockLiteral:         return eval_block(node, ctx)
+    
+    if t == ast.NextStatement:        return NEXT
+    if t == ast.BreakStatement:       return BREAK
     
     # Functions
     if t == ast.FunctionDefinition:   return eval_function_def(node, ctx)
@@ -99,6 +105,9 @@ def eval_program(program, ctx):
         
         if type(result) == obj.ReturnValue:
             return result.value
+            
+        if type(result) in [obj.Next, obj.Break]:
+            return NULL
     
     return result
 
@@ -114,7 +123,7 @@ def eval_block_stmt(block, ctx):
         if result != None:
             t = result.type
             
-            if t == obj.RETURN_VALUE or t == obj.ERROR:
+            if t in [obj.RETURN_VALUE, obj.ERROR, obj.NEXT, obj.BREAK]:
                 return result
     
     return result
@@ -264,6 +273,9 @@ def eval_while_loop(node, ctx):
         if is_err(result):
             return result
             
+        if type(result) == obj.Break:
+            break
+            
     return NULL
     
 def eval_for_loop(node, ctx):
@@ -291,6 +303,9 @@ def eval_for_loop(node, ctx):
         result = evaluate(body, enclosed)
         if is_err(result):
             return result
+            
+        if type(result) == obj.Break:
+            break
     
     return NULL
 
