@@ -96,7 +96,11 @@ class String(Collection):
     """a string object"""
     def __init__(self, value):
         self.type = STRING
-        self.value = value
+        
+        if type(value) == list:
+            self.value = "".join(str(e) for e in value)
+        else:
+            self.value = value
         
     __eq__ = compare()
     
@@ -104,7 +108,7 @@ class String(Collection):
         return "%s" % self.value
         
     def get_elements(self):
-        return [obj.String(ch) for ch in list(self.value)]
+        return [String(ch) for ch in list(self.value)]
         
         
 class Tuple(Collection):
