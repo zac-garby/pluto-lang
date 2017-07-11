@@ -297,8 +297,6 @@ def eval_for_loop(node, ctx):
     items = None
     if isinstance(collection, obj.Collection):
         items = collection.get_elements()
-    elif type(collection) == obj.String:
-        items = [obj.String(ch) for ch in list(collection.value)]
         
     if items == None:
         return err("cannot use a for loop over a collection of type %s" % collection.type)
@@ -328,7 +326,6 @@ def is_truthy(o):
         o == NULL or
         o == FALSE or
         type(o) == obj.Number and o.value == 0 or
-        type(o) == obj.String and o.value == "" or
         isinstance(o, obj.Collection) and len(o.get_elements()) == 0
     )
 

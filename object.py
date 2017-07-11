@@ -92,7 +92,7 @@ class Boolean(Object):
         return str(self.value).lower()
         
         
-class String(Object):
+class String(Collection):
     """a string object"""
     def __init__(self, value):
         self.type = STRING
@@ -102,6 +102,9 @@ class String(Object):
     
     def __str__(self):
         return "%s" % self.value
+        
+    def get_elements(self):
+        return [obj.String(ch) for ch in list(self.value)]
         
         
 class Tuple(Collection):
