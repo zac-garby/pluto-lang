@@ -26,7 +26,7 @@ def builtin(pattern):
 def arg(name, expected_type):
     def arg_decorator(fn):
         def new_fn(args, context):
-            if args[name].type != expected_type:
+            if isinstance(args[name].type, expected_type):
                 return err("the $%s parameter in '%s' must be of type %s, not %s" % (
                     name,
                     getattr(fn, "pattern"),
@@ -67,7 +67,7 @@ def input_with_prompt_prompt(args, context):
     except (KeyboardInterrupt, EOFError):
         return NULL
         
-@arg("block", obj.BLOCK)
+@arg("block", obj.Block)
 @builtin("run $block")
 def run_block(args, context):
     block = args["block"]
@@ -87,27 +87,27 @@ def _run_block(block, args, context):
     ctx = context.enclose_with_args(args_dict)
     return evaluate(block.body, ctx)
     
-@arg("block", obj.BLOCK)
-@arg("args", obj.ARRAY)
+@arg("block", obj.Block)
+@arg("args", obj.Collection)
 @builtin("run $block with $args")
 def run_block_with_args(args, context):
     block = args["block"]
-    b_args = args["args"]
+    b_args = args["args"].get_elements()
     
-    if len(block.params) != len(b_args.elements):
+    if len(block.params) != len(b_args):
         return err("the amount of arguments provided in 'run $block with $args' should match the number of parameters in the block")
     
     params = [param.value for param in block.params]
-    args_dictionary = dict(zip(params, b_args.elements))
+    args_dictionary = dict(zip(params, b_args))
     
     ctx = context.enclose_with_args(args_dictionary)
     return evaluate(block.body, ctx)
     
-@arg("block", obj.BLOCK)
-@arg("array", obj.ARRAY)
+@arg("block", obj.Block)
+@arg("array", obj.Collection)
 @builtin("map $block over $array")
 def map_block_over_array(args, context):
-    array = args["array"].elements
+    array = args["array"].get_elements()
     block = args["block"]
     
     result = []
@@ -120,17 +120,20 @@ def map_block_over_array(args, context):
             
         result.append(mapped)
         
-    return obj.Array(result)
+    return type(args["array"])(result)
 
-@arg("array", obj.ARRAY)
-@arg("block", obj.BLOCK)
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
 @builtin("left fold $array with $block")
 @builtin("fold $array with $block")
 def fold_array_with_block(args, context):
-    array = args["array"].elements
+    array = args["array"].get_elements()
     block = args["block"]
     
     result = array[0]
+    
+    if len(array) == 0:
+        return result
     
     for item in array[1:]:
         mapped = _run_block(block, [result, item], context)
@@ -142,11 +145,11 @@ def fold_array_with_block(args, context):
         
     return result
 
-@arg("array", obj.ARRAY)
-@arg("block", obj.BLOCK)
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
 @builtin("right fold $array with $block")
 def fold_array_with_block(args, context):
-    array = args["array"].elements
+    array = args["array"].get_elements()
     array.reverse()
     
     block = args["block"]
@@ -163,11 +166,11 @@ def fold_array_with_block(args, context):
         
     return result
     
-@arg("array", obj.ARRAY)
-@arg("predicate", obj.BLOCK)
+@arg("array", obj.Collection)
+@arg("predicate", obj.Block)
 @builtin("filter $array by $predicate")
 def filter_array_with_predicate(args, context):
-    array = args["array"].elements
+    array = args["array"].get_elements()
     predicate = args["predicate"]
     
     filtered = []
@@ -178,17 +181,17 @@ def filter_array_with_predicate(args, context):
         if result.type == obj.ERROR:
             return result
             
-        if is_truthy(result.value):
+        if is_truthy(result):
             filtered.append(item)
             
-    return obj.Array(filtered)
+    return type(args["array"])(filtered)
     
-@arg("a", obj.ARRAY)
-@arg("b", obj.ARRAY)
+@arg("a", obj.Collection)
+@arg("b", obj.Collection)
 @builtin("union of $a and $b")
 def union_of_a_and_b(args, context):
-    a = args["a"].elements
-    b = args["b"].elements
+    a = args["a"].get_elements()
+    b = args["b"].get_elements()
     
     result = []
     
@@ -196,52 +199,52 @@ def union_of_a_and_b(args, context):
         if item not in result:
             result.append(item)
             
-    return obj.Array(result)
+    return type(args["a"])(result)
     
-@arg("a", obj.ARRAY)
-@arg("b", obj.ARRAY)
+@arg("a", obj.Collection)
+@arg("b", obj.Collection)
 @builtin("intersection of $a and $b")
 def union_of_a_and_b(args, context):
-    a = args["a"].elements
-    b = args["b"].elements
+    a = args["a"].get_elements()
+    b = args["b"].get_elements()
     
     result = [elem for elem in a if elem in b]
     
-    return obj.Array(result)
+    return type(args["a"])(result)
 
-@arg("array", obj.ARRAY)
+@arg("array", obj.Array)
 @builtin("append $item to $array")
 def append_item_to_array(args, context):
     item = args["item"]
     array = args["array"]
     
-    array.elements.append(item)
+    array.get_elements().append(item)
     
     return array
     
-@arg("i", obj.NUMBER)
-@arg("array", obj.ARRAY)
+@arg("i", obj.Number)
+@arg("array", obj.Collection)
 @builtin("index $i of $array")
 def index_i_of_array(args, context):
     i = args["i"]
     array = args["array"]
     
-    if not i.is_integer() or not i.is_positive() or not int(i.value) < len(array.elements):
+    if not i.is_integer() or not i.is_positive() or not int(i.value) < len(array.get_elements()):
         return err("invalid index: %s" % i)
         
-    return array.elements[int(i.value)]
+    return array.get_elements()[int(i.value)]
     
-@arg("array", obj.ARRAY)
+@arg("array", obj.Collection)
 @builtin("$array contains $item")
 def array_contains_item(args, context):
-    return TRUE if args["item"] in args["array"].elements else FALSE
+    return TRUE if args["item"] in args["array"].get_elements() else FALSE
     
 @builtin("$obj is truthy")
 def obj_is_truthy(args, context):
     return TRUE if is_truthy(args["obj"]) else FALSE
     
-@arg("start", obj.NUMBER)
-@arg("end", obj.NUMBER)
+@arg("start", obj.Number)
+@arg("end", obj.Number)
 @builtin("$start to $end")
 def start_to_end(args, context):
     start = args["start"]
