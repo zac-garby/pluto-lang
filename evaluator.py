@@ -295,8 +295,8 @@ def eval_for_loop(node, ctx):
         return collection
     
     items = None
-    if type(collection) == obj.Array:
-        items = collection.elements
+    if isinstance(collection, obj.Collection):
+        items = collection.get_elements()
     elif type(collection) == obj.String:
         items = [obj.String(ch) for ch in list(collection.value)]
         
