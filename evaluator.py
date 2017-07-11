@@ -179,6 +179,9 @@ def eval_infix(op, left, right, ctx):
     if op == "==": return bool_obj(left == right)
     if op == "!=": return bool_obj(left != right)
     
+    if op == "?":
+        return right if left == NULL else left
+    
     if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
     
@@ -188,14 +191,20 @@ def eval_number_infix(op, left, right):
     l = left.value
     r = right.value
     
-    if op == "+": return obj.Number(l + r)
-    if op == "-": return obj.Number(l - r)
-    if op == "*": return obj.Number(l * r)
-    if op == "/": return obj.Number(l / r)
-    if op == "<": return bool_obj(l < r)
-    if op == ">": return bool_obj(l > r)
-    if op == "&": return float(int(l) & int(r))
-    if op == "|": return float(int(l) | int(r))
+    if op == "+":  return obj.Number(l + r)
+    if op == "-":  return obj.Number(l - r)
+    if op == "*":  return obj.Number(l * r)
+    if op == "/":  return obj.Number(l / r)
+    if op == "&":  return obj.Number(int(l) & int(r))
+    if op == "|":  return obj.Number(int(l) | int(r))
+    if op == "**": return obj.Number(l ** r)
+    if op == "//": return obj.Number(l // r)
+    if op == "%":  return obj.Number(l % r)
+    
+    if op == "<":  return bool_obj(l < r)
+    if op == ">":  return bool_obj(l > r)
+    if op == "<=": return bool_obj(l <= r)
+    if op == ">=": return bool_obj(l >= r)
     
     return err("unknown operator: %s %s %s" % (left.type, op, right.type))
 

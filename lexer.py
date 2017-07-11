@@ -36,11 +36,15 @@ lexical_dictionary = [
     (r"->",                    o (token.ARROW)),
     (r"\+",                    o (token.PLUS)),
     (r"-",                     o (token.MINUS)),
+    (r"\*\*",                  o (token.EXP)),
     (r"\*",                    o (token.STAR)),
+    (r"\/\/",                  o (token.F_DIV)),
     (r"\/",                    o (token.SLASH)),
     (r"\\",                    o (token.BSLASH)),
     (r"\(",                    o (token.LPAREN)),
     (r"\)",                    o (token.RPAREN)),
+    (r"<=",                    o (token.LTE)),
+    (r">=",                    o (token.GTE)),
     (r"<",                     o (token.LT)),
     (r">",                     o (token.GT)),
     (r"{",                     o (token.LBRACE)),
@@ -57,7 +61,9 @@ lexical_dictionary = [
     (r"=",                     o (token.ASSIGN)),
     (r":=",                    o (token.DECLARE)),
     (r"\,",                    o (token.COMMA)),
-    (r":",                     o (token.COLON))
+    (r":",                     o (token.COLON)),
+    (r"%",                     o (token.MOD)),
+    (r"\?",                    o (token.Q_MARK))
 ]
 
 def lex(string, col = 1, line = 1):

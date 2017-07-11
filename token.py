@@ -8,32 +8,38 @@ STR    = "string"
 ID     = "identifier"
 PARAM  = "param"
 
-# Punctuation             # lexeme
-PLUS    = "plus"          # +
-MINUS   = "minus"         # -
-STAR    = "star"          # *
-SLASH   = "slash"         # /
-BSLASH  = "backslash"     # \
-LPAREN  = "lparen"        # (
-RPAREN  = "rparen"        # )
-LT      = "less-than"     # <
-GT      = "greater-than"  # >
-LBRACE  = "lbrace"        # {
-RBRACE  = "rbrace"        # }
-LSQUARE = "lsquare"       # [
-RSQUARE = "rsquare"       # ]
-SEMI    = "semi"          # ;
-EQ      = "equal"         # ==
-N_EQ    = "not-equal"     # !=
-OR      = "or"            # ||
-AND     = "and"           # &&
-B_OR    = "bitwise-or"    # |
-B_AND   = "bitwise-and"   # &
-ASSIGN  = "assign"        # =
-DECLARE = "declare"       # :=
-COMMA   = "comma"         # ,
-ARROW   = "arrow"         # ->
-COLON   = "colon"         # :
+# Punctuation                     # lexeme
+PLUS    = "plus"                  # +
+MINUS   = "minus"                 # -
+STAR    = "star"                  # *
+EXP     = "exponent"              # **
+SLASH   = "slash"                 # /
+F_DIV   = "floor-div"             # //
+MOD     = "modulo"                # %
+BSLASH  = "backslash"             # \
+LPAREN  = "lparen"                # (
+RPAREN  = "rparen"                # )
+LT      = "less-than"             # <
+GT      = "greater-than"          # >
+LTE     = "less-than-or-equal"    # <=
+GTE     = "greater-than-or-equal" # >=
+LBRACE  = "lbrace"                # {
+RBRACE  = "rbrace"                # }
+LSQUARE = "lsquare"               # [
+RSQUARE = "rsquare"               # ]
+SEMI    = "semi"                  # ;
+EQ      = "equal"                 # ==
+N_EQ    = "not-equal"             # !=
+OR      = "or"                    # ||
+AND     = "and"                   # &&
+B_OR    = "bitwise-or"            # |
+B_AND   = "bitwise-and"           # &
+ASSIGN  = "assign"                # =
+DECLARE = "declare"               # :=
+COMMA   = "comma"                 # ,
+ARROW   = "arrow"                 # ->
+COLON   = "colon"                 # :
+Q_MARK  = "question-mark"         # ?
 
 # Keywords
 DEF    = "def"
