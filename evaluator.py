@@ -316,7 +316,12 @@ def unwrap_return_value(o):
     return o
 
 def is_truthy(o):
-    return not (o == NULL or o == FALSE)
+    return not (
+        o == NULL or
+        o == FALSE or
+        type(o) == obj.Number and o.value == 0 or
+        type(o) == obj.String and o.value == ""
+    )
 
 def bool_obj(o):
     return TRUE if o else FALSE
