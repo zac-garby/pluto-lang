@@ -11,7 +11,7 @@ def id_transformer(t, l, w):
 lexical_dictionary = [
     # Literals
     (r"\d+(?:\.\d+)?",         o (token.NUM)),
-    (r"\"((\\\"|[^\"])+)\"",   o (token.STR, 1)),
+    (r"\"((\\\"|[^\"])*)\"",   o (token.STR, 1)),
     (r"\w+",                   o (token.ID, 0, id_transformer)),
     (r"\$(\w+)",               o (token.PARAM, 1)),
     
