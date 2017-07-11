@@ -70,6 +70,8 @@ class Parser(object):
             token.IF:     self.parse_if_expr,
             token.BSLASH: self.parse_function_call,
             token.LBRACE: self.parse_block_literal,
+            token.WHILE:  self.parse_while_loop,
+            token.FOR:    self.parse_for_loop
         }
         
         self.infixes  = {
@@ -176,6 +178,10 @@ class Parser(object):
             stmt = self.parse_return_stmt()
         elif self.cur_is(token.DEF):
             stmt = self.parse_def_stmt()
+        elif self.cur_is(token.NEXT):
+            stmt = self.parse_next_stmt()
+        elif self.cur_is(token.BREAK):
+            stmt = self.parse_break_stmt()
         else:
             stmt = self.parse_expr_stmt()
             
@@ -235,6 +241,12 @@ class Parser(object):
             return None
                 
         return stmt
+        
+    def parse_next_stmt(self):
+        return ast.NextStatement(self.cur_tok)
+        
+    def parse_break_stmt(self):
+        return ast.BreakStatement(self.cur_tok)
         
     def parse_expr(self, precedence):
         prefix = self.prefixes.get(self.cur_tok.type, None)
@@ -410,6 +422,39 @@ class Parser(object):
             
             if not self.expect(token.ARROW):
                 return None
+            
+        expr.body = self.parse_block_statement()
+        
+        return expr
+        
+    def parse_while_loop(self):
+        expr = ast.WhileLoop(self.cur_tok, None, None)
+        
+        self.next()
+        expr.condition = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.LBRACE):
+            return None
+        
+        expr.body = self.parse_block_statement()
+        
+        return expr
+        
+    def parse_for_loop(self):
+        expr = ast.ForLoop(self.cur_tok, None, None, None)
+        
+        self.next()
+        expr.var = self.parse_id(False)
+        
+        if not self.expect(token.COLON):
+            return None
+            
+        self.next()
+            
+        expr.collection = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.LBRACE):
+            return None
             
         expr.body = self.parse_block_statement()
         

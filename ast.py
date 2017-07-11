@@ -18,10 +18,13 @@ def n(name):
     return "" if name == "" else name + " ‣ "
     
 
-def make_list_tree(indent, list, name):
+def make_list_tree(indent, li, name):
     string = "%s[" % (_(indent) + n(name))
     
-    for item in list:
+    if len(li) == 0:
+        return string + "]"
+    
+    for item in li:
         string += "\n%s" % item.tree(indent + 1, "")
         
     return string + ("\n%s]" % _(indent))
@@ -240,6 +243,38 @@ class BlockLiteral(Expression):
         )
         
         
+class WhileLoop(Expression):
+    """a while loop node"""
+    def __init__(self, token, condition, body):
+        self.token = token
+        self.condition = condition
+        self.body = body
+        
+    def tree(self, indent, name):
+        return "%swhile\n%s\n%s" % (
+            _(indent) + n(name),
+            self.condition.tree(indent + 1, "condition"),
+            self.body.tree(indent + 1, "body")
+        )
+        
+        
+class ForLoop(Expression):
+    """a for loop node"""
+    def __init__(self, token, var, collection, body):
+        self.token = token
+        self.var = var
+        self.collection = collection
+        self.body = body
+        
+    def tree(self, indent, name):
+        return "%sfor\n%s\n%s\n%s" % (
+            _(indent) + n(name),
+            self.var.tree(indent + 1, "var"),
+            self.collection.tree(indent + 1, "collection"),
+            self.body.tree(indent + 1, "body")
+        )
+        
+        
 ## Statements ##
         
 class ExpressionStatement(Statement):
@@ -314,3 +349,20 @@ class ReturnStatement(Statement):
             self.value.tree(indent + 1, "value")
         )
         
+
+class NextStatement(Statement):
+    """the next statement"""
+    def __init__(self, token):
+        self.token = token
+        
+    def tree(self, indent, name):
+        return "%snext" % (_(indent) + n(name))
+        
+
+class BreakStatement(Statement):
+    """the break statement"""
+    def __init__(self, token):
+        self.token = token
+        
+    def tree(self, indent, name):
+        return "%sbreak" % (_(indent) + n(name))

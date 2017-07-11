@@ -1,9 +1,12 @@
 import object as obj
 import ast
 
-NULL = obj.Null()
-TRUE = obj.Boolean(True)
+NULL  = obj.Null()
+TRUE  = obj.Boolean(True)
 FALSE = obj.Boolean(False)
+
+NEXT  = obj.Next()
+BREAK = obj.Break()
 
 def evaluate(node, ctx):
     t = type(node)
@@ -13,6 +16,8 @@ def evaluate(node, ctx):
     if t == ast.BlockStatement:       return eval_block_stmt(node, ctx)
     if t == ast.ExpressionStatement:  return evaluate(node.expr, ctx)
     if t == ast.IfExpression:         return eval_if(node, ctx)
+    if t == ast.WhileLoop:            return eval_while_loop(node, ctx)
+    if t == ast.ForLoop:              return eval_for_loop(node, ctx)
     
     # Literals
     if t == ast.Null:                 return NULL
@@ -21,6 +26,9 @@ def evaluate(node, ctx):
     if t == ast.Boolean:              return bool_obj(node.value)
     if t == ast.Identifier:           return eval_id(node, ctx)
     if t == ast.BlockLiteral:         return eval_block(node, ctx)
+    
+    if t == ast.NextStatement:        return NEXT
+    if t == ast.BreakStatement:       return BREAK
     
     # Functions
     if t == ast.FunctionDefinition:   return eval_function_def(node, ctx)
@@ -97,6 +105,9 @@ def eval_program(program, ctx):
         
         if type(result) == obj.ReturnValue:
             return result.value
+            
+        if type(result) in [obj.Next, obj.Break]:
+            return NULL
     
     return result
 
@@ -112,7 +123,7 @@ def eval_block_stmt(block, ctx):
         if result != None:
             t = result.type
             
-            if t == obj.RETURN_VALUE or t == obj.ERROR:
+            if t in [obj.RETURN_VALUE, obj.ERROR, obj.NEXT, obj.BREAK]:
                 return result
     
     return result
@@ -217,18 +228,27 @@ def eval_function_call(node, ctx):
             f_item = function.pattern[i]
         
             if type(item) == ast.Argument and type(f_item) == ast.Parameter:
-                args[f_item.name] = evaluate(item.value, ctx)
+                evaled = evaluate(item.value, ctx)
+                if is_err(evaled):
+                    return evaled
+                
+                args[f_item.name] = evaled
                 
         enclosed = ctx.enclose_with_args(args)
         
         result = evaluate(function.body, enclosed)
+        if is_err(result):
+            return result
     else:
         for i in range(len(node.pattern)):
             item = node.pattern[i]
             f_item = function.pattern[i]
             
             if type(item) == ast.Argument and f_item[0] == "$":
-                args[f_item[1:]] = evaluate(item.value, ctx)
+                evaled = evaluate(item.value, ctx)
+                if is_err(evaled):
+                    return evaled
+                args[f_item[1:]] = evaled
         
         result = function.fn(args, ctx)
     
@@ -239,6 +259,55 @@ def eval_function_call(node, ctx):
     
 def eval_block(node, ctx):
     return obj.Block(node.params, node.body)
+    
+def eval_while_loop(node, ctx):
+    while True:
+        condition = evaluate(node.condition, ctx)
+        if is_err(condition):
+            return condition
+            
+        if not is_truthy(condition):
+            break
+            
+        result = evaluate(node.body, ctx.enclose())
+        if is_err(result):
+            return result
+            
+        if type(result) == obj.Break:
+            break
+            
+    return NULL
+    
+def eval_for_loop(node, ctx):
+    var = node.var
+    body = node.body
+    
+    collection = evaluate(node.collection, ctx)
+    if is_err(collection):
+        return collection
+    
+    items = None
+    if type(collection) == obj.Array:
+        items = collection.elements
+    elif type(collection) == obj.String:
+        items = [obj.String(ch) for ch in list(collection.value)]
+        
+    if items == None:
+        return err("cannot use a for loop over a collection of type %s" % collection.type)
+        
+    for item in items:
+        enclosed = ctx.enclose_with_args({
+            var.value: item
+        })
+        
+        result = evaluate(body, enclosed)
+        if is_err(result):
+            return result
+            
+        if type(result) == obj.Break:
+            break
+    
+    return NULL
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
