@@ -258,6 +258,23 @@ class WhileLoop(Expression):
         )
         
         
+class ForLoop(Expression):
+    """a for loop node"""
+    def __init__(self, token, var, collection, body):
+        self.token = token
+        self.var = var
+        self.collection = collection
+        self.body = body
+        
+    def tree(self, indent, name):
+        return "%sfor\n%s\n%s\n%s" % (
+            _(indent) + n(name),
+            self.var.tree(indent + 1, "var"),
+            self.collection.tree(indent + 1, "collection"),
+            self.body.tree(indent + 1, "body")
+        )
+        
+        
 ## Statements ##
         
 class ExpressionStatement(Statement):

@@ -14,6 +14,7 @@ def evaluate(node, ctx):
     if t == ast.ExpressionStatement:  return evaluate(node.expr, ctx)
     if t == ast.IfExpression:         return eval_if(node, ctx)
     if t == ast.WhileLoop:            return eval_while_loop(node, ctx)
+    if t == ast.ForLoop:              return eval_for_loop(node, ctx)
     
     # Literals
     if t == ast.Null:                 return NULL
@@ -259,10 +260,38 @@ def eval_while_loop(node, ctx):
         if not is_truthy(condition):
             break
             
-        result = evaluate(node.body, ctx)
+        result = evaluate(node.body, ctx.enclose())
         if is_err(result):
             return result
             
+    return NULL
+    
+def eval_for_loop(node, ctx):
+    var = node.var
+    body = node.body
+    
+    collection = evaluate(node.collection, ctx)
+    if is_err(collection):
+        return collection
+    
+    items = None
+    if type(collection) == obj.Array:
+        items = collection.elements
+    elif type(collection) == obj.String:
+        items = [obj.String(ch) for ch in list(collection.value)]
+        
+    if items == None:
+        return err("cannot use a for loop over a collection of type %s" % collection.type)
+        
+    for item in items:
+        enclosed = ctx.enclose_with_args({
+            var.value: item
+        })
+        
+        result = evaluate(body, enclosed)
+        if is_err(result):
+            return result
+    
     return NULL
 
 def unwrap_return_value(o):

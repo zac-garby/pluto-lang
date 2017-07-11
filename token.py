@@ -33,6 +33,7 @@ ASSIGN  = "assign"        # =
 DECLARE = "declare"       # :=
 COMMA   = "comma"         # ,
 ARROW   = "arrow"         # ->
+COLON   = "colon"         # :
 
 # Keywords
 DEF    = "def"
@@ -44,6 +45,7 @@ IF     = "if"
 ELSE   = "else"
 ELIF   = "elif"
 WHILE  = "while"
+FOR    = "for"
 
 class Token(object):
     """a single lexical token"""
@@ -74,6 +76,7 @@ keywords = {
     "if":     IF,
     "else":   ELSE,
     "elif":   ELIF,
-    "while":  WHILE
+    "while":  WHILE,
+    "for":    FOR
 }
         

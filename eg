@@ -34,3 +34,7 @@ while a < 10 {
   a = a + 1;
   print $a;
 };
+
+for i : [1, 2, 3, 4, 5] {
+  print $i;
+};
