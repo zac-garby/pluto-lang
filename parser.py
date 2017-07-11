@@ -340,15 +340,7 @@ class Parser(object):
             if self.cur_is(token.ID):
                 expr.pattern.append(ast.Identifier(self.cur_tok))
             elif self.cur_is(token.LPAREN):
-                arg = ast.Argument(self.cur_tok, None)
-                
-                self.next()
-                arg.value = self.parse_expr(LOWEST)
-                
-                if not self.expect(token.RPAREN):
-                    return None
-                    
-                expr.pattern.append(arg)
+                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_grouped_expr()))
             elif self.cur_is(token.NUM):
                 expr.pattern.append(ast.Argument(self.cur_tok, self.parse_num()))
             elif self.cur_is(token.NULL):
