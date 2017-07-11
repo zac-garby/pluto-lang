@@ -28,6 +28,11 @@ class Object(object):
     __repr__ = __str__
     
     
+class Collection(Object):
+    def get_elements(self):
+        return []
+    
+    
 def compare(prop = "value"):
     return (lambda self, other: getattr(self, prop) == getattr(other, prop) if type(self) == type(other) else False)
 
@@ -99,7 +104,7 @@ class String(Object):
         return "%s" % self.value
         
         
-class Tuple(Object):
+class Tuple(Collection):
     """a tuple object"""
     def __init__(self, value):
         self.type = TUPLE
@@ -108,7 +113,10 @@ class Tuple(Object):
     __eq__ = compare()
     
     def __str__(self):
-        return "(%s)" % "".join(str(e) + ", " for e in self.value)[:-2]    
+        return "(%s)" % "".join(str(e) + ", " for e in self.value)[:-2]
+        
+    def get_elements(self):
+        return self.value
     
         
 class Null(Object):
@@ -120,27 +128,19 @@ class Null(Object):
         return "null" 
         
         
-class Array(Object):
+class Array(Collection):
     """an array object"""
     def __init__(self, elements):
         self.type = ARRAY
         self.elements = elements
         
-    def __eq__(self, other):
-        if type(other) != type(self):
-            return False
-        else:
-            if len(self.elements) != len(other.elements):
-                return False
-                
-            for i in range(len(self.elements)):
-                if self.elements[i] != other.elements[i]:
-                    return False
-                    
-            return True
+    __eq__ = compare("elements")
             
     def __str__(self):
         return "[%s]" % "".join(str(e) + ", " for e in self.elements)[:-2]
+        
+    def get_elements(self):
+        return self.elements
         
         
 class Function(Object):
