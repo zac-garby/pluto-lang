@@ -95,8 +95,14 @@ class Parser(object):
             token.AND:     self.parse_infix,
             token.B_OR:    self.parse_infix,
             token.B_AND:   self.parse_infix,
+            token.EXP:     self.parse_infix,
+            token.F_DIV:   self.parse_infix,
+            token.MOD:     self.parse_infix,
+            token.LTE:     self.parse_infix,
+            token.GTE:     self.parse_infix,
+            token.Q_MARK:  self.parse_infix,
             token.ASSIGN:  self.parse_assign_expr,
-            token.DECLARE: self.parse_declare_expr
+            token.DECLARE: self.parse_declare_expr,
         }
         
         self.next()
