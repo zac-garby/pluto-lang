@@ -328,7 +328,8 @@ def is_truthy(o):
         o == NULL or
         o == FALSE or
         type(o) == obj.Number and o.value == 0 or
-        type(o) == obj.String and o.value == ""
+        type(o) == obj.String and o.value == "" or
+        isinstance(o, obj.Collection) and len(o.get_elements()) == 0
     )
 
 def bool_obj(o):
