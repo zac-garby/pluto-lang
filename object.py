@@ -66,7 +66,7 @@ class Number(Object):
     """represents a number object"""
     def __init__(self, value):
         self.type = NUMBER
-        self.value = value
+        self.value = float(value)
         
     __eq__ = compare()
             
