@@ -185,3 +185,28 @@ def index_i_of_array(args, context):
         return err("invalid index: %s" % i)
         
     return array.elements[int(i.value)]
+    
+@builtin("$start to $end")
+@arg("start", obj.NUMBER, "$start to $end")
+@arg("end", obj.NUMBER, "$start to $end")
+def start_to_end(args, context):
+    start = args["start"]
+    end = args["end"]
+    
+    if not start.is_integer():
+        return err("$start in '$start to $end' must be an integer")
+        
+    if not end.is_integer():
+        return err("$end in '$start to $end' must be an integer")
+        
+    s_val = int(start.value)
+    e_val = int(end.value)
+    
+    if e_val < s_val:
+        result = obj.Array([e + 1 for e in range(e_val, s_val)])
+        result.elements.reverse()
+        return result
+    elif e_val > s_val:
+        return obj.Array([e for e in range(s_val, e_val)])
+    else:
+        return start
