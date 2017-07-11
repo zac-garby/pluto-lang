@@ -308,9 +308,22 @@ class Parser(object):
     def parse_grouped_expr(self):
         self.next()
         
+        if self.cur_is(token.COMMA):
+            expr = ast.Tuple(self.cur_tok, [])
+                        
+            if not self.expect(token.RPAREN):
+                return None
+                
+            return expr
+        
         expr = self.parse_expr(LOWEST)
         
-        if not self.expect(token.RPAREN):
+        if self.peek_is(token.COMMA):
+            self.next()
+            
+            expr = ast.Tuple(expr.token, [expr] + self.parse_expr_list(token.RPAREN))
+        
+        if type(expr) != ast.Tuple and not self.expect(token.RPAREN):
             return None
             
         return expr

@@ -84,6 +84,19 @@ class String(Expression):
         return '%s"%s"' % (_(indent) + n(name), self.value)
         
         
+class Tuple(Expression):
+    """a tuple literal node"""
+    def __init__(self, token, value):
+        self.token = token
+        self.value = value
+        
+    def tree(self, indent, name):
+        return "%stuple\n%s" % (
+            _(indent) + n(name),
+            make_list_tree(indent + 1, self.value, "value")
+        )
+        
+        
 class Null(Expression):
     """a null literal node"""
     def __init__(self, token):
