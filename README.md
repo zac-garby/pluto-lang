@@ -159,6 +159,44 @@ map { |n| -> n * n; } over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
 fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n; }; #-> 15
 ```
 
+#### Collections
+
+A lot of functions in the standard library operate on what's called a _collection_. A collection is a type which can be
+represented as a list of elements. There are three collection types currently defined:
+
+ - Array (you've already seen this one)
+ - Strings are also collections!
+ - A new type: Tuples
+ 
+Before getting into tuples, here's an example using different types of collections:
+
+```
+>>> map { |x| -> x * 2; } over [1, 2, 3, 4, 5];
+[2, 4, 6, 8, 10]
+
+>>> map { |x| -> x + "!"; } over "foo";
+f!o!o!
+```
+
+Just like you've seen before. Now, onto tuples:
+
+```
+a_tuple = (1, 2, 3)
+just_one = (1,)
+empty = ()
+```
+
+Here are three examples of tuples. As you can see, they're defined exactly like lists, except from using normal brackets
+instead of square ones.
+
+You can loop over tuples, just like arrays:
+
+```
+for i : a_tuple {
+  print $i;
+};
+```
+
 ### How??
 
 To use it, clone the repository and run `__main__.py`. If you  don't give in any  cmd-line arguments, it will
