@@ -3,15 +3,17 @@ import token
 
 LOWEST      = 0  #
 ASSIGN      = 1  # = or :=
-OR          = 2  # ||
-AND         = 3  # &&
-BIT_OR      = 4  # |
-BIT_AND     = 5  # &
-EQUALS      = 6  # == or !==
-LESSGREATER = 7  # < or >
-SUM         = 8  # + or -
-PRODUCT     = 9  # * or /
-PREFIX      = 10 # -x
+QUESTION    = 2
+OR          = 3  # ||
+AND         = 4  # &&
+BIT_OR      = 5  # |
+BIT_AND     = 6  # &
+EQUALS      = 7  # == or !==
+LESSGREATER = 8  # < or > or <= or >=
+SUM         = 9  # + or -
+PRODUCT     = 10  # * or / or %
+EXP         = 11 # ** or //
+PREFIX      = 12 # -x
 
 precedences = {
     token.EQ:      EQUALS,
@@ -27,7 +29,13 @@ precedences = {
     token.OR:      OR,
     token.AND:     AND,
     token.B_OR:    BIT_OR,
-    token.B_AND:   BIT_AND
+    token.B_AND:   BIT_AND,
+    token.EXP:     EXP,
+    token.F_DIV:   EXP,
+    token.MOD:     PRODUCT,
+    token.LTE:     LESSGREATER,
+    token.GTE:     LESSGREATER,
+    token.Q_MARK: QUESTION
 }
 
 arg_tokens = [
