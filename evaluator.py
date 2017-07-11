@@ -176,11 +176,11 @@ def eval_infix(op, left, right, ctx):
     if op == "==": return bool_obj(left == right)
     if op == "!=": return bool_obj(left != right)
     
+    if isinstance(left, obj.Collection) and isinstance(right, obj.Collection):
+        return eval_collection_infix(op, left, right, ctx)
+    
     if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
-    
-    if type(left) == obj.String and type(right) == obj.String:
-        return eval_string_infix(op, left, right)
     
     return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
 
@@ -199,10 +199,22 @@ def eval_number_infix(op, left, right):
     
     return err("unknown operator: %s %s %s" % (left.type, op, right.type))
 
-def eval_string_infix(op, left, right):
-    if op == "+": return obj.String(left.value + right.value)
+def eval_collection_infix(op, left, right, ctx):
+    l = left.get_elements()
+    r = right.get_elements()
     
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type))
+    if op == "+":  return type(left)(l + r)
+    if op == "-":  return type(left)([e for e in l if e not in r])
+    if op in "&&": return type(left)([e for e in l if e in r])
+    
+    if op in "||":
+        result = []
+        
+        for elem in l + r:
+            if elem not in result:
+                result.append(elem)
+                
+        return type(left)(result)
 
 def eval_if(expr, ctx):
     condition = evaluate(expr.condition, ctx)
