@@ -84,7 +84,7 @@ def lex(string, col = 1, line = 1):
                 
                     found_space = True
                 else:
-                    while string[index] != "\n":
+                    while index < len(string) and string[index] != "\n":
                         index += 1
                         
                     col = 1
