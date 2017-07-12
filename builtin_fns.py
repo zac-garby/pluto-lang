@@ -293,3 +293,15 @@ def format_string_with_args(args, context):
     
     return obj.String(fmt % items)
     
+@arg("format", obj.String)
+@arg("args", obj.Collection)
+@builtin("printf $format with $args")
+def printf_format_with_args(args, context):
+    fmt = args["format"].value
+    items = tuple(args["args"].get_elements())
+    
+    print(obj.String(fmt % items))
+    
+    return NULL
+    
+    
