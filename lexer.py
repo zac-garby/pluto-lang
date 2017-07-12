@@ -88,7 +88,6 @@ def lex(string, col = 1, line = 1):
                         index += 1
                         
                     col = 1
-                    line += 1
                 
             if found_space:
                 continue
