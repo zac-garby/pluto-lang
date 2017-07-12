@@ -291,7 +291,10 @@ def format_string_with_args(args, context):
     fmt = args["format"].value
     items = tuple(args["args"].get_elements())
     
-    return obj.String(fmt % items)
+    try:
+        return obj.String(fmt % items)
+    except TypeError:
+        return err("Wrong number of arguments to format '%s'" % fmt)
     
 @arg("format", obj.String)
 @arg("args", obj.Collection)
@@ -300,7 +303,10 @@ def printf_format_with_args(args, context):
     fmt = args["format"].value
     items = tuple(args["args"].get_elements())
     
-    print(obj.String(fmt % items))
+    try:
+        print(obj.String(fmt % items))
+    except TypeError:
+        return err("Wrong number of arguments to format '%s'" % fmt)
     
     return NULL
     
