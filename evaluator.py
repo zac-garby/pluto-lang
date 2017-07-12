@@ -250,9 +250,10 @@ def eval_function_def(node, ctx):
 
 def eval_function_call(node, ctx):
     function = ctx.get_function(node.pattern)
+    p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
     
     if function == None:
-        return err("no function matching the pattern")
+        return err("no function matching the pattern: %s" % p_string)
     
     args = {}
     
