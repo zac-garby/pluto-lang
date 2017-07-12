@@ -53,7 +53,7 @@ def evaluate(node, ctx):
     # More complex nodes
     if t == ast.ReturnStatement:
         if node.value == None:
-            return NULL
+            return obj.ReturnValue(NULL)
         
         val = evaluate(node.value, ctx)
         return val if is_err(val) else obj.ReturnValue(val)
