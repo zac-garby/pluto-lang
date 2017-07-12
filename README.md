@@ -236,3 +236,4 @@ There are loads of things to do. Heres a list for you:
  - Allow keywords as normal identifiers in patterns.
  - Only throw a syntax error if one hasn't already been thrown in the same statement, to avoid repetition.
  - Rewrite in a faster language - possibly Rust or Go.
+ - Add type conversions (maybe "val -> type" or "val as type" or "val:type")
