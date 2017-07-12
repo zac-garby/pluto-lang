@@ -269,3 +269,17 @@ def start_to_end(args, context):
         return obj.Array([obj.Number(e) for e in range(s_val, e_val)])
     else:
         return start
+
+@arg("num", obj.Number)
+@builtin("square root of $num")
+def square_root_of_num(args, context):
+    return obj.Number(math.sqrt(args["num"].value))
+    
+@arg("root", obj.Number)
+@arg("num", obj.Number)
+@builtin("$root st root of $num")
+@builtin("$root nd root of $num")
+@builtin("$root rd root of $num")
+@builtin("$root th root of $num")
+def nth_root_of_num(args, context):
+    return obj.Number(args["num"].value ** (1 / args["root"].value))
