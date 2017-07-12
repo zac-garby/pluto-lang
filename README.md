@@ -4,7 +4,7 @@
 
 ### What?
 
-It's a proof-of-concept  language with a cool function definition/call syntax. Basically, instead of functions
+It's a language with a cool function definition/call syntax. Basically, instead of functions
 being called with their arguments in parentheses after the name, they are represented by their patterns:
 
 ```
