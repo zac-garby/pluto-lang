@@ -20,14 +20,10 @@ def main():
     parser.add_argument("-v", "--version", action="version", version="pattern-based-language b0.1")
     
     args = parser.parse_args()
-    
-    if args == None:
+        
+    if args.file == None:
         repl(c.Context())
     else:
-        if args.file == None:
-            print("Since arguments were specified, a file is required (--file)")
-            return
-        
         try:
             text = open(args.file).read()
             
