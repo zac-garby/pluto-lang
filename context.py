@@ -62,6 +62,9 @@ class Context(object):
             if matched:                
                 return func
                 
+        if self.outer != None:
+            return self.outer.get_function(pattern)
+                
         for func in Builtin.builtins:
             if len(pattern) != len(func.pattern):
                 continue
