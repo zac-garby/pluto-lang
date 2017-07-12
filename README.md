@@ -99,7 +99,7 @@ example, you could create a function which does the exact same thing as an if ex
 
 ```
 def find whether $condition is truthy or falsey and set the result to $a or $b respectively {
-  if condition {
+  if (condition) {
     a;
   } else {
     b;
@@ -111,7 +111,7 @@ First things first: this is the first time you've seen an if expression in this 
 standard. One main difference is that they're expressions, not statements, like in some other languages.
 
 If expressions are also the reason the (very verbose) function defined above cannot contain the words
-`if`, `else`, or `elif`.
+`if`, `else`, or `elif`, or any other keyword for that matter.
 
 You can then call it like this:
 
@@ -233,3 +233,5 @@ There are loads of things to do. Heres a list for you:
  - Write up some better documentation.
  - Add testing.
  - Change syntax so explicit function calls are only necessary with a pattern of length 1.
+ - Allow keywords as normal identifiers in patterns.
+ - Only throw a syntax error if one hasn't already been thrown in the same statement, to avoid repetition.
