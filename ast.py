@@ -297,8 +297,7 @@ class ExpressionStatement(Statement):
         self.expr = expr
     
     def tree(self, indent, name):
-        expr = (_(indent + 1) + "none") if self.expr == None else self.expr.tree(indent + 1, "")
-        return "%sexpr\n%s" % (_(indent) + n(name), expr)
+        return self.expr.tree(indent, name)
         
         
 class ReturnStatement(Statement):
@@ -321,7 +320,7 @@ class BlockStatement(Statement):
         self.statements = statements
     
     def tree(self, indent, name):
-        return "%sblock\n%s" % (
+        return "%sstmts\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.statements, "statements")
         )
