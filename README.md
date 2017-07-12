@@ -192,7 +192,7 @@ instead of square ones.
 You can loop over tuples, just like arrays:
 
 ```
-for i : a_tuple {
+for (i : a_tuple) {
   print $i;
 };
 ```
