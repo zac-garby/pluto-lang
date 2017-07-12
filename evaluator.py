@@ -1,4 +1,4 @@
-import object as obj
+import obj
 import ast
 
 NULL  = obj.Null()

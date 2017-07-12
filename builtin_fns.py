@@ -1,4 +1,6 @@
-import object as obj
+import math
+
+import obj
 import ast
 import context
 from evaluator import NULL, TRUE, FALSE, evaluate, err, is_truthy

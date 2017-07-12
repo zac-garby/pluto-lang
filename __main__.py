@@ -8,7 +8,7 @@ import lexer      as l
 import parser     as p
 import evaluator  as e
 import context    as c
-import object     as o
+import obj        as o
 
 def main():
     parser = argparse.ArgumentParser(description="The interpreter for pattern-based-language")
