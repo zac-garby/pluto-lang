@@ -379,8 +379,14 @@ class Parser(object):
     def parse_if_expr(self):
         expr = ast.IfExpression(self.cur_tok, None, None, None)
         
+        if not self.expect(token.LPAREN):
+            return None
+        
         self.next()
         expr.condition = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.RPAREN):
+            return None
         
         if not self.expect(token.LBRACE):
             return None
