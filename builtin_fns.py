@@ -126,8 +126,8 @@ def map_block_over_array(args, context):
 
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("left fold $array with $block")
 @builtin("fold $array with $block")
+@builtin("left fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     block = args["block"]
@@ -283,3 +283,13 @@ def square_root_of_num(args, context):
 @builtin("$root th root of $num")
 def nth_root_of_num(args, context):
     return obj.Number(args["num"].value ** (1 / args["root"].value))
+    
+@arg("format", obj.String)
+@arg("args", obj.Collection)
+@builtin("format $format with $args")
+def format_string_with_args(args, context):
+    fmt = args["format"].value
+    items = tuple(args["args"].get_elements())
+    
+    return obj.String(fmt % items)
+    
