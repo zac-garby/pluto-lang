@@ -208,9 +208,17 @@ A few operators are defined on collections:
 
 ### How??
 
-To use it, clone the repository and run `__main__.py`. If you  don't give in any  cmd-line arguments, it will
-open up a REPL. If you give it one  argument, that should be a file name relative  to the program, which will
-be run.
+To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
+statements line by line.
+
+There are also a number of arguments you can use:
+
+ - `-f, --file` - Runs the given file
+ - `-p, --parse` - Parses the file, but doesn't execute it
+ - `-t, --tree` - Parses the file and prints the parse tree
+ - `-i, --interactive` - Runs the file and enters interactive mode afterwards
+ - `-h, --help` - Shows a useful help menu
+ - `-v, --version` - Shows the current version
 
 ### Contributions
 
