@@ -236,6 +236,14 @@ def index_i_of_array(args, context):
         
     return array.get_elements()[int(i.value)]
     
+@arg("collection", obj.Collection)
+@builtin("indices of $collection")
+def indices_of_arr(args, context):
+    collection = args["collection"].get_elements()
+    result = [obj.Number(i) for i in range(len(collection))]
+    
+    return obj.Array(result)
+    
 @arg("array", obj.Collection)
 @builtin("$array contains $item")
 def array_contains_item(args, context):
@@ -309,5 +317,4 @@ def printf_format_with_args(args, context):
         return err("Wrong number of arguments to format '%s'" % fmt)
     
     return NULL
-    
     
