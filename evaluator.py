@@ -1,4 +1,4 @@
-import object as obj
+import obj
 import ast
 
 NULL  = obj.Null()
@@ -142,7 +142,7 @@ def eval_id(node, ctx):
     if val != None:
         return val
     
-    return err("%s is not defined in the current context" % node.value)
+    return err("'%s' is not defined in the current context" % node.value)
 
 def eval_prefix(op, right):
     if op == "-": return eval_minus_prefix(right)
@@ -250,9 +250,10 @@ def eval_function_def(node, ctx):
 
 def eval_function_call(node, ctx):
     function = ctx.get_function(node.pattern)
+    p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
     
     if function == None:
-        return err("no function matching the pattern")
+        return err("no function matching the pattern: %s" % p_string)
     
     args = {}
     

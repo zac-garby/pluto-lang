@@ -452,8 +452,14 @@ class Parser(object):
     def parse_while_loop(self):
         expr = ast.WhileLoop(self.cur_tok, None, None)
         
+        if not self.expect(token.LPAREN):
+            return None
+        
         self.next()
         expr.condition = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.RPAREN):
+            return None
         
         if not self.expect(token.LBRACE):
             return None
@@ -465,6 +471,9 @@ class Parser(object):
     def parse_for_loop(self):
         expr = ast.ForLoop(self.cur_tok, None, None, None)
         
+        if not self.expect(token.LPAREN):
+            return None
+        
         self.next()
         expr.var = self.parse_id(False)
         
@@ -474,6 +483,9 @@ class Parser(object):
         self.next()
             
         expr.collection = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.RPAREN):
+            return None
         
         if not self.expect(token.LBRACE):
             return None

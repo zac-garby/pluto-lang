@@ -1,4 +1,6 @@
-import object as obj
+import math
+
+import obj
 import ast
 import context
 from evaluator import NULL, TRUE, FALSE, evaluate, err, is_truthy
@@ -51,6 +53,11 @@ def print_obj(args, context):
 @builtin("print $obj without newline")
 def print_obj_without_newline(args, context):
     print(args["obj"], end="")
+    return NULL
+
+@builtin("new line")
+def line_break(args, context):
+    print()
     return NULL
     
 @builtin("input")
@@ -124,8 +131,8 @@ def map_block_over_array(args, context):
 
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("left fold $array with $block")
 @builtin("fold $array with $block")
+@builtin("left fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     block = args["block"]
@@ -234,6 +241,14 @@ def index_i_of_array(args, context):
         
     return array.get_elements()[int(i.value)]
     
+@arg("collection", obj.Collection)
+@builtin("indices of $collection")
+def indices_of_arr(args, context):
+    collection = args["collection"].get_elements()
+    result = [obj.Number(i) for i in range(len(collection))]
+    
+    return obj.Array(result)
+    
 @arg("array", obj.Collection)
 @builtin("$array contains $item")
 def array_contains_item(args, context):
@@ -267,3 +282,44 @@ def start_to_end(args, context):
         return obj.Array([obj.Number(e) for e in range(s_val, e_val)])
     else:
         return start
+
+@arg("num", obj.Number)
+@builtin("square root of $num")
+def square_root_of_num(args, context):
+    return obj.Number(math.sqrt(args["num"].value))
+    
+@arg("root", obj.Number)
+@arg("num", obj.Number)
+@builtin("$root st root of $num")
+@builtin("$root nd root of $num")
+@builtin("$root rd root of $num")
+@builtin("$root th root of $num")
+def nth_root_of_num(args, context):
+    return obj.Number(args["num"].value ** (1 / args["root"].value))
+    
+@arg("format", obj.String)
+@arg("args", obj.Collection)
+@builtin("format $format with $args")
+def format_string_with_args(args, context):
+    fmt = args["format"].value
+    items = tuple(args["args"].get_elements())
+    
+    try:
+        return obj.String(fmt % items)
+    except TypeError:
+        return err("Wrong number of arguments to format '%s'" % fmt)
+    
+@arg("format", obj.String)
+@arg("args", obj.Collection)
+@builtin("printf $format with $args")
+def printf_format_with_args(args, context):
+    fmt = args["format"].value
+    items = tuple(args["args"].get_elements())
+    
+    try:
+        print(obj.String(fmt % items))
+    except TypeError:
+        return err("Wrong number of arguments to format '%s'" % fmt)
+    
+    return NULL
+    
