@@ -54,6 +54,11 @@ def print_obj(args, context):
 def print_obj_without_newline(args, context):
     print(args["obj"], end="")
     return NULL
+
+@builtin("new line")
+def line_break(args, context):
+    print()
+    return NULL
     
 @builtin("input")
 def _input(args, context):
