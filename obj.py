@@ -14,6 +14,7 @@ ARRAY   = "<array>"
 NULL    = "<null>"
 BLOCK   = "<block>"
 TUPLE   = "<tuple>"
+OBJECT  = "<object>"
 
 class InternalObject(object):
     def __eq__(self, other):
@@ -135,7 +136,7 @@ class Object(InternalObject):
     __eq__ = compare("pairs")
     
     def __str__(self):
-        return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs.items())
+        return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs)[:-2]
         
     def get_elements(self):
         return self.pairs.keys()
