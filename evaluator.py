@@ -51,7 +51,7 @@ def evaluate(node, ctx):
         if len(values) == 1 and is_err(values[0]):
             return values[0]
             
-        return obj.Object(zip(keys, values))
+        return obj.Object(list(zip(keys, values)))
         
     if t == ast.Tuple:
         elements = eval_exprs(node.value, ctx)
