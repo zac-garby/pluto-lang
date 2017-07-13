@@ -261,6 +261,17 @@ def keys_of_obj(args, context):
 @builtin("values of $obj")
 def values_of_obj(args, context):
     return obj.Array(args["obj"].pairs.values())
+    
+@arg("obj", obj.Object)
+@builtin("pairs of $obj")
+def pairs_of_obj(args, context):
+    o = args["obj"]
+    pairs = []
+    
+    for (key, value) in o.pairs.items():
+        pairs.append(obj.Tuple([key, value]))
+        
+    return obj.Array(pairs)
 
 @arg("collection", obj.Collection)
 @builtin("indices of $collection")
