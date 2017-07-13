@@ -55,7 +55,7 @@ class Parser(object):
     """parses a stream of tokens into an abstract syntax tree (AST)"""
     def __init__(self, tokens):
         self.tokens   = tokens
-        self.errors  = [] # [(msg, start, end)]
+        self.errors   = [] # [(msg, start, end)]
         self.cur_tok  = None
         self.peek_tok = None
         
@@ -114,6 +114,16 @@ class Parser(object):
     def cur_precedence(self):
         return precedences.get(self.cur_tok.type, LOWEST)
         
+    def err(self, msg, start = None, end = None):
+        if start == None:
+            start = self.cur_tok.start
+            
+        if end == None:
+            end = self.cur_tok.end
+        
+        error = (msg, start, end)
+        self.errors.append(error)
+        
     def peek_err(self, t):
         if type(t) == type([]):
             msg = "expected any of [%s], but got %s" % (
@@ -139,16 +149,6 @@ class Parser(object):
     def no_prefix_fn_error(self, t):
         msg = "unexpected token: %s" % t
         self.err(msg)
-        
-    def err(self, msg, start = None, end = None):
-        if start == None:
-            start = self.cur_tok.start
-            
-        if end == None:
-            end = self.cur_tok.end
-        
-        error = (msg, start, end)
-        self.errors.append(error)
         
     def print_error(self, index = 0):
         msg, start, end = self.errors[index]
@@ -240,10 +240,10 @@ class Parser(object):
         while not self.cur_is(token.LBRACE):
             tok = self.cur_tok
                                   
-            if not self.expect_cur_any([token.ID, token.PARAM]):
+            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
                 return None
                                 
-            if tok.type == token.ID:
+            if tok.type == token.ID or tok.type in token.keywords.values():
                 stmt.pattern.append(ast.Identifier(tok))
             else:
                 stmt.pattern.append(ast.Parameter(tok, tok.literal))
@@ -348,27 +348,31 @@ class Parser(object):
         if first != None:
             expr.pattern.append(first)
         
-        while self.peek_in(arg_tokens):
+        # If the current token is a valid arg token, or a keyword
+        while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
             self.next()
             
-            if self.cur_is(token.ID):
+            if self.cur_in(token.keywords.values()):
                 expr.pattern.append(ast.Identifier(self.cur_tok))
-            elif self.cur_is(token.LPAREN):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_grouped_expr()))
-            elif self.cur_is(token.NUM):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_num()))
-            elif self.cur_is(token.NULL):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_null()))
-            elif self.cur_in([token.TRUE, token.FALSE]):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_bool()))
-            elif self.cur_is(token.STR):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_string()))
-            elif self.cur_is(token.PARAM):
-                expr.pattern.append(ast.Argument(self.cur_tok, ast.Identifier(self.cur_tok)))
-            elif self.cur_is(token.LSQUARE):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_array()))
-            elif self.cur_is(token.LBRACE):
-                expr.pattern.append(ast.Argument(self.cur_tok, self.parse_block_literal()))
+                continue
+                
+            arg = lambda val: ast.Argument(self.cur_tok, val)
+            
+            handlers = {
+                token.ID:      lambda: ast.Identifier(self.cur_tok),
+                token.LPAREN:  lambda: arg(self.parse_grouped_expr()),
+                token.NUM:     lambda: arg(self.parse_num()),
+                token.NULL:    lambda: arg(self.parse_null()),
+                token.TRUE:    lambda: arg(self.parse_bool()),
+                token.FALSE:   lambda: arg(self.parse_bool()),
+                token.STR:     lambda: arg(self.parse_string()),
+                token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok)),
+                token.LSQUARE: lambda: arg(self.parse_array()),
+                token.LBRACE:  lambda: arg(self.parse_block_literal()),
+            }
+            
+            handler = handlers[self.cur_tok.type]
+            expr.pattern.append(handler())
                 
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")

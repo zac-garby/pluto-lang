@@ -98,7 +98,7 @@ Because of the function calling  syntax, you can actually define your  own pseud
 example, you could create a function which does the exact same thing as an if expression:
 
 ```
-def find whether $condition is truthy or falsey and set the result to $a or $b respectively {
+def if $condition then $a else $b {
   if (condition) {
     a;
   } else {
@@ -110,16 +110,16 @@ def find whether $condition is truthy or falsey and set the result to $a or $b r
 First things first: this is the first time you've seen an if expression in this language. They're fairly
 standard. One main difference is that they're expressions, not statements, like in some other languages.
 
-If expressions are also the reason the (very verbose) function defined above cannot contain the words
-`if`, `else`, or `elif`, or any other keyword for that matter.
-
 You can then call it like this:
 
 ```
-find whether true is truthy or falsey and set the result to 5 or 10 respectively;
+\if (true) then 5 else 10;
 ```
 
-Which, as you can probably guess, will return 5.
+Which, as you can probably guess, will return 5. A few things to mention: you need to use a
+backslash before the custom-defined if function, because otherwise it will parse it as a
+normal if expression. Also, `true` has to be in a set of parentheses because otherwise it will be
+parsed as a normal identifier in the pattern.
 
 This is really cool because, in theory, you could even define the English language as a series of functions!
 
