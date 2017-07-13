@@ -345,7 +345,6 @@ class Parser(object):
                 
         if self.peek_is(token.COLON) or self.cur_is(token.COLON):
             pairs = self.parse_expr_pairs(token.RSQUARE)
-            print(pairs)
             return ast.Object(self.cur_tok, pairs)
         else:
             return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
