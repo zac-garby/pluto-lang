@@ -1,0 +1,13 @@
+def iff $condition $a else $b {
+  if (condition) {
+    run $a;
+  } else {
+    run $b;
+  };
+};
+
+iff (false) {
+  print "Hello!";
+} else {
+  print "The other one...";
+};
