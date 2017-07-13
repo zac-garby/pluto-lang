@@ -1,7 +1,7 @@
 # a block is kind of like a conventional function
 triple = { |x| -> x * 3; };
 
-# you can run a block with the 'run $block [with $args]' builtin
+# you can run a block with the `run $block [with $args]` builtin
 run { print "No arguments!"; };
 six = run $triple with [2];
 
