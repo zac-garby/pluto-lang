@@ -15,7 +15,7 @@ NULL    = "<null>"
 BLOCK   = "<block>"
 TUPLE   = "<tuple>"
 
-class Object(object):
+class InternalObject(object):
     def __eq__(self, other):
         return type(other) == type(self)
     
@@ -28,7 +28,7 @@ class Object(object):
     __repr__ = __str__
     
     
-class Collection(Object):
+class Collection(InternalObject):
     def get_elements(self):
         return []
     
@@ -37,7 +37,7 @@ def compare(prop = "value"):
     return (lambda self, other: getattr(self, prop) == getattr(other, prop) if type(self) == type(other) else False)
 
 
-class Error(Object):
+class Error(InternalObject):
     """represents an error thrown in execution"""
     def __init__(self, msg):
         self.type = ERROR
@@ -49,7 +49,7 @@ class Error(Object):
         return "ERROR: %s" % self.msg
         
 
-class ReturnValue(Object):
+class ReturnValue(InternalObject):
     """represents a value to be returned from a function"""
     def __init__(self, value):
         self.type = RETURN_VALUE
@@ -62,7 +62,7 @@ class ReturnValue(Object):
         return str(self.value)
         
 
-class Number(Object):
+class Number(InternalObject):
     """represents a number object"""
     def __init__(self, value):
         self.type = NUMBER
@@ -80,7 +80,7 @@ class Number(Object):
         return self.value >= 0
         
         
-class Boolean(Object):
+class Boolean(InternalObject):
     """a boolean object"""
     def __init__(self, value):
         self.type = BOOLEAN
@@ -126,7 +126,7 @@ class Tuple(Collection):
         return self.value
     
         
-class Null(Object):
+class Null(InternalObject):
     """the null object"""
     def __init__(self):
         self.type = NULL
@@ -150,7 +150,7 @@ class Array(Collection):
         return self.elements
         
         
-class Function(Object):
+class Function(InternalObject):
     """a function object"""
     def __init__(self, pattern, body, context):
         self.type = FUNCTION
@@ -162,7 +162,7 @@ class Function(Object):
         return "<function instance>"
         
         
-class Block(Object):
+class Block(InternalObject):
     """a block object"""
     def __init__(self, params, body):
         self.type = BLOCK
@@ -173,7 +173,7 @@ class Block(Object):
         return "<block instance>"
         
         
-class Next(Object):
+class Next(InternalObject):
     """result of the next; statement"""
     def __init__(self):
         self.type = NEXT
@@ -182,7 +182,7 @@ class Next(Object):
         return "<next>"
         
         
-class Break(Object):
+class Break(InternalObject):
     """result of the break; statement"""
     def __init__(self):
         self.type = BREAK
