@@ -29,7 +29,7 @@ def arg(name, expected_type):
     def arg_decorator(fn):
         def new_fn(args, context):
             if isinstance(args[name].type, expected_type):
-                return err("the $%s parameter in '%s' must be of type %s, not %s" % (
+                return err("the $%s parameter in `%s` must be of type %s, not %s" % (
                     name,
                     getattr(fn, "pattern"),
                     expected_type,
@@ -80,10 +80,10 @@ def run_block(args, context):
     block = args["block"]
     
     if type(block) != obj.Block:
-        return err("the $block parameter in 'run $block' must be of type <block>")
+        return err("the $block parameter in `run $block` must be of type <block>")
     
     if len(block.params) > 0:
-        return err("since no arguments are provided, $block of 'run $block' must have no parameters")
+        return err("since no arguments are provided, $block of `run $block` must have no parameters")
     
     ctx = context.enclose()
     return evaluate(block.body, ctx)
@@ -102,7 +102,7 @@ def run_block_with_args(args, context):
     b_args = args["args"].get_elements()
     
     if len(block.params) != len(b_args):
-        return err("the amount of arguments provided in 'run $block with $args' should match the number of parameters in the block")
+        return err("the amount of arguments provided in `run $block with $args` should match the number of parameters in the block")
     
     params = [param.value for param in block.params]
     args_dictionary = dict(zip(params, b_args))
@@ -241,6 +241,17 @@ def index_i_of_array(args, context):
         
     return array.get_elements()[int(i.value)]
     
+@arg("obj", obj.Object)
+@builtin("key $key of $obj")
+def key_of_obj(args, context):
+    key = args["key"]
+    obj = args["obj"]
+    
+    if key not in obj.pairs.keys():
+        return err("key %s not found" % key)
+        
+    return obj.pairs[key]
+    
 @arg("collection", obj.Collection)
 @builtin("indices of $collection")
 def indices_of_arr(args, context):
@@ -266,10 +277,10 @@ def start_to_end(args, context):
     end = args["end"]
     
     if not start.is_integer():
-        return err("$start in '$start to $end' must be an integer")
+        return err("$start in `$start to $end` must be an integer")
         
     if not end.is_integer():
-        return err("$end in '$start to $end' must be an integer")
+        return err("$end in `$start to $end` must be an integer")
         
     s_val = int(start.value)
     e_val = int(end.value)
@@ -307,7 +318,7 @@ def format_string_with_args(args, context):
     try:
         return obj.String(fmt % items)
     except TypeError:
-        return err("Wrong number of arguments to format '%s'" % fmt)
+        return err("Wrong number of arguments to format `%s`" % fmt)
     
 @arg("format", obj.String)
 @arg("args", obj.Collection)
@@ -319,7 +330,7 @@ def printf_format_with_args(args, context):
     try:
         print(obj.String(fmt % items))
     except TypeError:
-        return err("Wrong number of arguments to format '%s'" % fmt)
+        return err("Wrong number of arguments to format `%s`" % fmt)
     
     return NULL
     
