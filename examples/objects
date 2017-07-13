@@ -1,0 +1,11 @@
+my_object = [
+  "x": 10,
+  "y": 5,
+  "z": 15
+];
+
+ten = key "x" of $my_object;
+
+for (key : my_object) {
+  print (key $key of $my_object);
+};
