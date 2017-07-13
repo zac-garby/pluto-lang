@@ -1,4 +1,4 @@
-def iff $condition $a else $b {
+def if $condition $a else $b {
   if (condition) {
     run $a;
   } else {
@@ -6,7 +6,7 @@ def iff $condition $a else $b {
   };
 };
 
-iff (false) {
+\if (false) {
   print "Hello!";
 } else {
   print "The other one...";
