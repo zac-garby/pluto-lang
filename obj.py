@@ -124,6 +124,21 @@ class Tuple(Collection):
         
     def get_elements(self):
         return self.value
+        
+        
+class Object(InternalObject):
+    """an object, similar to a dictionary in python"""
+    def __init__(self, pairs):
+        self.type = OBJECT
+        self.pairs = pairs
+        
+    __eq__ = compare("pairs")
+    
+    def __str__(self):
+        return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs.items())
+        
+    def get_elements(self):
+        return self.pairs.keys()
     
         
 class Null(InternalObject):
