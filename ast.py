@@ -29,6 +29,22 @@ def make_list_tree(indent, li, name):
         
     return string + ("\n%s]" % _(indent))
     
+    
+def make_dict_tree(indent, pairs, name):
+    string = "%s[" % (_(indent) + n(name))
+    
+    if len(pairs.items()) == 0:
+        return string + ":]"
+        
+    for (key, value) in pairs.items():
+        string += "\n%spair\n%s\n%s" % (
+            _(indent + 1),
+            key.tree(indent + 2, "key"),
+            value.tree(indent + 2, "value")
+        )
+        
+    return string + ("\n%s]" % _(indent))
+    
 
 class Program(object):    
     """a program. contains a list of statements to be executed"""
@@ -118,6 +134,19 @@ class Array(Expression):
             make_list_tree(indent + 1, self.elements, "elements")
         )
         
+
+class Object(Expression):
+    """an object literal: [a: b, x: y]"""
+    def __init__(self, token, pairs):
+        self.token = token
+        self.pairs = pairs
+        
+    def tree(self, indent, name):
+        return "%sobject\n%s" % (
+            _(indent) + n(name),
+            make_dict_tree(indent + 1, self.pairs, "pairs")
+        )
+                
         
 class AssignExpression(Expression):
     """an assign expression"""

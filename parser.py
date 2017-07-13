@@ -66,7 +66,7 @@ class Parser(object):
             token.TRUE:    self.parse_bool,
             token.FALSE:   self.parse_bool,
             token.NULL:    self.parse_null,
-            token.LSQUARE: self.parse_array,
+            token.LSQUARE: self.parse_array_or_object,
             token.STR:     self.parse_string,
             
             # Prefix operators
@@ -331,6 +331,7 @@ class Parser(object):
         
         if self.peek_is(token.COMMA):
             self.next()
+            self.next()
             
             expr = ast.Tuple(expr.token, [expr] + self.parse_expr_list(token.RPAREN))
         
@@ -339,8 +340,15 @@ class Parser(object):
             
         return expr
         
-    def parse_array(self):
-        return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
+    def parse_array_or_object(self):
+        self.next()
+                
+        if self.peek_is(token.COLON) or self.cur_is(token.COLON):
+            pairs = self.parse_expr_pairs(token.RSQUARE)
+            print(pairs)
+            return ast.Object(self.cur_tok, pairs)
+        else:
+            return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
         
     def parse_function_call(self, first = None):
         expr = ast.FunctionCall(self.cur_tok, [])
@@ -367,7 +375,7 @@ class Parser(object):
                 token.FALSE:   lambda: arg(self.parse_bool()),
                 token.STR:     lambda: arg(self.parse_string()),
                 token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok)),
-                token.LSQUARE: lambda: arg(self.parse_array()),
+                token.LSQUARE: lambda: arg(self.parse_array_or_object()),
                 token.LBRACE:  lambda: arg(self.parse_block_literal()),
             }
             
@@ -501,11 +509,9 @@ class Parser(object):
     def parse_expr_list(self, end):
         exprs = []
 
-        if self.peek_is(end):
-            self.next()
+        if self.cur_is(end):
             return exprs
             
-        self.next()
         exprs.append(self.parse_expr(LOWEST))
         
         while self.peek_is(token.COMMA):
@@ -517,6 +523,39 @@ class Parser(object):
             return None
             
         return exprs
+        
+    def parse_expr_pairs(self, end):
+        pairs = {}
+                
+        if self.cur_is(token.COLON):
+            self.next()
+            return pairs
+        
+        key, val = self.parse_pair()
+        pairs[key] = val
+        
+        while self.peek_is(token.COMMA):
+            self.next()
+            self.next()
+            key, val = self.parse_pair()
+            pairs[key] = val
+            
+        if not self.expect(end):
+            return None
+            
+        return pairs
+        
+    def parse_pair(self):
+        key = self.parse_expr(LOWEST)
+        
+        if not self.expect(token.COLON):
+            return None
+        
+        self.next()
+        
+        value = self.parse_expr(LOWEST)
+        
+        return key, value
         
     def parse_params(self, end):
         params = []
