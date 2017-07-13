@@ -20,7 +20,7 @@ class Context(object):
         
         for name in args:
             obj = args[name]
-            ctx[name] = obj
+            ctx.store[name] = obj
                         
         return ctx
         
