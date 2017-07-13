@@ -163,7 +163,7 @@ def eval_minus_prefix(right):
 
 def eval_assign(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier", left.type)
+        return err("cannot assign to %s, expected an identifier", type(left))
     
     ctx[left.value] = right
     
@@ -171,7 +171,7 @@ def eval_assign(left, right, ctx):
     
 def eval_declare(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier", left.type)
+        return err("cannot assign to %s, expected an identifier", type(left))
     
     ctx.store[left.value] = right
     
