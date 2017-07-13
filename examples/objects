@@ -6,6 +6,6 @@ my_object = [
 
 ten = key "x" of $my_object;
 
-for (key : my_object) {
+for (key : keys of $my_object) {
   print (key $key of $my_object);
 };
