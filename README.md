@@ -213,12 +213,14 @@ statements line by line.
 
 There are also a number of arguments you can use:
 
- - `-f, --file` - Runs the given file
- - `-p, --parse` - Parses the file, but doesn't execute it
- - `-t, --tree` - Parses the file and prints the parse tree
- - `-i, --interactive` - Runs the file and enters interactive mode afterwards
- - `-h, --help` - Shows a useful help menu
- - `-v, --version` - Shows the current version
+Argument            | Description
+--------------------|-----------------------------------------------------
+`-f, --file`        | Runs the given file
+`-p, --parse`       | Parses the file, but doesn't execute it
+`-t, --tree`        | Parses the file and prints the parse tree
+`-i, --interactive` | Runs the file and enters interactive mode afterwards
+`-h, --help`        | Shows a useful help menu
+`-v, --version`     | Shows the current version
 
 ### Contributions
 
