@@ -36,6 +36,9 @@ class Collection(InternalObject):
     
 def compare(prop = "value"):
     return (lambda self, other: getattr(self, prop) == getattr(other, prop) if type(self) == type(other) else False)
+    
+def hasher():
+    return (lambda self: hash(repr(self)))
 
 
 class Error(InternalObject):
@@ -57,7 +60,6 @@ class ReturnValue(InternalObject):
         self.value = value
     
     __eq__ = compare()
-            
     
     def __str__(self):
         return str(self.value)
@@ -70,6 +72,7 @@ class Number(InternalObject):
         self.value = float(value)
         
     __eq__ = compare()
+    __hash__ = hasher()
             
     def __str__(self):
         return str(self.value)
@@ -88,6 +91,7 @@ class Boolean(InternalObject):
         self.value = value
         
     __eq__ = compare()
+    __hash__ = hasher()
     
     def __str__(self):
         return str(self.value).lower()
@@ -104,9 +108,13 @@ class String(Collection):
             self.value = value
         
     __eq__ = compare()
+    __hash__ = hasher()
     
     def __str__(self):
         return "%s" % self.value
+        
+    def __hash__(self):
+        return hash(repr(self))
         
     def get_elements(self):
         return [String(ch) for ch in list(self.value)]
@@ -119,6 +127,7 @@ class Tuple(Collection):
         self.value = value
     
     __eq__ = compare()
+    __hash__ = hasher()
     
     def __str__(self):
         return "(%s)" % "".join(str(e) + ", " for e in self.value)[:-2]
@@ -131,15 +140,16 @@ class Object(InternalObject):
     """an object, similar to a dictionary in python"""
     def __init__(self, pairs):
         self.type = OBJECT
-        self.pairs = pairs
+        self.pairs = dict(pairs)
         
     __eq__ = compare("pairs")
+    __hash__ = hasher()
     
     def __str__(self):
         if len(self.pairs) == 0:
             return "[:]"
         else:
-            return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs)[:-2]
+            return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs.items())[:-2]
         
     def get_elements(self):
         return self.pairs.keys()
@@ -150,8 +160,10 @@ class Null(InternalObject):
     def __init__(self):
         self.type = NULL
         
+    __hash__ = hasher()
+    
     def __str__(self):
-        return "null" 
+        return "null"
         
         
 class Array(Collection):
@@ -161,6 +173,7 @@ class Array(Collection):
         self.elements = elements
         
     __eq__ = compare("elements")
+    __hash__ = hasher()
             
     def __str__(self):
         return "[%s]" % "".join(str(e) + ", " for e in self.elements)[:-2]
