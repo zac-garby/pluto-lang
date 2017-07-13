@@ -240,10 +240,10 @@ class Parser(object):
         while not self.cur_is(token.LBRACE):
             tok = self.cur_tok
                                   
-            if not self.expect_cur_any([token.ID, token.PARAM]):
+            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
                 return None
                                 
-            if tok.type == token.ID:
+            if tok.type == token.ID or tok.type in token.keywords.values():
                 stmt.pattern.append(ast.Identifier(tok))
             else:
                 stmt.pattern.append(ast.Parameter(tok, tok.literal))
@@ -348,8 +348,13 @@ class Parser(object):
         if first != None:
             expr.pattern.append(first)
         
-        while self.peek_in(arg_tokens):
+        # If the current token is a valid arg token, or a keyword
+        while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
             self.next()
+            
+            if self.cur_in(token.keywords.values()):
+                expr.pattern.append(ast.Identifier(self.cur_tok))
+                continue
                 
             arg = lambda val: ast.Argument(self.cur_tok, val)
             
@@ -367,7 +372,7 @@ class Parser(object):
             }
             
             handler = handlers[self.cur_tok.type]
-            expr.apttern.append(handler())
+            expr.pattern.append(handler())
                 
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
