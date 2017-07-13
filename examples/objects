@@ -1,0 +1,13 @@
+my_object = [
+  "x": 10,
+  "y": 5,
+  "z": 15,
+  true: "True!",
+  3: "Three"
+];
+
+ten = key "x" of $my_object;
+
+for (key : keys of $my_object) {
+  printf "%s: %s" with (key, key $key of $my_object);
+};

@@ -42,6 +42,17 @@ def evaluate(node, ctx):
         
         return obj.Array(elements)
         
+    if t == ast.Object:
+        keys = eval_exprs(node.pairs.keys(), ctx)
+        if len(keys) == 1 and is_err(keys[0]):
+            return keys[0]
+            
+        values = eval_exprs(node.pairs.values(), ctx)
+        if len(values) == 1 and is_err(values[0]):
+            return values[0]
+            
+        return obj.Object(list(zip(keys, values)))
+        
     if t == ast.Tuple:
         elements = eval_exprs(node.value, ctx)
         
@@ -139,7 +150,7 @@ def eval_id(node, ctx):
     if val != None:
         return val
     
-    return err("'%s' is not defined in the current context" % node.value)
+    return err("`%s` is not defined in the current context" % node.value)
 
 def eval_prefix(op, right):
     if op == "-": return eval_minus_prefix(right)
@@ -152,7 +163,7 @@ def eval_minus_prefix(right):
 
 def eval_assign(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier", left.type)
+        return err("cannot assign to %s, expected an identifier" % type(left))
     
     ctx[left.value] = right
     
@@ -160,7 +171,7 @@ def eval_assign(left, right, ctx):
     
 def eval_declare(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier", left.type)
+        return err("cannot assign to %s, expected an identifier" % type(left))
     
     ctx.store[left.value] = right
     

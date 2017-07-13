@@ -205,6 +205,50 @@ A few operators are defined on collections:
  - `-` - returns the first list with all shared elements removed
  - `&` or `&&` - returns the intersection of the two collections
  - `|` or `||` - returns the union of the two collections
+ 
+#### Objects
+
+Objects are similar to dictionaries in Python, or objects in JavaScript:
+
+```
+an_object = [
+  "x": 3,
+  "y": -7,
+  true: "A boolean can also be a key ...",
+  3: "... as can a number!"
+];
+```
+
+The syntax is similar to that of an array literal, however between each comma is a `key: value` mapping. You can access
+a value at a certain key with the `key $key of $obj` builtin:
+
+```
+key "y" of $an_object;
+```
+
+Which, of course, returns `-7`.
+
+##### Objects as collections
+
+Objects are not collections. This is because there's no good option for what the elements should be. The keys? The
+values? Or even, an array containing tuples in the format `(key, value)`. All of these are equally useful, so instead
+of making objects collections directly, three builtins are defined:
+
+```
+keys of $obj;
+values of $obj;
+pairs of $obj;
+```
+
+These return the keys, values, and tuple-pairs, respectively, of $obj. These allow for the use of anything collections do:
+
+```
+me = ["name": "Zac", "age": 15];
+
+for (key : keys of me) {
+  printf "%s: %s" with (key, key $key of $me);
+};
+```
 
 ### How??
 
