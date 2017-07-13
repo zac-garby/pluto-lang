@@ -54,8 +54,6 @@ def execute(text, print_result, ctx):
     tokens = l.lex(text)
     parser = p.Parser(tokens)
     program = parser.parse_program()
-    
-    print(program)
         
     if len(parser.errors) > 0:
         parser.print_errors()
