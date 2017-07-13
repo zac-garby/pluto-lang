@@ -128,11 +128,8 @@ def eval_block_stmt(block, ctx):
     for stmt in block.statements:
         result = evaluate(stmt, ctx)
         
-        if result != None:
-            t = result.type
-            
-            if t in [obj.RETURN_VALUE, obj.ERROR, obj.NEXT, obj.BREAK]:
-                return result
+        if result != None and result.type in [obj.RETURN_VALUE, obj.ERROR, obj.NEXT, obj.BREAK]:
+            return result
     
     return result
 
