@@ -168,7 +168,7 @@ class Parser(object):
         self.peek_tok = next(self.tokens)
         
         if self.peek_tok.type == token.ILLEGAL:
-            self.err("illegal token found: '%s'" % self.peek_tok.literal, self.peek_tok.start, self.peek_tok.end)
+            self.err("illegal token found: `%s`" % self.peek_tok.literal, self.peek_tok.start, self.peek_tok.end)
         
     def parse_program(self):
         prog = ast.Program([])

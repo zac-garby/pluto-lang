@@ -64,7 +64,7 @@ class Token(object):
         self.end = end         # (line, col)
     
     def __str__(self):
-        return "%s '%s' from %s:%s to %s:%s" % (
+        return "%s `%s` from %s:%s to %s:%s" % (
             self.type, self.literal,
             self.start[0], self.start[1],
             self.end[0], self.end[1]

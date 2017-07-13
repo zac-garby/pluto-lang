@@ -150,7 +150,7 @@ def eval_id(node, ctx):
     if val != None:
         return val
     
-    return err("'%s' is not defined in the current context" % node.value)
+    return err("`%s` is not defined in the current context" % node.value)
 
 def eval_prefix(op, right):
     if op == "-": return eval_minus_prefix(right)
