@@ -7,7 +7,7 @@
 It's a language with a cool function definition/call syntax. Basically, instead of functions
 being called with their arguments in parentheses after the name, they are represented by their patterns:
 
-```
+```r
 def this is a pattern {
   ...
 };
@@ -21,7 +21,7 @@ this happens on the next line. It matches the pattern and calls whatever's insid
 
 Functions can, of course, also take parameters:
 
-```
+```r
 def evaluate $number times $multiplier {
   number * multiplier;
 };
@@ -46,7 +46,7 @@ _(note: This language is **incredibly** slow, since it's written in Python. It d
 
 Imagine this:
 
-```
+```r
 def double $n {
   n * 2;
 };
@@ -58,14 +58,14 @@ What would you expect to happen? My guess would be for it to return `16`. But it
 `13`. This is because it actually parses  the function call as `double`, then  the literal `5`, which is then
 added to the other literal `3`. Essentially, it's equivalent to this:
 
-```
+```r
 (double 5) + 3;
 ```
 
 So how do you avoid this? Well, since the reason it didn't work last time is because  the invisibile brackets
 are in the wrong place, so you just need to tell them where to go:
 
-```
+```r
 double (5 + 3);
 ```
 
@@ -73,7 +73,7 @@ This will now give you the result you wanted.
 
 Another problem you might come across is this:
 
-```
+```r
 def $a plus $b {
   a + b;
 };
@@ -81,14 +81,14 @@ def $a plus $b {
 
 How would you call this? If you did the following:
 
-```
+```r
 5 plus 10;
 ```
 
 You'd get an error. This is because the current grammar only allows for _implicit function calls_ if the first
 item in the pattern is an identifier, and not an argument. In this case, you need to use an _explicit function call_:
 
-```
+```r
 \5 plus 10;
 ```
 
@@ -99,7 +99,7 @@ This would work exactly as you'd expect, returning the value `15`.
 Because of the function calling  syntax, you can actually define your  own pseudo-syntactical constructs. For
 example, you could create a function which does the exact same thing as an if expression:
 
-```
+```r
 def if $condition then $a else $b {
   if (condition) {
     a;
@@ -114,7 +114,7 @@ standard. One main difference is that they're expressions, not statements, like 
 
 You can then call it like this:
 
-```
+```r
 \if (true) then 5 else 10;
 ```
 
@@ -129,7 +129,7 @@ This is really cool because, in theory, you could even define the English langua
 
 There exists a type known as a block. Here's one:
 
-```
+```r
 my_block = {
   print "Hello, world";
 };
@@ -137,13 +137,13 @@ my_block = {
 
 A block basically stores a block of code inside it, which can then be executed on cue, using the `run $block` builtin:
 
-```
+```r
 run $my_block;
 ```
 
 This piece of code prints "Hello, world" to the console. Like functions, blocks can recieve arguments:
 
-```
+```r
 add = { |a, b| -> a + b; };
 
 run $add with [3, 10];
@@ -156,7 +156,7 @@ An interesting note is that both `run $block` and `run $block with $args` are bo
 
 Blocks are also used in some functions in the standard library:
 
-```
+```r
 map { |n| -> n * n; } over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
 fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n; }; #-> 15
 ```
@@ -172,7 +172,7 @@ represented as a list of elements. There are three collection types currently de
  
 Before getting into tuples, here's an example using different types of collections:
 
-```
+```r
 >>> map { |x| -> x * 2; } over [1, 2, 3, 4, 5];
 [2, 4, 6, 8, 10]
 
@@ -182,7 +182,7 @@ f!o!o!
 
 Just like you've seen before. Now, onto tuples:
 
-```
+```r
 a_tuple = (1, 2, 3)
 just_one = (1,)
 empty = ()
@@ -193,7 +193,7 @@ instead of square ones.
 
 You can loop over tuples, just like arrays:
 
-```
+```r
 for (i : a_tuple) {
   print $i;
 };
@@ -212,7 +212,7 @@ A few operators are defined on collections:
 
 Objects are similar to dictionaries in Python, or objects in JavaScript:
 
-```
+```r
 an_object = [
   "x": 3,
   "y": -7,
@@ -224,7 +224,7 @@ an_object = [
 The syntax is similar to that of an array literal, however between each comma is a `key: value` mapping. You can access
 a value at a certain key with the `key $key of $obj` builtin:
 
-```
+```r
 key "y" of $an_object;
 ```
 
@@ -236,7 +236,7 @@ Objects are not collections. This is because there's no good option for what the
 values? Or even, an array containing tuples in the format `(key, value)`. All of these are equally useful, so instead
 of making objects collections directly, three builtins are defined:
 
-```
+```r
 keys of $obj;
 values of $obj;
 pairs of $obj;
@@ -244,7 +244,7 @@ pairs of $obj;
 
 These return the keys, values, and tuple-pairs, respectively, of $obj. These allow for the use of anything collections do:
 
-```
+```r
 me = ["name": "Zac", "age": 15];
 
 for (key : keys of me) {
