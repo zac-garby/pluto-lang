@@ -68,6 +68,7 @@ class Parser(object):
             token.NULL:    self.parse_null,
             token.LSQUARE: self.parse_array_or_object,
             token.STR:     self.parse_string,
+            token.CHAR:    self.parse_char,
             
             # Prefix operators
             token.MINUS: self.parse_prefix,
@@ -309,6 +310,9 @@ class Parser(object):
         
     def parse_string(self):
         return ast.String(self.cur_tok)
+        
+    def parse_char(self):
+        return ast.Char(self.cur_tok)
         
     def parse_prefix(self):
         expr = ast.PrefixExpression(self.cur_tok, self.cur_tok.literal, None)
