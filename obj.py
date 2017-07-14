@@ -128,7 +128,7 @@ class Char(InternalObject):
     __hash__ = hasher()
     
     def __str__(self):
-        return self.value
+        return "'%s'" % self.value
     
         
 class Tuple(Collection):
