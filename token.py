@@ -5,6 +5,7 @@ ILLEGAL = "illegal"
 # Literals
 NUM    = "number"
 STR    = "string"
+CHAR   = "char"
 ID     = "identifier"
 PARAM  = "param"
 

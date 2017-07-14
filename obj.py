@@ -10,6 +10,7 @@ BREAK        = "<break>"
 NUMBER  = "<number>"
 BOOLEAN = "<boolean>"
 STRING  = "<string>"
+CHAR    = "<char>"
 ARRAY   = "<array>"
 NULL    = "<null>"
 BLOCK   = "<block>"
@@ -103,7 +104,7 @@ class String(Collection):
         self.type = STRING
         
         if type(value) == list:
-            self.value = "".join(str(e) for e in value)
+            self.value = "".join(str(e) if type(e) != Char else str(e.value) for e in value)
         else:
             self.value = value
         
@@ -111,14 +112,24 @@ class String(Collection):
     __hash__ = hasher()
     
     def __str__(self):
-        return "%s" % self.value
-        
-    def __hash__(self):
-        return hash(repr(self))
-        
+        return self.value
+
     def get_elements(self):
-        return [String(ch) for ch in list(self.value)]
-        
+        return [Char(ch) for ch in list(self.value)]
+
+
+class Char(InternalObject):
+    """a character object"""
+    def __init__(self, value):
+        self.type = CHAR
+        self.value = value
+    
+    __eq__ = compare()
+    __hash__ = hasher()
+    
+    def __str__(self):
+        return "'%s'" % self.value
+    
         
 class Tuple(Collection):
     """a tuple object"""
