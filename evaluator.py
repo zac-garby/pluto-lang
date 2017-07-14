@@ -1,5 +1,6 @@
 import obj
 import ast
+import math
 
 NULL  = obj.Null()
 TRUE  = obj.Boolean(True)
@@ -193,8 +194,35 @@ def eval_infix(op, left, right, ctx):
     
     if type(left) == obj.Number and type(right) == obj.Number:
         return eval_number_infix(op, left, right)
+        
+    if (type(left) == obj.Char and type(right) == obj.Char or
+       type(left) == obj.String and type(right) == obj.Char or
+       type(left) == obj.Char and type(right) == obj.String):
+        return eval_char_string_infix(op, left, right)
+        
+    if (type(left) == obj.Char and type(right) == obj.Number):
+        return obj.String(left.value * math.floor(right.value))
+        
+    if isinstance(left, obj.Collection) and type(right) == obj.Number:
+        result = []
+        elems = left.get_elements()
+        n = math.floor(right.value)
+        
+        for _ in range(n):
+            result += elems[:]
+            
+        return type(left)(result)
     
-    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
+    return err("unknown operator: %s %s %s" % (left.type, op, right.type))
+
+def eval_char_string_infix(op, left, right):
+    l = left.value
+    r = right.value
+    
+    if op == "+": return obj.String(l + r)
+    if op == "-": return obj.String([ch for ch in l if ch != r])
+    
+    return err("unknown operator: %s %s %s" % (left.type, op, right.type))
 
 def eval_number_infix(op, left, right):
     l = left.value
@@ -237,7 +265,7 @@ def eval_collection_infix(op, left, right, ctx):
                 
         return type(left)(result)
         
-    return err("unknown operator: %s %s %s" % (type(left), op, type(right)))
+    return err("unknown operator: %s %s %s" % (left.type, op, right.type))
 
 def eval_if(expr, ctx):
     condition = evaluate(expr.condition, ctx)
