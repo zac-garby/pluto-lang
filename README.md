@@ -40,6 +40,8 @@ look at the **very** tiny standard library (the four functions inside `builtin_f
 quite long, but they're probably less used than the others so  the longer length doesn't matter, and improves
 readability significantly.
 
+_(note: This language is **incredibly** slow, since it's written in Python. It doesn't matter, as it's just a prototype, however, I'm going to rewrite it in Go at some point to speed it up)_
+
 #### Other expressions as arguments
 
 Imagine this:
