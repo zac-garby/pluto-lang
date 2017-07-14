@@ -23,6 +23,7 @@ def evaluate(node, ctx):
     if t == ast.Null:                 return NULL
     if t == ast.Number:               return obj.Number(node.value)
     if t == ast.String:               return obj.String(node.value)
+    if t == ast.Char:                 return obj.Char(node.value)
     if t == ast.Boolean:              return bool_obj(node.value)
     if t == ast.Identifier:           return eval_id(node, ctx)
     if t == ast.BlockLiteral:         return eval_block(node, ctx)
