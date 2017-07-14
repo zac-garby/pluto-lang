@@ -29,7 +29,7 @@ lexical_dictionary = [
     # Literals
     (r"\d+(?:\.\d+)?",         o (token.NUM)),
     (r"\"((\\\"|[^\"])*)\"",   o (token.STR, 1, string_transformer)),
-    (r"'(\w|\\\w)'",           o (token.CHAR, 1, string_transformer)),
+    (r"'([^']|\\\w)'",         o (token.CHAR, 1, string_transformer)),
     (r"\w+",                   o (token.ID, 0, id_transformer)),
     (r"\$(\w+)",               o (token.PARAM, 1)),
     
