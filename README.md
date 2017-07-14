@@ -36,7 +36,7 @@ dollar signs before the variable names. The brackets are required  to resolve an
 
 Another thing -  the pattern in the above examples are  really very  verbose, so it's  probably a bad idea to
 make a pattern that long, as it would take longer to type out. For vague guidelines, you might want to have a
-look at the **very** tiny standard library (the four functions inside `builtin_fns.py`). A couple of them are
+look at the **very** tiny standard library. A couple of them are
 quite long, but they're probably less used than the others so  the longer length doesn't matter, and improves
 readability significantly.
 
