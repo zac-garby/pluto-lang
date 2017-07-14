@@ -104,7 +104,7 @@ class String(Collection):
         self.type = STRING
         
         if type(value) == list:
-            self.value = "".join(str(e) for e in value)
+            self.value = "".join(str(e) if type(e) != Char else str(e.value) for e in value)
         else:
             self.value = value
         
