@@ -66,18 +66,18 @@ def execute(text, print_result, ctx):
 def repl(ctx):
     print("Welcome to pluto's REPL!")
     print("""
-          ``.....`        
-      ```..--:/+oo/-     
-   ```    ``.-:/+osys-   
-  ...``````.--:/+osyhh+  
- -/::-----64emFjaXNnYXk=
- oo+++////++oossyyhddmmh 
- yyyyssssssyyyhhdddmmmNd 
- odddddhhddddddmmmmNNNN+ 
- `ymmmmmmmmmmNNNNNNNNMs  
-  `+mNNNNNNNNNNNMMMMm/   
-    `+hNMMMMMMMMMNy/`    
-       `-/+ooo+/.        
+                   .....        
+               ``..--:/+oo/-     
+            ``    ``.-:/+osys-   
+          ...``````.--:/+osyhh+  
+         -/::-----::ooosssyymmm=
+         oo+++////++oossyyhddmmh 
+         yyyyssssssyyyhhdddmmmNd 
+         odddddhhddddddmmmmNNNN+ 
+         `ymmmmmmmmmmNNNNNNNNMs  
+          `+mNNNNNNNNNNNMMMMm/   
+            `+hNMMMMMMMMMNy/`    
+               `-/+ooo+/.        
     """)
     while True:
         try:
