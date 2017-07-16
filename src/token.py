@@ -43,18 +43,20 @@ COLON   = "colon"                 # :
 Q_MARK  = "question-mark"         # ?
 
 # Keywords
-DEF    = "def"
-RETURN = "return"
-TRUE   = "true"  
-FALSE  = "false"
-NULL   = "null"
-IF     = "if"
-ELSE   = "else"
-ELIF   = "elif"
-WHILE  = "while"
-FOR    = "for"
-NEXT   = "next"
-BREAK  = "break"
+DEF     = "def"
+RETURN  = "return"
+TRUE    = "true"  
+FALSE   = "false"
+NULL    = "null"
+IF      = "if"
+ELSE    = "else"
+ELIF    = "elif"
+WHILE   = "while"
+FOR     = "for"
+NEXT    = "next"
+BREAK   = "break"
+CLASS   = "class"
+EXTENDS = "extends"
 
 class Token(object):
     """a single lexical token"""
@@ -75,19 +77,21 @@ class Token(object):
         return self.__str__()
         
 keywords = {
-    "def":    DEF,
-    "return": RETURN,
-    "true":   TRUE,
-    "yes":    TRUE,
-    "false":  FALSE,
-    "no":     FALSE,
-    "null":   NULL,
-    "if":     IF,
-    "else":   ELSE,
-    "elif":   ELIF,
-    "while":  WHILE,
-    "for":    FOR,
-    "next":   NEXT,
-    "break":  BREAK
+    "def":     DEF,
+    "return":  RETURN,
+    "true":    TRUE,
+    "yes":     TRUE,
+    "false":   FALSE,
+    "no":      FALSE,
+    "null":    NULL,
+    "if":      IF,
+    "else":    ELSE,
+    "elif":    ELIF,
+    "while":   WHILE,
+    "for":     FOR,
+    "next":    NEXT,
+    "break":   BREAK,
+    "class":   CLASS,
+    "extends": EXTENDS
 }
         
