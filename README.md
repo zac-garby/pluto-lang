@@ -1,5 +1,3 @@
-# Pluto
-
 ![Screenshot](screenshot.png)
 
 ### What?
