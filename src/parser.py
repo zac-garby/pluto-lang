@@ -35,7 +35,7 @@ precedences = {
     token.MOD:     PRODUCT,
     token.LTE:     LESSGREATER,
     token.GTE:     LESSGREATER,
-    token.Q_MARK: QUESTION
+    token.Q_MARK:  QUESTION
 }
 
 arg_tokens = [
