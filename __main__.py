@@ -78,7 +78,7 @@ def repl(ctx):
   `+mNNNNNNNNNNNMMMMm/   
     `+hNMMMMMMMMMNy/`    
        `-/+ooo+/.        
-    """
+    """)
     while True:
         try:
             string = input("⧫ ") + ";"
