@@ -6,6 +6,7 @@ Pluto is a language with a cool function definition/call syntax. Basically, inst
 being called with their arguments in parentheses after the name, they are represented by their patterns:
 
 ```r
+# defines a pattern: 'this is a pattern'
 def this is a pattern {
   ...
 };
