@@ -1,10 +1,10 @@
-# Pattern Based Language
+# Pluto
 
 ![Screenshot](screenshot.png)
 
 ### What?
 
-It's a language with a cool function definition/call syntax. Basically, instead of functions
+Pluto is a language with a cool function definition/call syntax. Basically, instead of functions
 being called with their arguments in parentheses after the name, they are represented by their patterns:
 
 ```r
@@ -40,7 +40,7 @@ look at the **very** tiny standard library. A couple of them are
 quite long, but they're probably less used than the others so  the longer length doesn't matter, and improves
 readability significantly.
 
-_(note: This language is **incredibly** slow, since it's written in Python. It doesn't matter, as it's just a prototype. However, I'm currently in the process of rewriting in it a faster language.)_
+_(note: This language is **incredibly** slow, since it's written in Python. It doesn't matter, as it's just a prototype. However, I'm planning on rewriting in a faster language in the future)_
 
 #### Other expressions as arguments
 
