@@ -1,6 +1,6 @@
 ![Screenshot](screenshot.png)
 
-### What?
+## What?
 
 Pluto is a language with a cool function definition/call syntax. Basically, instead of functions
 being called with their arguments in parentheses after the name, they are represented by their patterns:
@@ -40,7 +40,7 @@ readability significantly.
 
 _(note: This language is **incredibly** slow, since it's written in Python. It doesn't matter, as it's just a prototype. However, I'm planning on rewriting in a faster language in the future)_
 
-#### Other expressions as arguments
+### Other expressions as arguments
 
 Imagine this:
 
@@ -92,7 +92,7 @@ item in the pattern is an identifier, and not an argument. In this case, you nee
 
 This would work exactly as you'd expect, returning the value `15`.
 
-#### Defining your own if expression
+## Defining your own if expression
 
 Because of the function calling  syntax, you can actually define your  own pseudo-syntactical constructs. For
 example, you could create a function which does the exact same thing as an if expression:
@@ -123,7 +123,7 @@ parsed as a normal identifier in the pattern.
 
 This is really cool because, in theory, you could even define the English language as a series of functions!
 
-#### Blocks
+## Blocks
 
 There exists a type known as a block. Here's one:
 
@@ -159,7 +159,7 @@ map { |n| -> n * n; } over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
 fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n; }; #-> 15
 ```
 
-#### Collections
+## Collections
 
 A lot of functions in the standard library operate on what's called a _collection_. A collection is a type which can be
 represented as a list of elements. There are three collection types currently defined:
@@ -197,7 +197,7 @@ for (i : a_tuple) {
 };
 ```
 
-##### Operators on collections
+### Operators on collections
 
 A few operators are defined on collections:
 
@@ -206,7 +206,7 @@ A few operators are defined on collections:
  - `&` or `&&` - returns the intersection of the two collections
  - `|` or `||` - returns the union of the two collections
  
-#### Objects
+## Objects
 
 Objects are similar to dictionaries in Python, or objects in JavaScript:
 
@@ -228,7 +228,7 @@ key "y" of $an_object;
 
 Which, of course, returns `-7`.
 
-##### Objects as collections
+### Objects as collections
 
 Objects are not collections. This is because there's no good option for what the elements should be. The keys? The
 values? Or even, an array containing tuples in the format `(key, value)`. All of these are equally useful, so instead
@@ -250,7 +250,7 @@ for (key : keys of me) {
 };
 ```
 
-### How??
+## How??
 
 To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
 statements line by line.
@@ -266,11 +266,11 @@ Argument            | Description
 `-h, --help`        | Shows a useful help menu
 `-v, --version`     | Shows the current version
 
-### Contributions
+## Contributions
 
 Any contributions are welcome. Just send a pull request. I'll probably accept it if it adds anything useful.
 
-#### What can I do?
+### What can I do?
 
 There are loads of things to do. Heres a list for you:
 
