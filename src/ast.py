@@ -383,7 +383,22 @@ class FunctionDefinition(Statement):
             make_list_tree(indent + 1, self.pattern, "pattern"),
             self.body.tree(indent + 1, "body")
         )
-
+        
+        
+class InitDefinition(Statement):
+    """similar to FunctionDefinition, but is a class constructor"""
+    def __init__(self, token, pattern, body):
+        self.token = token
+        self.pattern = pattern
+        self.body = body
+        
+    def tree(self, indent, name):
+        return "%sinit fn\n%s\n%s" % (
+            _(indent) + n(name),
+            make_list_tree(indent + 1, self.pattern, "pattern"),
+            self.body.tree(indent + 1, "body")
+        )
+    
 
 class ReturnStatement(Statement):
     """a return statement"""
