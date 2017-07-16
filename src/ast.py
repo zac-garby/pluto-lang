@@ -417,3 +417,18 @@ class BreakStatement(Statement):
     
     def tree(self, indent, name):
         return "%sbreak" % (_(indent) + n(name))
+        
+        
+class ClassStatement(Statement):
+    """a class definition statement"""
+    def __init__(self, token, methods, parent):
+        self.token = token
+        self.methods = methods
+        self.parent = parent
+        
+    def tree(self, indent, name):
+        return "%sclass\n%s\n%s" % (
+            _(indent) + n(name),
+            make_list_tree(indent + 1, self.methods, "methods"),
+            self.parent.tree(indent + 1, "parent")
+        )
