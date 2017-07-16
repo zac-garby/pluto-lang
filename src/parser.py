@@ -80,7 +80,8 @@ class Parser(object):
             token.BSLASH: self.parse_function_call,
             token.LBRACE: self.parse_block_literal,
             token.WHILE:  self.parse_while_loop,
-            token.FOR:    self.parse_for_loop
+            token.FOR:    self.parse_for_loop,
+            token.CLASS:  self.parse_class_declaration
         }
         
         self.infixes  = {
@@ -231,30 +232,6 @@ class Parser(object):
         self.next()
         stmt.value = self.parse_expr(LOWEST)
         
-        return stmt
-        
-    def parse_def_stmt(self):
-        stmt = ast.FunctionDefinition(self.cur_tok, [], None)
-        
-        self.next()
-        
-        while not self.cur_is(token.LBRACE):
-            tok = self.cur_tok
-                                  
-            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
-                return None
-                                
-            if tok.type == token.ID or tok.type in token.keywords.values():
-                stmt.pattern.append(ast.Identifier(tok))
-            else:
-                stmt.pattern.append(ast.Parameter(tok, tok.literal))
-            
-        stmt.body = self.parse_block_statement()
-        
-        if len(stmt.pattern) == 0:
-            self.err("expected at least one item in a pattern")
-            return None
-                
         return stmt
         
     def parse_next_stmt(self):
@@ -508,6 +485,88 @@ class Parser(object):
         expr.body = self.parse_block_statement()
         
         return expr
+        
+    def parse_class_declaration(self):
+        stmt = ast.ClassStatement(self.cur_tok, None, [], None)
+        
+        if not self.expect(token.ID):
+            return None
+            
+        stmt.name = self.parse_id(False) # Maybe change, and the one in parse_for_loop
+        
+        if self.peek_is(token.EXTENDS):
+            self.next()
+            self.next()
+            
+            stmt.parent = self.parse_id(False)
+            
+        if not self.expect(token.LBRACE):
+            return None
+            
+        self.next()
+                    
+        while self.cur_in([token.INIT, token.DEF]):
+            if self.cur_is(token.INIT):
+                stmt.methods.append(self.parse_init_stmt())
+            elif self.cur_is(token.DEF):
+                stmt.methods.append(self.parse_def_stmt())
+                
+        self.next()
+                
+        if not self.expect(token.RBRACE):
+            return None
+            
+        print("Returning a class")
+            
+        return stmt
+        
+    def parse_init_stmt(self):
+        stmt = ast.InitDefinition(self.cur_tok, [], None)
+        
+        self.next()
+        
+        while not self.cur_is(token.LBRACE):
+            tok = self.cur_tok
+                                  
+            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
+                return None
+                                
+            if tok.type == token.ID or tok.type in token.keywords.values():
+                stmt.pattern.append(ast.Identifier(tok))
+            else:
+                stmt.pattern.append(ast.Parameter(tok, tok.literal))
+            
+        stmt.body = self.parse_block_statement()
+        
+        if len(stmt.pattern) == 0:
+            self.err("expected at least one item in a pattern")
+            return None
+                
+        return stmt
+        
+    def parse_def_stmt(self):
+        stmt = ast.FunctionDefinition(self.cur_tok, [], None)
+        
+        self.next()
+        
+        while not self.cur_is(token.LBRACE):
+            tok = self.cur_tok
+                                  
+            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
+                return None
+                                
+            if tok.type == token.ID or tok.type in token.keywords.values():
+                stmt.pattern.append(ast.Identifier(tok))
+            else:
+                stmt.pattern.append(ast.Parameter(tok, tok.literal))
+            
+        stmt.body = self.parse_block_statement()
+        
+        if len(stmt.pattern) == 0:
+            self.err("expected at least one item in a pattern")
+            return None
+                
+        return stmt
         
     def parse_expr_list(self, end):
         exprs = []
