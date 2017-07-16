@@ -64,7 +64,7 @@ def execute(text, print_result, ctx):
             print(result)
             
 def repl(ctx):
-    print("Welcome pluto's REPL!")
+    print("Welcome to pluto's REPL!")
     print("""
           ``.....`        
       ```..--:/+oo/-     
