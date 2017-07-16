@@ -286,3 +286,4 @@ There are loads of things to do. Heres a list for you:
  - Add sorting builtins
  - Add importing files
  - Add classes or some other OOP system
+ - Add switch-case or match expression
