@@ -64,7 +64,32 @@ def execute(text, print_result, ctx):
             print(result)
             
 def repl(ctx):
-    print("Welcome to the REPL! Type your statements below.")
+    print("Welcome pluto's REPL!")
+    print("""                                               
+                 ``..--:::///::-.`                
+             ``......---:::///++oo+/-             
+          ``````````....--::://++oosss+.          
+        ``````   ``````..---:://++oossyys-        
+      `.````        ```...--:://++oossyyyhs.      
+     ...`````      ````...--:://++oossyyyhhh:     
+    .--...```````````....--::///++oossyyyhhdd/    
+   -::---.............---::://+++oossyyyhhdddd:   
+  .///:::-------------:::://+++oosssyyyhhddddmd`  
+  /+++////::::::::::://///+++oosssyyyhhhddddmmm/  
+  ooooo++++++//////++++++ooossssyyyhhhddddmmmmmy  
+ `yyssssooooooooooooooosssssyyyyhhhhddddmmmmmNNh  
+  yhyyyyyyssssssssssssyyyyyyhhhhhdddddmmmmmNNNNy  
+  shhhhhhhhyyyyyyyyyhhhhhhhhddddddmmmmmmmNNNNNN+  
+  :ddddddddddhhhhhddddddddddddmmmmmmmmNNNNNNNNN`  
+   smmmmmmdddddddddddmmmmmmmmmmmmNNNNNNNNNNNNN/   
+   `hmmmmmmmmmmmmmmmmmmmmmmNNNNNNNNNNNNNNNMMMs    
+    `yNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNMMMMMMo     
+      +NNNNNNNNNNNNNNNNNNNNNNNNNNMMMMMMMMMm-      
+       `sNNNNNNNNNNNNNNNNNMMMMMMMMMMMMMMN+        
+         `omMMMMMMMMMMMMMMMMMMMMMMMMMMd/          
+            -odMMMMMMMMMMMMMMMMMMMNh+.            
+               `    emFjaXNnYXk=                
+    """)
     
     while True:
         try:
