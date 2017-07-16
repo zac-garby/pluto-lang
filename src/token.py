@@ -41,6 +41,7 @@ COMMA   = "comma"                 # ,
 ARROW   = "arrow"                 # ->
 COLON   = "colon"                 # :
 Q_MARK  = "question-mark"         # ?
+DOT     = "dot"                   # .
 
 # Keywords
 DEF     = "def"
