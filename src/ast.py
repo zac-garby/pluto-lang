@@ -427,6 +427,12 @@ class ClassStatement(Statement):
         self.parent = parent
         
     def tree(self, indent, name):
+        if self.parent != None:
+            return "%sclass\n%s" % (
+                _(indent) + n(name),
+                make_list_tree(indent + 1, self.methods, "methods")
+            )
+            
         return "%sclass\n%s\n%s" % (
             _(indent) + n(name),
             make_list_tree(indent + 1, self.methods, "methods"),
