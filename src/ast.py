@@ -428,7 +428,7 @@ class ClassStatement(Statement):
         self.parent = parent
         
     def tree(self, indent, name):
-        if self.parent != None:
+        if self.parent == None:
             return "%sclass\n%s\n%s" % (
                 _(indent) + n(name),
                 self.name.tree(indent + 1, "name"),
