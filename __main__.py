@@ -64,8 +64,21 @@ def execute(text, print_result, ctx):
             print(result)
             
 def repl(ctx):
-    print("Welcome to the REPL! Type your statements below.")
-    
+    print("Welcome to pluto's REPL!")
+    print("""
+          ``.....`        
+      ```..--:/+oo/-     
+   ```    ``.-:/+osys-   
+  ...``````.--:/+osyhh+  
+ -/::-----64emFjaXNnYXk=
+ oo+++////++oossyyhddmmh 
+ yyyyssssssyyyhhdddmmmNd 
+ odddddhhddddddmmmmNNNN+ 
+ `ymmmmmmmmmmNNNNNNNNMs  
+  `+mNNNNNNNNNNNMMMMm/   
+    `+hNMMMMMMMMMNy/`    
+       `-/+ooo+/.        
+    """)
     while True:
         try:
             string = input("⧫ ") + ";"
