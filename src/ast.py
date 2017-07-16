@@ -421,20 +421,23 @@ class BreakStatement(Statement):
         
 class ClassStatement(Statement):
     """a class definition statement"""
-    def __init__(self, token, methods, parent):
+    def __init__(self, token, name, methods, parent):
         self.token = token
+        self.name = name
         self.methods = methods
         self.parent = parent
         
     def tree(self, indent, name):
         if self.parent != None:
-            return "%sclass\n%s" % (
+            return "%sclass\n%s\n%s" % (
                 _(indent) + n(name),
+                self.name.tree(indent + 1, "name"),
                 make_list_tree(indent + 1, self.methods, "methods")
             )
             
-        return "%sclass\n%s\n%s" % (
+        return "%sclass\n%s\n%s\n%s" % (
             _(indent) + n(name),
+            self.name.tree(indent + 1, "name"),
             make_list_tree(indent + 1, self.methods, "methods"),
             self.parent.tree(indent + 1, "parent")
         )
