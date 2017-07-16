@@ -65,32 +65,20 @@ def execute(text, print_result, ctx):
             
 def repl(ctx):
     print("Welcome pluto's REPL!")
-    print("""                                               
-                 ``..--:::///::-.`                
-             ``......---:::///++oo+/-             
-          ``````````....--::://++oosss+.          
-        ``````   ``````..---:://++oossyys-        
-      `.````        ```...--:://++oossyyyhs.      
-     ...`````      ````...--:://++oossyyyhhh:     
-    .--...```````````....--::///++oossyyyhhdd/    
-   -::---.............---::://+++oossyyyhhdddd:   
-  .///:::-------------:::://+++oosssyyyhhddddmd`  
-  /+++////::::::::::://///+++oosssyyyhhhddddmmm/  
-  ooooo++++++//////++++++ooossssyyyhhhddddmmmmmy  
- `yyssssooooooooooooooosssssyyyyhhhhddddmmmmmNNh  
-  yhyyyyyyssssssssssssyyyyyyhhhhhdddddmmmmmNNNNy  
-  shhhhhhhhyyyyyyyyyhhhhhhhhddddddmmmmmmmNNNNNN+  
-  :ddddddddddhhhhhddddddddddddmmmmmmmmNNNNNNNNN`  
-   smmmmmmdddddddddddmmmmmmmmmmmmNNNNNNNNNNNNN/   
-   `hmmmmmmmmmmmmmmmmmmmmmmNNNNNNNNNNNNNNNMMMs    
-    `yNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNMMMMMMo     
-      +NNNNNNNNNNNNNNNNNNNNNNNNNNMMMMMMMMMm-      
-       `sNNNNNNNNNNNNNNNNNMMMMMMMMMMMMMMN+        
-         `omMMMMMMMMMMMMMMMMMMMMMMMMMMd/          
-            -odMMMMMMMMMMMMMMMMMMMNh+.            
-               `    emFjaXNnYXk=                
-    """)
-    
+    print("""
+          ``.....`        
+      ```..--:/+oo/-     
+   ```    ``.-:/+osys-   
+  ...``````.--:/+osyhh+  
+ -/::-----64emFjaXNnYXk=
+ oo+++////++oossyyhddmmh 
+ yyyyssssssyyyhhdddmmmNd 
+ odddddhhddddddmmmmNNNN+ 
+ `ymmmmmmmmmmNNNNNNNNMs  
+  `+mNNNNNNNNNNNMMMMm/   
+    `+hNMMMMMMMMMNy/`    
+       `-/+ooo+/.        
+    """
     while True:
         try:
             string = input("⧫ ") + ";"
