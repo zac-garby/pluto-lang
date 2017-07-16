@@ -515,9 +515,7 @@ class Parser(object):
                 
         if not self.expect(token.RBRACE):
             return None
-            
-        print("Returning a class")
-            
+                    
         return stmt
         
     def parse_init_stmt(self):
