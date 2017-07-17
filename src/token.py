@@ -46,7 +46,7 @@ DOT     = "dot"                   # .
 # Keywords
 DEF     = "def"
 RETURN  = "return"
-TRUE    = "true"  
+TRUE    = "true"
 FALSE   = "false"
 NULL    = "null"
 IF      = "if"
@@ -67,17 +67,17 @@ class Token(object):
         self.literal = literal # "literal"
         self.start = start     # (line, col)
         self.end = end         # (line, col)
-    
+
     def __str__(self):
         return "%s `%s` from %s:%s to %s:%s" % (
             self.type, self.literal,
             self.start[0], self.start[1],
             self.end[0], self.end[1]
         )
-        
+
     def __repr__(self):
         return self.__str__()
-        
+
 keywords = {
     "def":     DEF,
     "return":  RETURN,
@@ -97,4 +97,4 @@ keywords = {
     "extends": EXTENDS,
     "init":    INIT
 }
-        
+
