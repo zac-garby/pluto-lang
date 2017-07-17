@@ -541,7 +541,7 @@ class Parser(object):
         if not self.expect(token.ID):
             return None
 
-        stmt.name = self.parse_id(False) # Maybe change, and the one in parse_for_loop
+        stmt.name = self.parse_id(False)
 
         if self.peek_is(token.EXTENDS):
             self.next()
