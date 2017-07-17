@@ -16,6 +16,7 @@ NULL    = "<null>"
 BLOCK   = "<block>"
 TUPLE   = "<tuple>"
 OBJECT  = "<object>"
+CLASS   = "<class>"
 
 class InternalObject(object):
     def __eq__(self, other):
@@ -232,3 +233,14 @@ class Break(InternalObject):
 
     def __str__(self):
         return "<break>"
+
+
+class Class(InternalObject):
+    """a class object"""
+    def __init__(self, name, parent, methods):
+        self.name = name
+        self.parent = parent
+        self.methods = methods
+        
+    def __str__(self):
+        return "<class '%s'>" % self.name
