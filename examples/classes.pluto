@@ -9,7 +9,7 @@ class Animal {
   }
 };
 
-class Lion {
+class Lion extends Animal {
   init called $name {
     self.species = "lion";
     self.name = name;
