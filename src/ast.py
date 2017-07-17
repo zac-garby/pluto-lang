@@ -471,3 +471,18 @@ class DotExpression(Expression):
             self.left.tree(indent + 1, "left"),
             self.right.tree(indent + 1, "right")
         )
+
+   
+class MethodCall(Expression):
+    """instance: pattern -- calls a method on a class instance"""
+    def __init__(self, token, instance, pattern):
+        self.token = token
+        self.instance = instance
+        self.pattern = pattern
+
+    def tree(self, indent, name):
+        return "%smethod call\n%s\n%s" % (
+            _(indent) + n(name),
+            self.instance.tree(indent + 1, "instance"),
+            make_list_tree(indent + 1, self.pattern, "pattern")
+        )

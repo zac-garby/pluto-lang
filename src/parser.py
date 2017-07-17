@@ -3,7 +3,7 @@ import token
 
 LOWEST      = 0  #
 ASSIGN      = 1  # = or :=
-QUESTION    = 2
+QUESTION    = 2  # ?
 OR          = 3  # ||
 AND         = 4  # &&
 BIT_OR      = 5  # |
@@ -11,10 +11,11 @@ BIT_AND     = 6  # &
 EQUALS      = 7  # == or !==
 LESSGREATER = 8  # < or > or <= or >=
 SUM         = 9  # + or -
-PRODUCT     = 10  # * or / or %
+PRODUCT     = 10 # * or / or %
 EXP         = 11 # ** or //
 PREFIX      = 12 # -x
-DOT         = 13 # x.y
+METHOD_CALL = 13 # instance(pattern)
+DOT         = 14 # x.y
 
 precedences = {
     token.EQ:      EQUALS,
@@ -37,6 +38,7 @@ precedences = {
     token.LTE:     LESSGREATER,
     token.GTE:     LESSGREATER,
     token.Q_MARK:  QUESTION,
+    token.LPAREN:  METHOD_CALL,
     token.DOT:     DOT
 }
 
@@ -107,7 +109,8 @@ class Parser(object):
             token.Q_MARK:  self.parse_infix,
             token.ASSIGN:  self.parse_assign_expr,
             token.DECLARE: self.parse_declare_expr,
-            token.DOT:     self.parse_dot_expr
+            token.DOT:     self.parse_dot_expr,
+            token.LPAREN:   self.parse_method_call
         }
 
         self.next()
@@ -434,9 +437,15 @@ class Parser(object):
         expr = ast.DotExpression(self.cur_tok, left, None)
 
         self.next()
-        expr.right = self.parse_expr(LOWEST)
+        expr.right = self.parse_expr(DOT)
 
         return expr
+        
+    def parse_method_call(self, left):
+        expr = ast.MethodCall(self.cur_tok, left, None)
+
+        self.next()
+        expr.right = self.parse_pattern_call(token.RPAREN)
 
     def parse_block_literal(self):
         expr = ast.BlockLiteral(self.cur_tok, None, None)
@@ -522,7 +531,8 @@ class Parser(object):
             elif self.cur_is(token.DEF):
                 stmt.methods.append(self.parse_def_stmt())
 
-        self.next()
+            if self.peek_in([token.INIT, token.DEF]):
+                self.next()
 
         if not self.expect(token.RBRACE):
             return None
@@ -534,16 +544,7 @@ class Parser(object):
 
         self.next()
 
-        while not self.cur_is(token.LBRACE):
-            tok = self.cur_tok
-
-            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
-                return None
-
-            if tok.type == token.ID or tok.type in token.keywords.values():
-                stmt.pattern.append(ast.Identifier(tok))
-            else:
-                stmt.pattern.append(ast.Parameter(tok, tok.literal))
+        stmt.pattern = self.parse_pattern_call(token.LBRACE)
 
         stmt.body = self.parse_block_statement()
 
@@ -558,16 +559,7 @@ class Parser(object):
 
         self.next()
 
-        while not self.cur_is(token.LBRACE):
-            tok = self.cur_tok
-
-            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
-                return None
-
-            if tok.type == token.ID or tok.type in token.keywords.values():
-                stmt.pattern.append(ast.Identifier(tok))
-            else:
-                stmt.pattern.append(ast.Parameter(tok, tok.literal))
+        stmt.pattern = self.parse_pattern_call(token.LBRACE)
 
         stmt.body = self.parse_block_statement()
 
@@ -576,6 +568,22 @@ class Parser(object):
             return None
 
         return stmt
+
+    def parse_pattern_call(self, end):
+        pattern = []
+        
+        while not self.cur_is(end):
+            tok = self.cur_tok
+            
+            if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
+                return None
+                
+            if tok.type == token.ID or tok.type in token.keywords.values():
+                pattern.append(ast.Identifier(tok))
+            else:
+                pattern.append(ast.Parameter(tok, tok.literal))
+                
+        return pattern
 
     def parse_expr_list(self, end):
         exprs = []
