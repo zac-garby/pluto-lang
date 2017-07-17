@@ -171,7 +171,7 @@ class Object(InternalObject):
         return self.pairs.get(String(key), Null())
 
     def __setitem__(self, key, val):
-        self.pairs[key] = val
+        self.pairs[String(key)] = val
 
 
 class Null(InternalObject):
@@ -294,7 +294,7 @@ class Instance(InternalObject):
         return "<instance of %s>" % self.base
     
     def __getitem__(self, key):
-        return self.data.get(key.value, Null())
+        return self.data.get(key, Null())
 
     def __setitem__(self, key, val):
-        self.data[key.value] = val
+        self.data[key] = val

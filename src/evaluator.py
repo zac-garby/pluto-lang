@@ -89,7 +89,19 @@ def evaluate(node, ctx):
 
     if t == ast.AssignExpression:
         right = evaluate(node.value, ctx)
-        return right if is_err(right) else eval_assign(node.name, right, ctx)
+        if is_err(right):
+            return right
+        
+        if type(node.name) == ast.DotExpression:
+            o = evaluate(node.name.left, ctx)
+            
+            if type(node.name.right) == ast.Identifier:
+                o[node.name.right.value] = right
+                return right
+            else:
+                return err("an identifier is expected to follow a dot operator")
+        
+        return eval_assign(node.name, right, ctx)
 
     if t == ast.DeclareExpression:
         right = evaluate(node.value, ctx)
