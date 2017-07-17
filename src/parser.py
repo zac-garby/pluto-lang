@@ -433,8 +433,8 @@ class Parser(object):
     def parse_dot_expr(self, left):
         expr = ast.DotExpression(self.cur_tok, left, None)
         
-        self.next()
-        expr.value = self.parse_expr(LOWEST)
+        self.next()        
+        expr.right = self.parse_expr(LOWEST)
         
         return expr
         
