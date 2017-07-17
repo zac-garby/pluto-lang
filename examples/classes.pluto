@@ -1,11 +1,15 @@
 class Person extends Parent {
   init called $name {
-    print $name;
-  };
+    self.name = name;
+  }
+  
+  def say $str {
+    print (self.name + " says: " + str);
+  }
 };
 
 me = Person called "Zac" who is 15 years old;
-# me: say "Hello";
+me(say "Hello");
 
 # Inside a class, an 'init' statement defines a function prefixed with the class name.
 # In the class above, this will product a function similar to (semi-pseudocode):
