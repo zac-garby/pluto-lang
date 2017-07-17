@@ -553,6 +553,9 @@ class Parser(object):
             return None
 
         self.next()
+        
+        if self.cur_is(token.RBRACE):
+            return stmt
 
         while self.cur_in([token.INIT, token.DEF]):
             if self.cur_is(token.INIT):
