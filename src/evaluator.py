@@ -413,6 +413,8 @@ def eval_class_stmt(node, ctx):
     
     if node.parent != None:
         o.parent = evaluate(node.parent, ctx)
+        if is_err(o.parent):
+            return o.parent
     
     for mnode in node.methods:
         fn = obj.Function(mnode.pattern, mnode.body, ctx)
