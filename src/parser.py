@@ -562,6 +562,9 @@ class Parser(object):
                 stmt.methods.append(self.parse_init_stmt())
             elif self.cur_is(token.DEF):
                 stmt.methods.append(self.parse_def_stmt())
+                
+            if not self.expect(token.SEMI):
+                return None
 
             if self.peek_in([token.INIT, token.DEF]):
                 self.next()
