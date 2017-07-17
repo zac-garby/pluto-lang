@@ -14,7 +14,7 @@ SUM         = 9  # + or -
 PRODUCT     = 10 # * or / or %
 EXP         = 11 # ** or //
 PREFIX      = 12 # -x
-METHOD_CALL = 13 # instance(pattern)
+METHOD_CALL = 13 # instance: pattern
 DOT         = 14 # x.y
 
 precedences = {
@@ -38,7 +38,7 @@ precedences = {
     token.LTE:     LESSGREATER,
     token.GTE:     LESSGREATER,
     token.Q_MARK:  QUESTION,
-    token.LPAREN:  METHOD_CALL,
+    token.COLON:   METHOD_CALL,
     token.DOT:     DOT
 }
 
@@ -109,7 +109,7 @@ class Parser(object):
             token.ASSIGN:  self.parse_assign_expr,
             token.DECLARE: self.parse_declare_expr,
             token.DOT:     self.parse_dot_expr,
-            token.LPAREN:   self.parse_method_call
+            token.COLON:   self.parse_method_call
         }
 
         self.next()
@@ -443,10 +443,38 @@ class Parser(object):
         return expr
         
     def parse_method_call(self, left):
-        expr = ast.MethodCall(self.cur_tok, left, None)
+        expr = ast.MethodCall(self.cur_tok, left, [])
+        
+        while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
+            self.next()
 
-        self.next()
-        expr.right = self.parse_pattern_call(token.RPAREN)
+            if self.cur_in(token.keywords.values()):
+                expr.pattern.append(ast.Identifier(self.cur_tok))
+                continue
+
+            arg = lambda val: ast.Argument(self.cur_tok, val)
+
+            handlers = {
+                token.ID:      lambda: ast.Identifier(self.cur_tok),
+                token.LPAREN:  lambda: arg(self.parse_grouped_expr()),
+                token.NUM:     lambda: arg(self.parse_num()),
+                token.NULL:    lambda: arg(self.parse_null()),
+                token.TRUE:    lambda: arg(self.parse_bool()),
+                token.FALSE:   lambda: arg(self.parse_bool()),
+                token.STR:     lambda: arg(self.parse_string()),
+                token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok)),
+                token.LSQUARE: lambda: arg(self.parse_array_or_object()),
+                token.LBRACE:  lambda: arg(self.parse_block_literal()),
+            }
+
+            handler = handlers[self.cur_tok.type]
+            expr.pattern.append(handler())
+
+        if len(expr.pattern) == 0:
+            self.err("expected at least one item in a pattern")
+            return None
+        
+        return expr
 
     def parse_block_literal(self):
         expr = ast.BlockLiteral(self.cur_tok, None, None)
