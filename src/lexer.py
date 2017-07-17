@@ -64,7 +64,8 @@ lexical_dictionary = [
     (r"\,",                    o (token.COMMA)),
     (r":",                     o (token.COLON)),
     (r"%",                     o (token.MOD)),
-    (r"\?",                    o (token.Q_MARK))
+    (r"\?",                    o (token.Q_MARK)),
+    (r"\.",                    o (token.DOT))
 ]
 
 def lex(string, col = 1, line = 1):
