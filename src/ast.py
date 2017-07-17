@@ -456,3 +456,18 @@ class ClassStatement(Statement):
             make_list_tree(indent + 1, self.methods, "methods"),
             self.parent.tree(indent + 1, "parent")
         )
+        
+        
+class DotExpression(Expression):
+    """x.y -- gets a property out of the left value"""
+    def __init__(self, token, left, right):
+        self.token = token
+        self.left = left
+        self.right = right
+    
+    def tree(self, indent, name):
+        return "%sdot\n%s\n%s" % (
+            _(indent) + n(name),
+            self.left.tree(indent + 1, "left"),
+            self.right.tree(indent + 1, "right")
+        )

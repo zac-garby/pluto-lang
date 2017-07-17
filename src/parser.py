@@ -14,6 +14,7 @@ SUM         = 9  # + or -
 PRODUCT     = 10  # * or / or %
 EXP         = 11 # ** or //
 PREFIX      = 12 # -x
+DOT         = 13 # x.y
 
 precedences = {
     token.EQ:      EQUALS,
@@ -35,7 +36,8 @@ precedences = {
     token.MOD:     PRODUCT,
     token.LTE:     LESSGREATER,
     token.GTE:     LESSGREATER,
-    token.Q_MARK:  QUESTION
+    token.Q_MARK:  QUESTION,
+    token.DOT:     DOT
 }
 
 arg_tokens = [
@@ -105,6 +107,7 @@ class Parser(object):
             token.Q_MARK:  self.parse_infix,
             token.ASSIGN:  self.parse_assign_expr,
             token.DECLARE: self.parse_declare_expr,
+            token.DOT:     self.parse_dot_expr
         }
         
         self.next()
@@ -421,6 +424,14 @@ class Parser(object):
         
     def parse_declare_expr(self, left):
         expr = ast.DeclareExpression(self.cur_tok, left, None)
+        
+        self.next()
+        expr.value = self.parse_expr(LOWEST)
+        
+        return expr
+        
+    def parse_dot_expr(self, left):
+        expr = ast.DotExpression(self.cur_tok, left, None)
         
         self.next()
         expr.value = self.parse_expr(LOWEST)
