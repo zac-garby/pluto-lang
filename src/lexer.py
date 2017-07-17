@@ -7,7 +7,7 @@ def o(t, group = 0, transformer = (lambda t, l, w: (t, l, w))):
 def id_transformer(t, l, w):
     t = token.keywords.get(l, token.ID)
     return (t, l, w)
-    
+
 def string_transformer(t, l, w):
     escapes = {
         r"\n": "\n",
@@ -19,10 +19,10 @@ def string_transformer(t, l, w):
         r"\t": "\r",
         r"\v": "\v"
     }
-    
+
     for key in escapes:
         l = l.replace(key, escapes[key])
-        
+
     return (t, l, w)
 
 lexical_dictionary = [
@@ -32,7 +32,7 @@ lexical_dictionary = [
     (r"'([^']|\\\w)'",         o (token.CHAR, 1, string_transformer)),
     (r"\w+",                   o (token.ID, 0, id_transformer)),
     (r"\$(\w+)",               o (token.PARAM, 1)),
-    
+
     # Punctuation
     (r"->",                    o (token.ARROW)),
     (r"\+",                    o (token.PLUS)),
@@ -64,50 +64,51 @@ lexical_dictionary = [
     (r"\,",                    o (token.COMMA)),
     (r":",                     o (token.COLON)),
     (r"%",                     o (token.MOD)),
-    (r"\?",                    o (token.Q_MARK))
+    (r"\?",                    o (token.Q_MARK)),
+    (r"\.",                    o (token.DOT))
 ]
 
 def lex(string, col = 1, line = 1):
     index = 0
-    
-    while True:        
+
+    while True:
         if index < len(string):
             found_space = False
-            
+
             while index < len(string) and (string[index].isspace() or string[index] == "#"):
                 if string[index].isspace():
                     index += 1
                     col += 1
-                
+
                     if string[index - 1] == "\n":
                         col = 1
                         line += 1
-                
+
                     found_space = True
                 else:
                     while index < len(string) and string[index] != "\n":
                         index += 1
-                        
+
                     col = 1
-                
+
             if found_space:
                 continue
-            
+
             found = False
-            
+
             for regex, handler in lexical_dictionary:
                  pattern = re.compile(regex)
                  match = pattern.match(string, index)
-                 
+
                  if match:
                      found = True
                      t, literal, whole = handler(match)
                      yield token.Token(t, literal, (line, col), (line, col + len(whole) - 1))
                      index += len(whole)
                      col += len(whole)
-                     
+
                      break
-            
+
             if not found:
                 yield token.Token(token.ILLEGAL, string[index], (line, col), (line, col))
                 index += 1

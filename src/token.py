@@ -41,20 +41,24 @@ COMMA   = "comma"                 # ,
 ARROW   = "arrow"                 # ->
 COLON   = "colon"                 # :
 Q_MARK  = "question-mark"         # ?
+DOT     = "dot"                   # .
 
 # Keywords
-DEF    = "def"
-RETURN = "return"
-TRUE   = "true"  
-FALSE  = "false"
-NULL   = "null"
-IF     = "if"
-ELSE   = "else"
-ELIF   = "elif"
-WHILE  = "while"
-FOR    = "for"
-NEXT   = "next"
-BREAK  = "break"
+DEF     = "def"
+RETURN  = "return"
+TRUE    = "true"
+FALSE   = "false"
+NULL    = "null"
+IF      = "if"
+ELSE    = "else"
+ELIF    = "elif"
+WHILE   = "while"
+FOR     = "for"
+NEXT    = "next"
+BREAK   = "break"
+CLASS   = "class"
+EXTENDS = "extends"
+INIT    = "init"
 
 class Token(object):
     """a single lexical token"""
@@ -63,31 +67,34 @@ class Token(object):
         self.literal = literal # "literal"
         self.start = start     # (line, col)
         self.end = end         # (line, col)
-    
+
     def __str__(self):
         return "%s `%s` from %s:%s to %s:%s" % (
             self.type, self.literal,
             self.start[0], self.start[1],
             self.end[0], self.end[1]
         )
-        
+
     def __repr__(self):
         return self.__str__()
-        
+
 keywords = {
-    "def":    DEF,
-    "return": RETURN,
-    "true":   TRUE,
-    "yes":    TRUE,
-    "false":  FALSE,
-    "no":     FALSE,
-    "null":   NULL,
-    "if":     IF,
-    "else":   ELSE,
-    "elif":   ELIF,
-    "while":  WHILE,
-    "for":    FOR,
-    "next":   NEXT,
-    "break":  BREAK
+    "def":     DEF,
+    "return":  RETURN,
+    "true":    TRUE,
+    "yes":     TRUE,
+    "false":   FALSE,
+    "no":      FALSE,
+    "null":    NULL,
+    "if":      IF,
+    "else":    ELSE,
+    "elif":    ELIF,
+    "while":   WHILE,
+    "for":     FOR,
+    "next":    NEXT,
+    "break":   BREAK,
+    "class":   CLASS,
+    "extends": EXTENDS,
+    "init":    INIT
 }
-        
+
