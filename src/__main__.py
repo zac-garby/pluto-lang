@@ -11,13 +11,13 @@ import context    as c
 import obj        as o
 
 def main():
-    parser = argparse.ArgumentParser(description="The interpreter for pattern-based-language")
+    parser = argparse.ArgumentParser(description="The interpreter for Pluto")
 
     parser.add_argument("-f", "--file", action="store", dest="file", type=str, help="the file to execute")
     parser.add_argument("-p", "--parse", action="store_true", default=False, help="just parse the file - don't execute it")
     parser.add_argument("-t", "--tree", action="store_true", default=False, help="print the parse tree")
     parser.add_argument("-i", "--interactive", action="store_true", default=False, help="enter interactive mode after the file has been run")
-    parser.add_argument("-v", "--version", action="version", version="pattern-based-language v1.0  --  Copyright Zac Garby © 2017")
+    parser.add_argument("-v", "--version", action="version", version="Pluto v1.0  --  Copyright Zac Garby © 2017")
 
     args = parser.parse_args()
 
@@ -64,7 +64,7 @@ def execute(text, print_result, ctx):
             print(result)
 
 def repl(ctx):
-    print("Welcome to pluto's REPL!")
+    print("Welcome to Pluto's REPL!")
     print("""
                    .....
                ``..--:/+oo/-
