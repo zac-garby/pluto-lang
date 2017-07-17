@@ -17,7 +17,7 @@ def main():
     parser.add_argument("-p", "--parse", action="store_true", default=False, help="just parse the file - don't execute it")
     parser.add_argument("-t", "--tree", action="store_true", default=False, help="print the parse tree")
     parser.add_argument("-i", "--interactive", action="store_true", default=False, help="enter interactive mode after the file has been run")
-    parser.add_argument("-v", "--version", action="version", version="Puto v1.0  --  Copyright Zac Garby © 2017")
+    parser.add_argument("-v", "--version", action="version", version="Puto, early beta version")
 
     args = parser.parse_args()
 
