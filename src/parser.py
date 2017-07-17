@@ -516,7 +516,7 @@ class Parser(object):
             return None
 
         self.next()
-        expr.var = self.parse_id(False)
+        expr.var = self.parse_id(True)
 
         if not self.expect(token.COLON):
             return None
