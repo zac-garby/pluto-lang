@@ -1,13 +1,20 @@
-class Person extends Parent {
-  init called $name {
+class Animal {
+  init of type $species called $name {
+    self.species = species;
     self.name = name;
   }
   
-  def say $str {
-    print (self.name + " says: \"" + str + '"');
+  def speak {
+    printf "%s the %s says hello!" with (self.name, self.species);
   }
 };
 
-me = Person called "Zac";
+class Lion {
+  init called $name {
+    self.species = "lion";
+    self.name = name;
+  }
+};
 
-me: say "foo bar";
+l = Lion called "Leo";
+l: speak;
