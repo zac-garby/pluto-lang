@@ -309,6 +309,11 @@ def eval_function_call(node, ctx):
                 args[f_item.name] = evaled
 
         enclosed = ctx.enclose_with_args(args)
+        
+        on_call_result = function.on_call(args, ctx, enclosed)
+
+        if on_call_result != None or is_err(on_call_result):
+            return on_call_result
 
         result = evaluate(function.body, enclosed)
         if is_err(result):

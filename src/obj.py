@@ -207,6 +207,9 @@ class Function(InternalObject):
 
     def __str__(self):
         return "<function instance>"
+    
+    def on_call(self, args, ctx, enclosed):
+        pass
 
 
 class Block(InternalObject):
