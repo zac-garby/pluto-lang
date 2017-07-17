@@ -94,6 +94,14 @@ def evaluate(node, ctx):
     if t == ast.DeclareExpression:
         right = evaluate(node.value, ctx)
         return right if is_err(right) else eval_declare(node.name, right, ctx)
+        
+    if t == ast.DotExpression:
+        left = evaluate(node.left, ctx)
+        
+        if type(node.right) == ast.Identifier:
+            return left[node.right.value]
+        
+        return err("an identifier is expected to follow a dot operator")
 
     return err("evaluation for %s not yet implemented" % t)
 

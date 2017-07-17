@@ -167,8 +167,11 @@ class Object(InternalObject):
         else:
             return "[%s]" % "".join("%s: %s, " % (str(key), str(value)) for key, value in self.pairs.items())[:-2]
 
-    def get_elements(self):
-        return self.pairs.keys()
+    def __getitem__(self, key):
+        return self.pairs.get(String(key), Null())
+
+    def __setitem__(self, key, val):
+        self.pairs[key] = val
 
 
 class Null(InternalObject):
@@ -291,7 +294,7 @@ class Instance(InternalObject):
         return "<instance of %s>" % self.base
     
     def __getitem__(self, key):
-        return self.data.get(key, None)
+        return self.data.get(key.value, Null())
 
     def __setitem__(self, key, val):
-        self.data[key] = val
+        self.data[key.value] = val
