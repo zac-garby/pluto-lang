@@ -21,6 +21,7 @@ def evaluate(node, ctx):
     if t == ast.WhileLoop:            return eval_while_loop(node, ctx)
     if t == ast.ForLoop:              return eval_for_loop(node, ctx)
     if t == ast.ClassStatement:       return eval_class_stmt(node, ctx)
+    if t == ast.MethodCall:           return eval_method_call(node, ctx)
 
     # Literals
     if t == ast.Null:                 return NULL
@@ -444,6 +445,54 @@ def eval_class_stmt(node, ctx):
 
     return o
 
+def eval_method_call(node, ctx):
+    instance = evaluate(node.instance, ctx)
+    pattern = node.pattern
+    function = None
+    
+    for func in instance.base.get_methods():
+        if len(pattern) != len(func.fn.pattern):
+            continue
+
+        matched = True
+
+        for i in range(len(pattern)):
+            item = pattern[i]
+            f_item = func.fn.pattern[i]
+
+            if type(item) == ast.Identifier and type(f_item) == ast.Identifier:
+                if item.value != f_item.value:
+                    matched = False
+            elif not(type(item) == ast.Argument and type(f_item) == ast.Parameter):
+                matched = False
+
+        if matched:
+            function = func
+            break
+    
+    if function == None:
+        p_string = p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
+        return err("could not find a method of %s matching the pattern '%s'" % (instance.base.name, p_string))
+    
+    args = {}
+    
+    for i in range(len(node.pattern)):
+        item = node.pattern[i]
+        f_item = function.fn.pattern[i]
+
+        if type(item) == ast.Argument and type(f_item) == ast.Parameter:
+            evaled = evaluate(item.value, ctx)
+            if is_err(evaled):
+                return evaled
+
+            args[f_item.name] = evaled
+            
+    args["self"] = instance
+    
+    enclosed = ctx.enclose_with_args(args)
+    
+    result = evaluate(function.fn.body, enclosed)
+    return result
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
