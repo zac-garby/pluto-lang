@@ -7,18 +7,19 @@ NEXT         = "<next>"
 BREAK        = "<break>"
 
 # Normal types
-NUMBER  = "<number>"
-BOOLEAN = "<boolean>"
-STRING  = "<string>"
-CHAR    = "<char>"
-ARRAY   = "<array>"
-NULL    = "<null>"
-BLOCK   = "<block>"
-TUPLE   = "<tuple>"
-OBJECT  = "<object>"
-CLASS   = "<class>"
-INIT    = "<init method>"
-METH    = "<method>"
+NUMBER   = "<number>"
+BOOLEAN  = "<boolean>"
+STRING   = "<string>"
+CHAR     = "<char>"
+ARRAY    = "<array>"
+NULL     = "<null>"
+BLOCK    = "<block>"
+TUPLE    = "<tuple>"
+OBJECT   = "<object>"
+CLASS    = "<class>"
+INIT     = "<init method>"
+METH     = "<method>"
+INSTANCE = "<instance>"
 
 class InternalObject(object):
     def __eq__(self, other):
@@ -277,3 +278,20 @@ class Class(InternalObject):
 
     def get_inits(self):
         return [meth for meth in methods if isinstance(meth, InitMethod)]
+
+
+class Instance(InternalObject):
+    """an instance of a class """
+    def __init__(self, base):
+        self.type = INSTANCE
+        self.base = base
+        self.data = {}
+
+    def __str__(self):
+        return "<instance of %s>" % self.base
+    
+    def __getitem__(self, key):
+        return self.data.get(key, None)
+
+    def __setitem__(self, key, val):
+        self.data[key] = val
