@@ -19,6 +19,7 @@ def evaluate(node, ctx):
     if t == ast.IfExpression:         return eval_if(node, ctx)
     if t == ast.WhileLoop:            return eval_while_loop(node, ctx)
     if t == ast.ForLoop:              return eval_for_loop(node, ctx)
+    if t == ast.ClassStatement:       return eval_class_stmt(node, ctx)
 
     # Literals
     if t == ast.Null:                 return NULL
@@ -34,6 +35,7 @@ def evaluate(node, ctx):
 
     # Functions
     if t == ast.FunctionDefinition:   return eval_function_def(node, ctx)
+    if t == ast.InitDefinition:       return eval_init_def(node, ctx)
     if t == ast.FunctionCall:         return eval_function_call(node, ctx)
 
     if t == ast.Array:
@@ -378,6 +380,28 @@ def eval_for_loop(node, ctx):
             break
 
     return NULL
+
+def eval_class_stmt(node, ctx):
+    o = obj.Class(node.name.value, None, [])
+    
+    if node.parent != None:
+        o.parent = evaluate(node.parent, ctx)
+    
+    for mnode in node.methods:
+        fn = obj.Function(mnode.pattern, mnode.body, ctx)
+        method = None
+
+        if type(mnode) == ast.FunctionDefinition:
+            method = obj.Method(fn)
+        elif type(mnode) == ast.InitDefinition:
+            method = obj.InitMethod(fn)
+
+        o.methods.append(method)
+    
+    ctx[o.name] = o
+
+    return o
+
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
