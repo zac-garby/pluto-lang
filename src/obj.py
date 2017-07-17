@@ -17,6 +17,8 @@ BLOCK   = "<block>"
 TUPLE   = "<tuple>"
 OBJECT  = "<object>"
 CLASS   = "<class>"
+INIT    = "<init method>"
+METH    = "<method>"
 
 class InternalObject(object):
     def __eq__(self, other):
@@ -235,12 +237,39 @@ class Break(InternalObject):
         return "<break>"
 
 
+class InitMethod(InternalObject):
+    """an initialisation method of a class"""
+    def __init__(self, fn):
+        self.type = INIT
+        self.fn = fn
+
+    def __str__(self):
+        return "<init method instance>"
+
+
+class Method(InternalObject):
+    """a normal method of a class"""
+    def __init__(self, fn):
+        self.type = METH
+        self.fn = fn
+
+    def __str__(self):
+        return "<method instance>"
+
+
 class Class(InternalObject):
     """a class object"""
     def __init__(self, name, parent, methods):
+        self.type = CLASS
         self.name = name
         self.parent = parent
         self.methods = methods
         
     def __str__(self):
         return "<class '%s'>" % self.name
+        
+    def get_methods(self):
+        return [meth for meth in methods if isinstance(meth, Method)]
+
+    def get_inits(self):
+        return [meth for meth in methods if isinstance(meth, InitMethod)]
