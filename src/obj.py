@@ -277,10 +277,10 @@ class Class(InternalObject):
         return "<class '%s'>" % self.name
         
     def get_methods(self):
-        return [meth for meth in methods if isinstance(meth, Method)]
+        return [meth for meth in self.methods if isinstance(meth, Method)]
 
     def get_inits(self):
-        return [meth for meth in methods if isinstance(meth, InitMethod)]
+        return [meth for meth in self.methods if isinstance(meth, InitMethod)]
 
 
 class Instance(InternalObject):
