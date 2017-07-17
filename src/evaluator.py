@@ -1,6 +1,7 @@
 import obj
 import ast
 import math
+import types
 
 NULL  = obj.Null()
 TRUE  = obj.Boolean(True)
@@ -400,6 +401,17 @@ def eval_class_stmt(node, ctx):
             method = obj.Method(fn)
         elif type(mnode) == ast.InitDefinition:
             method = obj.InitMethod(fn)
+            
+            init_pattern = [node.name] + fn.pattern
+            
+            def on_init(self, args, ctx, enclosed):
+                print("Calling initialiser on %s" % self)
+                return NULL
+            
+            init_fn = obj.Function(init_pattern, mnode.body, ctx)
+            init_fn.on_call = types.MethodType(on_init, init_fn)
+            
+            ctx.add_function(init_fn)
 
         o.methods.append(method)
     
