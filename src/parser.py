@@ -84,8 +84,7 @@ class Parser(object):
             token.BSLASH: self.parse_function_call,
             token.LBRACE: self.parse_block_literal,
             token.WHILE:  self.parse_while_loop,
-            token.FOR:    self.parse_for_loop,
-            token.CLASS:  self.parse_class_declaration
+            token.FOR:    self.parse_for_loop
         }
 
         self.infixes  = {
@@ -204,6 +203,8 @@ class Parser(object):
             stmt = self.parse_next_stmt()
         elif self.cur_is(token.BREAK):
             stmt = self.parse_break_stmt()
+        elif self.cur_is(token.CLASS):
+            stmt = self.parse_class_declaration()
         else:
             stmt = self.parse_expr_stmt()
 
