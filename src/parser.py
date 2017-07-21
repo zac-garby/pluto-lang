@@ -660,7 +660,7 @@ class Parser(object):
         return pairs
 
     def parse_pair(self):
-        key = self.parse_expr(LOWEST)
+        key = self.parse_expr(DOT)
 
         if not self.expect(token.COLON):
             return None
