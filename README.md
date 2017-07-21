@@ -246,7 +246,7 @@ These return the keys, values, and tuple-pairs, respectively, of $obj. These all
 ```r
 me = ["name": "Zac", "age": 15];
 
-for (key : keys of me) {
+for (key : keys of $me) {
   printf "%s: %s" with (key, key $key of $me);
 };
 ```
