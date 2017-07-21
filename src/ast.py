@@ -280,6 +280,21 @@ class IfExpression(Expression):
         )
 
 
+class MatchExpression(Expression):
+    """a match expression"""
+    def __init__(self, token, expr, arms):
+        self.token = token
+        self.expr = expr # a dictionary of {expression: statement} pairs
+        self.arms = arms
+
+    def tree(self, indent, name):
+        return "%smatch\n%s\n%s" % (
+            _(indent) + n(name),
+            self.expr.tree(indent + 1, "match expr"),
+            make_dict_tree(indent + 1, self.arms, "arms")
+        )
+
+
 class BlockLiteral(Expression):
     """a code block literal"""
     def __init__(self, token, body, params):
