@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import readline
 
 import lexer      as l
 import parser     as p
