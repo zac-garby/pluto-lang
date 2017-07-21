@@ -59,6 +59,7 @@ BREAK   = "break"
 CLASS   = "class"
 EXTENDS = "extends"
 INIT    = "init"
+MATCH   = "match"
 
 class Token(object):
     """a single lexical token"""
@@ -95,6 +96,7 @@ keywords = {
     "break":   BREAK,
     "class":   CLASS,
     "extends": EXTENDS,
-    "init":    INIT
+    "init":    INIT,
+    "match":   MATCH
 }
 
