@@ -251,6 +251,47 @@ for (key : keys of $me) {
 };
 ```
 
+## Classes
+
+Pluto supports some object oriented features, namely classes and inheritance. The class syntax is fairly straightforward:
+
+```r
+class Point {
+  init at $x $y {
+    self.x = x;
+    self.y = y;
+  };
+  
+  def move by $x $y {
+    self.x = self.x + x;
+    self.y = self.y + y;
+  };
+};
+```
+
+An `init` method is a constructor, meaning you can instantiate a `Point` with the following syntax:
+
+```r
+my_point = Point at 10 3;
+```
+
+Internally what happens is, when an `init` method is defined, a normal function is defined in the same scope as the
+class declaration which creates a new instance of the class, then evaluates the body of the class with that instance.
+
+Therefore, you can override `init` methods, as well as normal functions, which can be useful sometimes.
+
+To call a method on a class instance, you use the `<instance>: <pattern>` syntax, like so:
+  
+```r
+my_point: move by (-10) (-3);
+
+print (my_point.x);
+```
+
+Which will print `0.0`. Something interesting to point out is that the values `-10` and `-3` are surrounded in brackets.
+This is because, at the moment, the syntax doesn't allow for unary operators in patterns without brackets round them,
+although I'd like to change this at some point.
+
 ## How??
 
 To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
