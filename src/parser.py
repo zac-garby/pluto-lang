@@ -84,7 +84,8 @@ class Parser(object):
             token.BSLASH: self.parse_function_call,
             token.LBRACE: self.parse_block_literal,
             token.WHILE:  self.parse_while_loop,
-            token.FOR:    self.parse_for_loop
+            token.FOR:    self.parse_for_loop,
+            token.MATCH:  self.parse_match_expr
         }
 
         self.infixes  = {
@@ -441,10 +442,10 @@ class Parser(object):
         expr.right = self.parse_expr(DOT)
 
         return expr
-        
+
     def parse_method_call(self, left):
         expr = ast.MethodCall(self.cur_tok, left, [])
-        
+
         while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
             self.next()
 
@@ -473,7 +474,7 @@ class Parser(object):
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
             return None
-        
+
         return expr
 
     def parse_block_literal(self):
@@ -535,6 +536,58 @@ class Parser(object):
 
         return expr
 
+    def parse_match_expr(self):
+        expr = ast.MatchExpression(self.cur_tok, None, None)
+
+        if not self.expect(token.LPAREN):
+            return None
+
+        self.next()
+        expr.expr = self.parse_expr(LOWEST)
+
+        if not self.expect(token.RPAREN):
+            return None
+
+        if not self.expect(token.LBRACE):
+            return None
+
+        expr.arms = []
+        while not self.cur_is(token.RBRACE):
+            self.next()
+
+            arm = self.parse_match_arm()
+
+            if arm != None:
+                expr.arms.append(arm)
+            else:
+                return None
+
+            if self.peek_is(token.RBRACE):
+                self.next()
+
+        return expr
+
+    def parse_match_arm(self):
+        left, right = [], None
+
+        if self.cur_is(token.STAR):
+            left = None
+            self.next()
+        else:    
+            left = self.parse_expr_list(token.F_ARROW)
+
+        self.next()
+
+        if self.cur_is(token.LBRACE):
+            self.next()
+            right = self.parse_block_statement()
+            self.next()
+        else:
+            right = self.parse_stmt()
+
+        return (left, right)
+
+
     def parse_class_declaration(self):
         stmt = ast.ClassStatement(self.cur_tok, None, [], None)
 
@@ -553,7 +606,7 @@ class Parser(object):
             return None
 
         self.next()
-        
+
         if self.cur_is(token.RBRACE):
             return stmt
 
@@ -562,7 +615,7 @@ class Parser(object):
                 stmt.methods.append(self.parse_init_stmt())
             elif self.cur_is(token.DEF):
                 stmt.methods.append(self.parse_def_stmt())
-                
+
             if not self.expect(token.SEMI):
                 return None
 
@@ -606,18 +659,18 @@ class Parser(object):
 
     def parse_pattern_call(self, end):
         pattern = []
-        
+
         while not self.cur_is(end):
             tok = self.cur_tok
-            
+
             if not self.expect_cur_any([token.ID, token.PARAM] + list(token.keywords.values())):
                 return None
-                
+
             if tok.type == token.ID or tok.type in token.keywords.values():
                 pattern.append(ast.Identifier(tok))
             else:
                 pattern.append(ast.Parameter(tok, tok.literal))
-                
+
         return pattern
 
     def parse_expr_list(self, end):
