@@ -327,3 +327,4 @@ There are loads of things to do. Heres a list for you:
  - Add sorting builtins
  - Add importing files
  - Add switch-case or match expression
+ - Make unary operators allowed in patterns
