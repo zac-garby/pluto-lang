@@ -1,3 +1,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Pycharm metadata
+.idea
