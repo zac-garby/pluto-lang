@@ -22,6 +22,7 @@ def evaluate(node, ctx):
     if t == ast.ForLoop:              return eval_for_loop(node, ctx)
     if t == ast.ClassStatement:       return eval_class_stmt(node, ctx)
     if t == ast.MethodCall:           return eval_method_call(node, ctx)
+    if t == ast.MatchExpression:      return eval_match_expr(node, ctx)
 
     # Literals
     if t == ast.Null:                 return NULL
@@ -495,6 +496,37 @@ def eval_method_call(node, ctx):
     
     result = evaluate(function.fn.body, enclosed)
     return result
+
+def eval_match_expr(node, ctx):
+    val = evaluate(node.expr, ctx)
+    if is_err(val):
+        return val
+    
+    matched = None
+    
+    for exprs, result in node.arms:  
+        m = False
+              
+        if exprs == None:
+            m = True
+        
+        for expr in exprs:
+            e = evaluate(expr, ctx)
+            if is_err(e):
+                return e
+            
+            if e == val:
+                m = True
+        
+        if m:
+            matched = result
+            break
+    
+    if matched != None:
+        r = evaluate(matched, ctx.enclose())
+        return unwrap_return_value(r)
+    else:
+        return NULL
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:

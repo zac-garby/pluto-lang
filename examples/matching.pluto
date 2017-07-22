@@ -9,7 +9,7 @@ string = match (a) {
     print "A large number has been found";
     "quite big";
   };
-  * => "more than 10";
+  * => "something else";
 };
 
 print $string;

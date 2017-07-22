@@ -42,6 +42,7 @@ ARROW   = "arrow"                 # ->
 COLON   = "colon"                 # :
 Q_MARK  = "question-mark"         # ?
 DOT     = "dot"                   # .
+F_ARROW = "fat-arrow"             # =>
 
 # Keywords
 DEF     = "def"
@@ -59,6 +60,7 @@ BREAK   = "break"
 CLASS   = "class"
 EXTENDS = "extends"
 INIT    = "init"
+MATCH   = "match"
 
 class Token(object):
     """a single lexical token"""
@@ -95,6 +97,7 @@ keywords = {
     "break":   BREAK,
     "class":   CLASS,
     "extends": EXTENDS,
-    "init":    INIT
+    "init":    INIT,
+    "match":   MATCH
 }
 

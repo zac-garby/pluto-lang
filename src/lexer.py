@@ -59,6 +59,7 @@ lexical_dictionary = [
     (r"&&",                    o (token.AND)),
     (r"\|",                    o (token.B_OR)),
     (r"&",                     o (token.B_AND)),
+    (r"=>",                    o (token.F_ARROW)),
     (r"=",                     o (token.ASSIGN)),
     (r":=",                    o (token.DECLARE)),
     (r"\,",                    o (token.COMMA)),

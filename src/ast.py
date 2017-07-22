@@ -280,6 +280,36 @@ class IfExpression(Expression):
         )
 
 
+class MatchExpression(Expression):
+    """a match expression"""
+    def __init__(self, token, expr, arms):
+        self.token = token
+        self.expr = expr # a list of ([expressions], statement) pairs
+        self.arms = arms
+
+    def tree(self, indent, name):
+        arms = _(indent) + n("arms") + "["
+        
+        if len(self.arms) == 0:
+            arms += "]"
+
+        for (key, value) in self.arms:
+            arms += "\n%sarm\n%s\n%s" % (
+                _(indent + 1),
+                (_(indent + 2) + "wildcard") if key == None else make_list_tree(indent + 2, key, "key"),
+                value.tree(indent + 2, "value")
+            )
+        
+        if len(self.arms) > 0:
+            arms += ("\n%s]" % _(indent))
+        
+        return "%smatch\n%s\n%s" % (
+            _(indent) + n(name),
+            self.expr.tree(indent + 1, "match expr"),
+            arms
+        )
+
+
 class BlockLiteral(Expression):
     """a code block literal"""
     def __init__(self, token, body, params):
