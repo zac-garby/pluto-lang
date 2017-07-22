@@ -124,6 +124,32 @@ parsed as a normal identifier in the pattern.
 
 This is really cool because, in theory, you could even define the English language as a series of functions!
 
+## Match expressions
+
+Instead of switch-case statements, Pluto has match expressions, similar to Rust:
+
+```
+a = 7;
+
+string = match (a) {
+  1 => "one";
+  2 => "two";
+  3 => "three";
+  4 => "four";
+  5, 6, 7, 8, 9, 10 => {
+    print "A large number has been found";
+    "quite big";
+  };
+  * => "something else";
+};
+```
+
+They're similar to switch-cases, but with a nicer syntax, and also they're expressions instead of statements. When
+evaluating a match expression, it goes through each "arm", and if the value in brackets at the top is equal to any
+expression in the list before the arrow, it returns the _statement_ on the right, without checking any other arms.
+
+Also, a wildcard will match anything, so make sure it always comes last.
+
 ## Blocks
 
 There exists a type known as a block. Here's one:
