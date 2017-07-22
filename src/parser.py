@@ -579,7 +579,6 @@ class Parser(object):
         self.next()
 
         if self.cur_is(token.LBRACE):
-            self.next()
             right = self.parse_block_statement()
             self.next()
         else:
