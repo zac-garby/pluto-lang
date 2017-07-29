@@ -76,7 +76,8 @@ def repl(ctx):
 
             execute(string, True, ctx)
         except (KeyboardInterrupt, EOFError):
-            break
+            print("Goodbye!")
+            sys.exit()
 
 def run_file():
     with open(sys.argv[1], "r") as f:
