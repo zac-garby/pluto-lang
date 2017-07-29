@@ -282,6 +282,9 @@ class Parser(object):
             return self.parse_function_call(ast.Identifier(self.cur_tok))
 
         return ast.Identifier(self.cur_tok)
+    
+    def parse_id_arg(self):
+        return parse_id(False)
 
     def parse_num(self):
         lit = ast.Number(self.cur_tok, None)
