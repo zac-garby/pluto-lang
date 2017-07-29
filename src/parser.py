@@ -55,6 +55,14 @@ arg_tokens = [
     token.LBRACE
 ]
 
+arg_blacklist = [
+    token.IF,
+    token.BSLASH,
+    token.WHILE,
+    token.FOR,
+    token.MATCH
+]
+
 class Parser(object):
     """parses a stream of tokens into an abstract syntax tree (AST)"""
     def __init__(self, tokens):
