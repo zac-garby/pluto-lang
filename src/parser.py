@@ -42,25 +42,14 @@ precedences = {
     token.DOT:     DOT
 }
 
-arg_tokens = [
-    token.ID,
-    token.NUM,
-    token.NULL,
-    token.TRUE,
-    token.FALSE,
-    token.STR,
-    token.PARAM,
-    token.LPAREN,
-    token.LSQUARE,
-    token.LBRACE
-]
-
 arg_blacklist = [
     token.IF,
     token.BSLASH,
     token.WHILE,
     token.FOR,
-    token.MATCH
+    token.MATCH,
+    token.MINUS,
+    token.PLUS
 ]
 
 class Parser(object):
@@ -95,6 +84,11 @@ class Parser(object):
             token.FOR:    self.parse_for_loop,
             token.MATCH:  self.parse_match_expr
         }
+        
+        self.arg_tokens = [k for k, v in self.prefixes.items() if k not in arg_blacklist] + [
+            token.ID,
+            token.PARAM
+        ]
 
         self.infixes  = {
             token.PLUS:    self.parse_infix,
@@ -278,13 +272,10 @@ class Parser(object):
         return left
 
     def parse_id(self, can_be_fn = True):
-        if can_be_fn and self.peek_in(arg_tokens):
+        if can_be_fn and self.peek_in(self.arg_tokens):
             return self.parse_function_call(ast.Identifier(self.cur_tok))
 
         return ast.Identifier(self.cur_tok)
-    
-    def parse_id_arg(self):
-        return parse_id(False)
 
     def parse_num(self):
         lit = ast.Number(self.cur_tok, None)
@@ -356,7 +347,7 @@ class Parser(object):
             expr.pattern.append(first)
 
         # If the current token is a valid arg token, or a keyword
-        while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
+        while self.peek_in(self.arg_tokens) or self.peek_in(token.keywords.values()):
             self.next()
 
             if self.cur_in(token.keywords.values()):
@@ -367,19 +358,21 @@ class Parser(object):
 
             handlers = {
                 token.ID:      lambda: ast.Identifier(self.cur_tok),
-                token.LPAREN:  lambda: arg(self.parse_grouped_expr()),
-                token.NUM:     lambda: arg(self.parse_num()),
-                token.NULL:    lambda: arg(self.parse_null()),
-                token.TRUE:    lambda: arg(self.parse_bool()),
-                token.FALSE:   lambda: arg(self.parse_bool()),
-                token.STR:     lambda: arg(self.parse_string()),
-                token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok)),
-                token.LSQUARE: lambda: arg(self.parse_array_or_object()),
-                token.LBRACE:  lambda: arg(self.parse_block_literal()),
+                token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok))
             }
-
-            handler = handlers[self.cur_tok.type]
-            expr.pattern.append(handler())
+            
+            found = False
+            for k, v in self.prefixes.items():
+                if k in handlers.keys():
+                    continue
+                
+                if k == self.cur_tok.type:
+                    expr.pattern.append(arg(v()))
+                    found = True
+            
+            if not found:
+                handler = handlers[self.cur_tok.type]
+                expr.pattern.append(handler())
 
         if len(expr.pattern) == 0:
             self.err("expected at least one item in a pattern")
@@ -457,7 +450,7 @@ class Parser(object):
     def parse_method_call(self, left):
         expr = ast.MethodCall(self.cur_tok, left, [])
 
-        while self.peek_in(arg_tokens) or self.peek_in(token.keywords.values()):
+        while self.peek_in(self.arg_tokens) or self.peek_in(token.keywords.values()):
             self.next()
 
             if self.cur_in(token.keywords.values()):
