@@ -128,7 +128,7 @@ This is really cool because, in theory, you could even define the English langua
 
 Instead of switch-case statements, Pluto has match expressions, similar to Rust:
 
-```
+```r
 a = 7;
 
 string = match (a) {
