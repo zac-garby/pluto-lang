@@ -352,4 +352,8 @@ There are loads of things to do. Heres a list for you:
  - Add type conversions (maybe "val -> type" or "val as type" or "val:type")
  - Add sorting builtins
  - Add importing files
+ - Add a module system
  - Make unary operators allowed in patterns
+ - Maybe add a regex literal
+ - Add raw strings
+ - Add a better way of doing string interpolation, maybe "hello {{x}} {{y + x}}"?
