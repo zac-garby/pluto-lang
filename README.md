@@ -349,11 +349,12 @@ There are loads of things to do. Heres a list for you:
  - Change syntax so explicit function calls are only necessary with a pattern of length 1.
  - Only throw a syntax error if one hasn't already been thrown in the same statement, to avoid repetition.
  - Rewrite in a faster language - possibly Rust or Go.
- - Add type conversions (maybe "val -> type" or "val as type" or "val:type")
+ - Add type conversions (maybe `"val -> type"` or `"val as type"`)
  - Add sorting builtins
  - Add importing files
  - Add a module system
  - Make unary operators allowed in patterns
  - Maybe add a regex literal
  - Add raw strings
- - Add a better way of doing string interpolation, maybe "hello {{x}} {{y + x}}"?
+ - Add a better way of doing string interpolation, maybe `"hello {{x}} {{y + x}}"?`
+ - Rename `run $block` to `do $block`
