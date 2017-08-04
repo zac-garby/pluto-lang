@@ -25,5 +25,5 @@ print (good_numbers + bad_numbers + name);
 say_hi = { print "Hello, world!"; };
 add = { |x, y| -> x + y; };
 
-run $say_hi;
-run $add with (5, 10);
+do $say_hi;
+do $add with (5, 10);
