@@ -2,8 +2,8 @@
 triple = { |x| -> x * 3; };
 
 # you can run a block with the `run $block [with $args]` builtin
-run { print "No arguments!"; };
-six = run $triple with [2];
+do { print "No arguments!"; };
+six = do $triple with [2];
 
 # they are used in a lot of builtins
 squares = map { |x| -> x ** 2; } over (\1 to 11);

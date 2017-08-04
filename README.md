@@ -160,10 +160,10 @@ my_block = {
 };
 ```
 
-A block basically stores a block of code inside it, which can then be executed on cue, using the `run $block` builtin:
+A block basically stores a block of code inside it, which can then be executed on cue, using the `do $block` builtin:
 
 ```r
-run $my_block;
+do $my_block;
 ```
 
 This piece of code prints "Hello, world" to the console. Like functions, blocks can recieve arguments:
@@ -171,13 +171,13 @@ This piece of code prints "Hello, world" to the console. Like functions, blocks 
 ```r
 add = { |a, b| -> a + b; };
 
-run $add with [3, 10];
+do $add with [3, 10];
 ```
 
 This block, called `add`, takes two arguments: `a`, and `b`. It then returns the sum of them. As you can see, to run a
-block with arguments, you use the `run $block with $args` builtin, providing the arguments as an array.
+block with arguments, you use the `do $block with $args` builtin, providing the arguments as an array.
 
-An interesting note is that both `run $block` and `run $block with $args` are both defined as normal functions.
+An interesting note is that both `do $block` and `do $block with $args` are both defined as normal functions.
 
 Blocks are also used in some functions in the standard library:
 
@@ -357,4 +357,3 @@ There are loads of things to do. Heres a list for you:
  - Maybe add a regex literal
  - Add raw strings
  - Add a better way of doing string interpolation, maybe `"hello {{x}} {{y + x}}"?`
- - Rename `run $block` to `do $block`

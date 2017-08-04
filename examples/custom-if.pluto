@@ -1,8 +1,8 @@
 def if $condition $a else $b {
   if (condition) {
-    run $a;
+    do $a;
   } else {
-    run $b;
+    do $b;
   };
 };
 
