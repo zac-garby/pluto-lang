@@ -74,6 +74,12 @@ def input_with_prompt_prompt(args, context):
     except (KeyboardInterrupt, EOFError):
         return NULL
 
+def _run_block(block, args, context):
+    params = [param.value for param in block.params]
+    args_dict = dict(zip(params, args))
+    ctx = context.enclose_with_args(args_dict)
+    return evaluate(block.body, ctx)
+
 @arg("block", obj.Block)
 @builtin("do $block")
 def do_block(args, context):
@@ -85,14 +91,7 @@ def do_block(args, context):
     if len(block.params) > 0:
         return err("since no arguments are provided, $block of `do $block` must have no parameters")
 
-    ctx = context.enclose()
-    return evaluate(block.body, ctx)
-
-def _run_block(block, args, context):
-    params = [param.value for param in block.params]
-    args_dict = dict(zip(params, args))
-    ctx = context.enclose_with_args(args_dict)
-    return evaluate(block.body, ctx)
+    return _run_block(block, [], context)
 
 @arg("block", obj.Block)
 @arg("args", obj.Collection)
@@ -107,11 +106,7 @@ def do_block_with_args(args, context):
     if len(block.params) != len(b_args):
         return err("the amount of arguments provided in `do $block with $args` should match the number of parameters in the block")
 
-    params = [param.value for param in block.params]
-    args_dictionary = dict(zip(params, b_args))
-
-    ctx = context.enclose_with_args(args_dictionary)
-    return evaluate(block.body, ctx)
+    return _run_block(block, b_args, context)
 
 @arg("block", obj.Block)
 @arg("array", obj.Collection)
