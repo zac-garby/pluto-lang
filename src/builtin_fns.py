@@ -75,15 +75,15 @@ def input_with_prompt_prompt(args, context):
         return NULL
 
 @arg("block", obj.Block)
-@builtin("run $block")
-def run_block(args, context):
+@builtin("do $block")
+def do_block(args, context):
     block = args["block"]
 
     if type(block) != obj.Block:
-        return err("the $block parameter in `run $block` must be of type <block>")
+        return err("the $block parameter in `do $block` must be of type <block>")
 
     if len(block.params) > 0:
-        return err("since no arguments are provided, $block of `run $block` must have no parameters")
+        return err("since no arguments are provided, $block of `do $block` must have no parameters")
 
     ctx = context.enclose()
     return evaluate(block.body, ctx)
@@ -96,13 +96,16 @@ def _run_block(block, args, context):
 
 @arg("block", obj.Block)
 @arg("args", obj.Collection)
-@builtin("run $block with $args")
-def run_block_with_args(args, context):
+@builtin("do $block with $args")
+def do_block_with_args(args, context):
     block = args["block"]
     b_args = args["args"].get_elements()
 
+    if type(block) != obj.Block:
+        return err("the $block parameter in `do $block with $args` must be of type <block>")
+
     if len(block.params) != len(b_args):
-        return err("the amount of arguments provided in `run $block with $args` should match the number of parameters in the block")
+        return err("the amount of arguments provided in `do $block with $args` should match the number of parameters in the block")
 
     params = [param.value for param in block.params]
     args_dictionary = dict(zip(params, b_args))
