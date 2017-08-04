@@ -360,5 +360,4 @@ There are loads of things to do. Heres a list for you:
  - Add a module system
  - Make unary operators allowed in patterns
  - Maybe add a regex literal
- - Add raw strings
  - Add a better way of doing string interpolation, maybe `"hello {{x}} {{y + x}}"?`
