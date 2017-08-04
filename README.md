@@ -318,6 +318,11 @@ Which will print `0.0`. Something interesting to point out is that the values `-
 This is because, at the moment, the syntax doesn't allow for unary operators in patterns without brackets round them,
 although I'd like to change this at some point.
 
+### Inheritance
+
+You can also use inheritance in your classes. I'll probably add an example here at some point, but for now, have a look
+at `examples/classes.pluto` to see how.
+
 ## How??
 
 To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
