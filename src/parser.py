@@ -688,6 +688,11 @@ class Parser(object):
 
         while self.peek_is(token.COMMA):
             self.next()
+            
+            if self.peek_is(end):
+                self.next()
+                return exprs
+            
             self.next()
             exprs.append(self.parse_expr(LOWEST))
 
@@ -708,6 +713,11 @@ class Parser(object):
 
         while self.peek_is(token.COMMA):
             self.next()
+            
+            if self.peek_is(end):
+                self.next()
+                return pairs
+            
             self.next()
             key, val = self.parse_pair()
             pairs[key] = val
