@@ -361,3 +361,4 @@ There are loads of things to do. Heres a list for you:
  - Make unary operators allowed in patterns
  - Maybe add a regex literal
  - Add a better way of doing string interpolation, maybe `"hello {{x}} {{y + x}}"?`
+ - (very tricky,) compile Pluto code to bytecode, to speed up execution
