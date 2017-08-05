@@ -346,7 +346,6 @@ Any contributions are welcome. Just send a pull request. I'll probably accept it
 There are loads of things to do. Heres a list for you:
 
  - Extend the standard library. Literally, put any function in and I'll probably accept it.
- - Extend the parser to not require semi-colons.
  - Write up some better documentation.
  - Add testing.
  - Change syntax so explicit function calls are only necessary with a pattern of length 1.
