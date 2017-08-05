@@ -69,7 +69,7 @@ def repl(ctx):
 
     while True:
         try:
-            string = input(">> ") + ";"
+            string = input(">> ")
 
             if string[:-1] == "exit":
                 break

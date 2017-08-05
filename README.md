@@ -9,9 +9,9 @@ being called with their arguments in parentheses after the name, they are repres
 # defines a pattern: 'this is a pattern'
 def this is a pattern {
   ...
-};
+}
 
-this is a pattern;
+this is a pattern
 ```
 
 This snippet defines a function with a pattern of "this is a pattern". Then, whenever a function call is
@@ -22,10 +22,10 @@ Functions can, of course, also take parameters:
 
 ```r
 def evaluate $number times $multiplier {
-  number * multiplier;
-};
+  number * multiplier
+}
 
-evaluate 5 times 10;
+evaluate 5 times 10
 ```
 
 This program results in  the value `50`. Hopefully, you can see why. In  a pattern in a function  definition,
@@ -47,10 +47,10 @@ Imagine this:
 
 ```r
 def double $n {
-  n * 2;
-};
+  n * 2
+}
 
-double 5 + 3;
+double 5 + 3
 ```
 
 What would you expect to happen? My guess would be for it to return `16`. But it doesnt - it actually returns
@@ -58,14 +58,14 @@ What would you expect to happen? My guess would be for it to return `16`. But it
 added to the other literal `3`. Essentially, it's equivalent to this:
 
 ```r
-(double 5) + 3;
+(double 5) + 3
 ```
 
 So how do you avoid this? Well, since the reason it didn't work last time is because  the invisibile brackets
 are in the wrong place, so you just need to tell them where to go:
 
 ```r
-double (5 + 3);
+double (5 + 3)
 ```
 
 This will now give you the result you wanted.
@@ -74,21 +74,21 @@ Another problem you might come across is this:
 
 ```r
 def $a plus $b {
-  a + b;
-};
+  a + b
+}
 ```
 
 How would you call this? If you did the following:
 
 ```r
-5 plus 10;
+5 plus 10
 ```
 
 You'd get an error. This is because the current grammar only allows for _implicit function calls_ if the first
 item in the pattern is an identifier, and not an argument. In this case, you need to use an _explicit function call_:
 
 ```r
-\5 plus 10;
+\5 plus 10
 ```
 
 This would work exactly as you'd expect, returning the value `15`.
@@ -101,11 +101,11 @@ example, you could create a function which does the exact same thing as an if ex
 ```r
 def if $condition then $a else $b {
   if (condition) {
-    a;
+    a
   } else {
-    b;
-  };
-};
+    b
+  }
+}
 ```
 
 First things first: this is the first time you've seen an if expression in this language. They're fairly
@@ -114,7 +114,7 @@ standard. One main difference is that they're expressions, not statements, like 
 You can then call it like this:
 
 ```r
-\if (true) then 5 else 10;
+\if (true) then 5 else 10
 ```
 
 Which, as you can probably guess, will return 5. A few things to mention: you need to use a
@@ -129,19 +129,19 @@ This is really cool because, in theory, you could even define the English langua
 Instead of switch-case statements, Pluto has match expressions, similar to Rust:
 
 ```r
-a = 7;
+a = 7
 
 string = match (a) {
-  1 => "one";
-  2 => "two";
-  3 => "three";
-  4 => "four";
+  1 => "one"
+  2 => "two"
+  3 => "three"
+  4 => "four"
   5, 6, 7, 8, 9, 10 => {
-    print "A large number has been found";
-    "quite big";
-  };
-  * => "something else";
-};
+    print "A large number has been found"
+    "quite big"
+  }
+  * => "something else"
+}
 ```
 
 They're similar to switch-cases, but with a nicer syntax, and also they're expressions instead of statements. When
@@ -156,22 +156,22 @@ There exists a type known as a block. Here's one:
 
 ```r
 my_block = {
-  print "Hello, world";
-};
+  print "Hello, world"
+}
 ```
 
 A block basically stores a block of code inside it, which can then be executed on cue, using the `do $block` builtin:
 
 ```r
-do $my_block;
+do $my_block
 ```
 
 This piece of code prints "Hello, world" to the console. Like functions, blocks can recieve arguments:
 
 ```r
-add = { |a, b| -> a + b; };
+add = { |a, b| -> a + b }
 
-do $add with [3, 10];
+do $add with [3, 10]
 ```
 
 This block, called `add`, takes two arguments: `a`, and `b`. It then returns the sum of them. As you can see, to run a
@@ -182,8 +182,8 @@ An interesting note is that both `do $block` and `do $block with $args` are both
 Blocks are also used in some functions in the standard library:
 
 ```r
-map { |n| -> n * n; } over [1, 2, 3, 4, 5]; #-> [1, 4, 9, 16, 25]
-fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n; }; #-> 15
+map { |n| -> n * n } over [1, 2, 3, 4, 5]  #-> [1, 4, 9, 16, 25]
+fold [1, 2, 3, 4, 5] with { |counter, n| -> counter + n }  #-> 15
 ```
 
 ## Collections
@@ -198,10 +198,10 @@ represented as a list of elements. There are three collection types currently de
 Before getting into tuples, here's an example using different types of collections:
 
 ```r
->>> map { |x| -> x * 2; } over [1, 2, 3, 4, 5];
+>>> map { |x| -> x * 2; } over [1, 2, 3, 4, 5]
 [2, 4, 6, 8, 10]
 
->>> map { |x| -> x + "!"; } over "foo";
+>>> map { |x| -> x + "!"; } over "foo"
 f!o!o!
 ```
 
@@ -220,8 +220,8 @@ You can loop over tuples, just like arrays:
 
 ```r
 for (i : a_tuple) {
-  print $i;
-};
+  print $i
+}
 ```
 
 ### Operators on collections
@@ -238,19 +238,17 @@ A few operators are defined on collections:
 Objects are similar to dictionaries in Python, or objects in JavaScript:
 
 ```r
-an_object = [
-  "x": 3,
-  "y": -7,
-  true: "A boolean can also be a key ...",
-  3: "... as can a number!"
-];
+an_object = [ "x": 3,
+              "y": -7,
+              true: "A boolean can also be a key ...",
+              3: "... as can a number!" ]
 ```
 
 The syntax is similar to that of an array literal, however between each comma is a `key: value` mapping. You can access
 a value at a certain key with the `key $key of $obj` builtin:
 
 ```r
-key "y" of $an_object;
+key "y" of $an_object
 ```
 
 Which, of course, returns `-7`.
@@ -262,19 +260,19 @@ values? Or even, an array containing tuples in the format `(key, value)`. All of
 of making objects collections directly, three builtins are defined:
 
 ```r
-keys of $obj;
-values of $obj;
-pairs of $obj;
+keys of $obj
+values of $obj
+pairs of $obj
 ```
 
 These return the keys, values, and tuple-pairs, respectively, of $obj. These allow for the use of anything collections do:
 
 ```r
-me = ["name": "Zac", "age": 15];
+me = ["name": "Zac", "age": 15]
 
 for (key : keys of $me) {
-  printf "%s: %s" with (key, key $key of $me);
-};
+  printf "%s: %s" with (key, key $key of $me)
+}
 ```
 
 ## Classes
@@ -284,21 +282,21 @@ Pluto supports some object oriented features, namely classes and inheritance. Th
 ```r
 class Point {
   init at $x $y {
-    self.x = x;
-    self.y = y;
-  };
+    self.x = x
+    self.y = y
+  }
   
   def move by $x $y {
-    self.x = self.x + x;
-    self.y = self.y + y;
-  };
-};
+    self.x = self.x + x
+    self.y = self.y + y
+  }
+}
 ```
 
 An `init` method is a constructor, meaning you can instantiate a `Point` with the following syntax:
 
 ```r
-my_point = Point at 10 3;
+my_point = Point at 10 3
 ```
 
 Internally what happens is, when an `init` method is defined, a normal function is defined in the same scope as the
@@ -309,9 +307,9 @@ Therefore, you can override `init` methods, as well as normal functions, which c
 To call a method on a class instance, you use the `<instance>: <pattern>` syntax, like so:
   
 ```r
-my_point: move by (-10) (-3);
+my_point: move by (-10) (-3)
 
-print (my_point.x);
+print (my_point.x)
 ```
 
 Which will print `0.0`. Something interesting to point out is that the values `-10` and `-3` are surrounded in brackets.
@@ -348,7 +346,6 @@ Any contributions are welcome. Just send a pull request. I'll probably accept it
 There are loads of things to do. Heres a list for you:
 
  - Extend the standard library. Literally, put any function in and I'll probably accept it.
- - Extend the parser to not require semi-colons.
  - Write up some better documentation.
  - Add testing.
  - Change syntax so explicit function calls are only necessary with a pattern of length 1.
@@ -362,3 +359,4 @@ There are loads of things to do. Heres a list for you:
  - Maybe add a regex literal
  - Add a better way of doing string interpolation, maybe `"hello {{x}} {{y + x}}"?`
  - (very tricky,) compile Pluto code to bytecode, to speed up execution
+ - Allow trailing commas in array and object literals

@@ -651,6 +651,8 @@ class Parser(object):
         self.next()
 
         stmt.pattern = self.parse_pattern_call(token.LBRACE)
+        if stmt.pattern == None:
+            return None
 
         stmt.body = self.parse_block_statement()
 
