@@ -64,12 +64,12 @@ def execute(text, print_result, ctx):
             print(result)
 
 def repl(ctx):
-    print("Pluto -- early beta version")
-    print("Copyright Zac Garby © 2017")
+    print("Pluto REPL - https://pluto.zacgarby.co.uk")
+    print("Copyright (c) Zac Garby <me@zacgarby.co.uk>")
 
     while True:
         try:
-            string = input("♇ ") + ";"
+            string = input(">> ") + ";"
 
             if string[:-1] == "exit":
                 break
