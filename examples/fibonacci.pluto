@@ -1,11 +1,11 @@
 def f $n {
   if (n < 2) {
-    n;
+    n
   } else {
-    (f (n - 2)) + (f (n - 1));
-  };
-};
+    (f (n - 2)) + (f (n - 1))
+  }
+}
 
 for (n : \1 to 100) {
-  print (f $n);
-};
+  print (f $n)
+}
