@@ -36,6 +36,8 @@ class InternalObject(object):
 
 
 class Collection(InternalObject):
+    t = "<any collection>"
+    
     def get_elements(self):
         return []
 
@@ -48,6 +50,8 @@ def hasher():
 
 
 class Error(InternalObject):
+    t = ERROR
+
     """represents an error thrown in execution"""
     def __init__(self, msg):
         self.type = ERROR
@@ -60,6 +64,8 @@ class Error(InternalObject):
 
 
 class ReturnValue(InternalObject):
+    t = RETURN_VALUE
+    
     """represents a value to be returned from a function"""
     def __init__(self, value):
         self.type = RETURN_VALUE
@@ -72,6 +78,8 @@ class ReturnValue(InternalObject):
 
 
 class Number(InternalObject):
+    t = NUMBER
+    
     """represents a number object"""
     def __init__(self, value):
         self.type = NUMBER
@@ -91,6 +99,8 @@ class Number(InternalObject):
 
 
 class Boolean(InternalObject):
+    t = BOOLEAN
+    
     """a boolean object"""
     def __init__(self, value):
         self.type = BOOLEAN
@@ -104,6 +114,8 @@ class Boolean(InternalObject):
 
 
 class String(Collection):
+    t = STRING
+    
     """a string object"""
     def __init__(self, value):
         self.type = STRING
@@ -124,6 +136,8 @@ class String(Collection):
 
 
 class Char(InternalObject):
+    t = CHAR
+    
     """a character object"""
     def __init__(self, value):
         self.type = CHAR
@@ -137,6 +151,8 @@ class Char(InternalObject):
 
 
 class Tuple(Collection):
+    t = TUPLE
+    
     """a tuple object"""
     def __init__(self, value):
         self.type = TUPLE
@@ -153,6 +169,8 @@ class Tuple(Collection):
 
 
 class Object(InternalObject):
+    t = OBJECT
+    
     """an object, similar to a dictionary in python"""
     def __init__(self, pairs):
         self.type = OBJECT
@@ -175,6 +193,8 @@ class Object(InternalObject):
 
 
 class Null(InternalObject):
+    t = NULL
+    
     """the null object"""
     def __init__(self):
         self.type = NULL
@@ -186,6 +206,8 @@ class Null(InternalObject):
 
 
 class Array(Collection):
+    t = ARRAY
+    
     """an array object"""
     def __init__(self, elements):
         self.type = ARRAY
@@ -202,6 +224,8 @@ class Array(Collection):
 
 
 class Function(InternalObject):
+    t = FUNCTION
+    
     """a function object"""
     def __init__(self, pattern, body, context):
         self.type = FUNCTION
@@ -217,6 +241,8 @@ class Function(InternalObject):
 
 
 class Block(InternalObject):
+    t = BLOCK
+    
     """a block object"""
     def __init__(self, params, body):
         self.type = BLOCK
@@ -228,6 +254,8 @@ class Block(InternalObject):
 
 
 class Next(InternalObject):
+    t = NEXT
+    
     """result of the next; statement"""
     def __init__(self):
         self.type = NEXT
@@ -237,6 +265,8 @@ class Next(InternalObject):
 
 
 class Break(InternalObject):
+    t = BREAK
+    
     """result of the break; statement"""
     def __init__(self):
         self.type = BREAK
@@ -246,6 +276,8 @@ class Break(InternalObject):
 
 
 class InitMethod(InternalObject):
+    t = INIT
+    
     """an initialisation method of a class"""
     def __init__(self, fn):
         self.type = INIT
@@ -256,6 +288,8 @@ class InitMethod(InternalObject):
 
 
 class Method(InternalObject):
+    t = METH
+    
     """a normal method of a class"""
     def __init__(self, fn):
         self.type = METH
@@ -266,6 +300,8 @@ class Method(InternalObject):
 
 
 class Class(InternalObject):
+    t = CLASS
+    
     """a class object"""
     def __init__(self, name, parent, methods):
         self.type = CLASS
@@ -286,6 +322,8 @@ class Class(InternalObject):
 
 
 class Instance(InternalObject):
+    t = INSTANCE
+    
     """an instance of a class """
     def __init__(self, base):
         self.type = INSTANCE
