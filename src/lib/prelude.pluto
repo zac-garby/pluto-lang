@@ -1,0 +1,3 @@
+def len $collection {
+  fold $collection with { |acc, _| -> acc + 1 }
+}
