@@ -1,3 +1,13 @@
+### Constants
+
+# Error types
+GeneralError = "err-general"
+TypeError    = "err-types"
+IOError      = "err-io"
+
+
+### Functions
+
 # Misc
 def $obj is truthy {
   if (obj) { true } else { false }
