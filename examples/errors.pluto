@@ -1,0 +1,11 @@
+def throws an error {
+  throw General "An error :)" # throw $tag $message
+}
+
+try {
+  throws an error
+} catch (tag) {
+  General => {
+    print "An error ocurred"
+  }
+}
