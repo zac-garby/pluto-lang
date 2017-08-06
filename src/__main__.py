@@ -70,7 +70,7 @@ def execute(text, print_result, ctx):
 
 def repl(ctx):
     print("Pluto REPL - https://pluto.zacgarby.co.uk")
-    print("Copyright (c) Zac Garby <me@zacgarby.co.uk>")
+    print("Copyright © Zac Garby - me@zacgarby.co.uk")
 
     while True:
         try:
