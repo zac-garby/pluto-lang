@@ -83,6 +83,13 @@ def input_with_prompt_prompt(args, context):
     except (KeyboardInterrupt, EOFError):
         return NULL
 
+@builtin
+@pattern("throw $tag $message")
+@arg("tag", obj.String)
+@arg("message", obj.String)
+def throw_tag_message(args, context):
+    return err(args["message"], args["tag"])
+
 def _run_block(block, args, context):
     params = [param.value for param in block.params]
     args_dict = dict(zip(params, args))
