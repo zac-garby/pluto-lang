@@ -365,3 +365,5 @@ There are loads of things to do. Heres a list for you:
  - Add a prelude written in Pluto
  - Add operator overloading
  - Improve error messages
+ - Add list (and object?) comprehensions
+ - Maybe rename objects to maps or dictionaries
