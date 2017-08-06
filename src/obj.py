@@ -61,7 +61,7 @@ class Error(InternalObject):
     __eq__ = compare("msg")
 
     def __str__(self):
-        return "%s: %s" % (tag, self.msg)
+        return "%s: %s" % (self.tag, self.msg)
 
 
 class ReturnValue(InternalObject):
