@@ -109,6 +109,17 @@ def do_block_with_args(args, context):
     return _run_block(block, b_args, context)
 
 @arg("block", obj.Block)
+@builtin("do $block on $arg")
+def do_block_on_arg(args, context):
+    block = args["block"]
+    arg = args["arg"]
+    
+    if type(block) != obj.Block:
+        return err("the $block parameter in `do $block with $args` must be of type <block>")
+    
+    return _run_block(block, [arg], context)
+
+@arg("block", obj.Block)
 @arg("array", obj.Collection)
 @builtin("map $block over $array")
 def map_block_over_array(args, context):
