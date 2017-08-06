@@ -55,11 +55,6 @@ def print_obj_without_newline(args, context):
     print(args["obj"], end="")
     return NULL
 
-@builtin("new line")
-def line_break(args, context):
-    print()
-    return NULL
-
 @builtin("input")
 def _input(args, context):
     try:
@@ -163,6 +158,29 @@ def fold_array_with_block(args, context):
 
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
+@builtin("fold $array with $block from $start")
+@builtin("left fold $array with $block from $start")
+def fold_array_with_block(args, context):
+    array = args["array"].get_elements()
+    block = args["block"]
+
+    result = args["start"]
+
+    if len(array) == 0:
+        return result
+
+    for item in array:
+        mapped = _run_block(block, [result, item], context)
+
+        if mapped.type == obj.ERROR:
+            return mapped
+
+        result = mapped
+
+    return result
+
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
 @builtin("right fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
@@ -173,6 +191,26 @@ def fold_array_with_block(args, context):
     result = array[0]
 
     for item in array[1:]:
+        mapped = _run_block(block, [result, item], context)
+
+        if mapped.type == obj.ERROR:
+            return mapped
+
+        result = mapped
+
+    return result
+    
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
+@builtin("right fold $array with $block from $start")
+def fold_array_with_block(args, context):
+    array = args["array"].get_elements()
+    array.reverse()
+
+    block = args["block"]
+    result = args["start"]
+
+    for item in array:
         mapped = _run_block(block, [result, item], context)
 
         if mapped.type == obj.ERROR:
@@ -228,16 +266,6 @@ def union_of_a_and_b(args, context):
 
     return type(args["a"])(result)
 
-@arg("array", obj.Array)
-@builtin("append $item to $array")
-def append_item_to_array(args, context):
-    item = args["item"]
-    array = args["array"]
-
-    array.get_elements().append(item)
-
-    return array
-
 @arg("i", obj.Number)
 @arg("array", obj.Collection)
 @builtin("index $i of $array")
@@ -282,22 +310,12 @@ def pairs_of_obj(args, context):
 
     return obj.Array(pairs)
 
-@arg("collection", obj.Collection)
-@builtin("indices of $collection")
-def indices_of_arr(args, context):
-    collection = args["collection"].get_elements()
-    result = [obj.Number(i) for i in range(len(collection))]
-
-    return obj.Array(result)
-
-@arg("array", obj.Collection)
-@builtin("$array contains $item")
-def array_contains_item(args, context):
-    return TRUE if args["item"] in args["array"].get_elements() else FALSE
-
-@builtin("$obj is truthy")
-def obj_is_truthy(args, context):
-    return TRUE if is_truthy(args["obj"]) else FALSE
+@arg("n", obj.Number)
+@builtin("round $n")
+def round_n(args, context):
+    n = args["n"]
+    
+    return obj.Number(round(n.value))
 
 @arg("start", obj.Number)
 @arg("end", obj.Number)
@@ -323,20 +341,6 @@ def start_to_end(args, context):
         return obj.Array([obj.Number(e) for e in range(s_val, e_val)])
     else:
         return start
-
-@arg("num", obj.Number)
-@builtin("square root of $num")
-def square_root_of_num(args, context):
-    return obj.Number(math.sqrt(args["num"].value))
-
-@arg("root", obj.Number)
-@arg("num", obj.Number)
-@builtin("$root st root of $num")
-@builtin("$root nd root of $num")
-@builtin("$root rd root of $num")
-@builtin("$root th root of $num")
-def nth_root_of_num(args, context):
-    return obj.Number(args["num"].value ** (1 / args["root"].value))
 
 @arg("format", obj.String)
 @arg("args", obj.Collection)

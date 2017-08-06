@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import argparse
 import readline
@@ -22,7 +23,9 @@ def main():
     args = parser.parse_args()
 
     if args.file == None:
-        repl(c.Context())
+        ctx = c.Context()
+        import_prelude(ctx)
+        repl(ctx)
     else:
         try:
             text = open(args.file).read()
@@ -40,9 +43,11 @@ def main():
                 return
 
             ctx = c.Context()
+            import_prelude(ctx)
             execute(text, False, ctx)
 
             if args.interactive:
+                print()
                 repl(ctx)
 
         except FileNotFoundError:
@@ -65,7 +70,7 @@ def execute(text, print_result, ctx):
 
 def repl(ctx):
     print("Pluto REPL - https://pluto.zacgarby.co.uk")
-    print("Copyright (c) Zac Garby <me@zacgarby.co.uk>")
+    print("Copyright © Zac Garby - me@zacgarby.co.uk")
 
     while True:
         try:
@@ -79,10 +84,20 @@ def repl(ctx):
             print("Goodbye!")
             sys.exit()
 
+def import_prelude(ctx):
+    src_path = os.path.dirname(os.path.realpath(__file__))
+    prelude_path = os.path.join(src_path, "lib/prelude.pluto")
+    
+    with open(prelude_path, "r") as prelude:
+        text = prelude.read()
+        execute(text, False, ctx)
+
 def run_file():
     with open(sys.argv[1], "r") as f:
         content = f.read()
-        execute(content, False, c.Context())
+        ctx = c.Context()
+        import_prelude(ctx)
+        execute(content, False, ctx)
 
 if __name__ == "__main__":
     main()
