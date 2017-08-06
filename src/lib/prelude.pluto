@@ -1,3 +1,17 @@
+### Constants
+
+# Error types
+GeneralError        = "GeneralError"
+TypeError           = "TypeError"
+IOError             = "IOError"
+OutOfBoundsError    = "OutOfBoundsError"
+NotFoundError       = "NotFoundError"
+SyntaxError         = "SyntaxError"
+NotImplementedError = "NotImplementedError"
+
+
+### Functions
+
 # Misc
 def $obj is truthy {
   if (obj) { true } else { false }

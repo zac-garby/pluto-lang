@@ -36,7 +36,7 @@ def arg(name, expected_type):
                     name,
                     expected_type.t,
                     args[name].type
-                ))
+                ), "TypeError")
 
             return fn(args, context)
         
@@ -83,6 +83,13 @@ def input_with_prompt_prompt(args, context):
     except (KeyboardInterrupt, EOFError):
         return NULL
 
+@builtin
+@pattern("throw $tag $message")
+@arg("tag", obj.String)
+@arg("message", obj.String)
+def throw_tag_message(args, context):
+    return err(args["message"], args["tag"])
+
 def _run_block(block, args, context):
     params = [param.value for param in block.params]
     args_dict = dict(zip(params, args))
@@ -95,11 +102,11 @@ def _run_block(block, args, context):
 def do_block(args, context):
     block = args["block"]
 
-    if type(block) != obj.Block:
-        return err("the $block parameter in `do $block` must be of type <block>")
-
     if len(block.params) > 0:
-        return err("since no arguments are provided, $block of `do $block` must have no parameters")
+        return err(
+            "since no arguments are provided, $block of `do $block` must have no parameters",
+            "TypeError"
+        )
 
     return _run_block(block, [], context)
 
@@ -111,11 +118,11 @@ def do_block_with_args(args, context):
     block = args["block"]
     b_args = args["args"].get_elements()
 
-    if type(block) != obj.Block:
-        return err("the $block parameter in `do $block with $args` must be of type <block>")
-
     if len(block.params) != len(b_args):
-        return err("the amount of arguments provided in `do $block with $args` should match the number of parameters in the block")
+        return err(
+            "the amount of arguments provided in `do $block with $args` should match the number of parameters in the block",
+            "TypeError"
+        )
 
     return _run_block(block, b_args, context)
 
@@ -125,9 +132,6 @@ def do_block_with_args(args, context):
 def do_block_on_arg(args, context):
     block = args["block"]
     arg = args["arg"]
-    
-    if type(block) != obj.Block:
-        return err("the $block parameter in `do $block with $args` must be of type <block>")
     
     return _run_block(block, [arg], context)
 
@@ -298,7 +302,7 @@ def index_i_of_array(args, context):
     array = args["array"]
 
     if not i.is_integer() or not i.is_positive() or not int(i.value) < len(array.get_elements()):
-        return err("invalid index: %s" % i)
+        return err("invalid index: %s" % i, "OutOfBoundsError")
 
     return array.get_elements()[int(i.value)]
 
@@ -310,7 +314,7 @@ def key_of_obj(args, context):
     obj = args["obj"]
 
     if key not in obj.pairs.keys():
-        return err("key %s not found" % key)
+        return err("key %s not found" % key, "NotFoundError")
 
     return obj.pairs[key]
 
@@ -347,10 +351,10 @@ def start_to_end(args, context):
     end = args["end"]
 
     if not start.is_integer():
-        return err("$start in `$start to $end` must be an integer")
+        return err("$start in `$start to $end` must be an integer", "TypeError")
 
     if not end.is_integer():
-        return err("$end in `$start to $end` must be an integer")
+        return err("$end in `$start to $end` must be an integer", "TypeError")
 
     s_val = int(start.value)
     e_val = int(end.value)
@@ -375,7 +379,7 @@ def format_string_with_args(args, context):
     try:
         return obj.String(fmt % items)
     except TypeError:
-        return err("Wrong number of arguments to format `%s`" % fmt)
+        return err("Wrong number of arguments to format `%s`" % fmt, "TypeError")
 
 @builtin
 @pattern("printf $format with $args")
@@ -388,7 +392,7 @@ def printf_format_with_args(args, context):
     try:
         print(obj.String(fmt % items))
     except TypeError:
-        return err("Wrong number of arguments to format `%s`" % fmt)
+        return err("Wrong number of arguments to format `%s`" % fmt, "TypeError")
 
     return NULL
 
