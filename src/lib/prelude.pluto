@@ -1,9 +1,9 @@
 ### Constants
 
 # Error types
-GeneralError = "err-general"
-TypeError    = "err-types"
-IOError      = "err-io"
+GeneralError = "GeneralError"
+TypeError    = "TypeError"
+IOError      = "IOError"
 
 
 ### Functions
