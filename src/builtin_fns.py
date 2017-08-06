@@ -163,6 +163,29 @@ def fold_array_with_block(args, context):
 
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
+@builtin("fold $array with $block from $start")
+@builtin("left fold $array with $block from $start")
+def fold_array_with_block(args, context):
+    array = args["array"].get_elements()
+    block = args["block"]
+
+    result = args["start"]
+
+    if len(array) == 0:
+        return result
+
+    for item in array[1:]:
+        mapped = _run_block(block, [result, item], context)
+
+        if mapped.type == obj.ERROR:
+            return mapped
+
+        result = mapped
+
+    return result
+
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
 @builtin("right fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
@@ -171,6 +194,26 @@ def fold_array_with_block(args, context):
     block = args["block"]
 
     result = array[0]
+
+    for item in array[1:]:
+        mapped = _run_block(block, [result, item], context)
+
+        if mapped.type == obj.ERROR:
+            return mapped
+
+        result = mapped
+
+    return result
+    
+@arg("array", obj.Collection)
+@arg("block", obj.Block)
+@builtin("right fold $array with $block from $start")
+def fold_array_with_block(args, context):
+    array = args["array"].get_elements()
+    array.reverse()
+
+    block = args["block"]
+    result = args["start"]
 
     for item in array[1:]:
         mapped = _run_block(block, [result, item], context)
