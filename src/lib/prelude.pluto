@@ -1,3 +1,23 @@
+def new line {
+  print ""
+}
+
 def len $collection {
   fold $collection with { |acc, _| -> acc + 1 } from 0
+}
+
+def append $item to $collection {
+  collection + [item]
+}
+
+def range $collection {
+  \0 to (len $collection)
+}
+
+def $collection contains $item {
+  fold $collection with { |acc, o| -> acc || o == item } from (false)
+}
+
+def $obj is truthy {
+  if (obj) { true } else { false }
 }

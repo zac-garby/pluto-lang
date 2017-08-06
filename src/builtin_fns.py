@@ -59,7 +59,6 @@ def print_obj_without_newline(args, context):
 def line_break(args, context):
     print()
     return NULL
-
 @builtin("input")
 def _input(args, context):
     try:
@@ -271,16 +270,6 @@ def union_of_a_and_b(args, context):
 
     return type(args["a"])(result)
 
-@arg("array", obj.Array)
-@builtin("append $item to $array")
-def append_item_to_array(args, context):
-    item = args["item"]
-    array = args["array"]
-
-    array.get_elements().append(item)
-
-    return array
-
 @arg("i", obj.Number)
 @arg("array", obj.Collection)
 @builtin("index $i of $array")
@@ -324,23 +313,6 @@ def pairs_of_obj(args, context):
         pairs.append(obj.Tuple([key, value]))
 
     return obj.Array(pairs)
-
-@arg("collection", obj.Collection)
-@builtin("indices of $collection")
-def indices_of_arr(args, context):
-    collection = args["collection"].get_elements()
-    result = [obj.Number(i) for i in range(len(collection))]
-
-    return obj.Array(result)
-
-@arg("array", obj.Collection)
-@builtin("$array contains $item")
-def array_contains_item(args, context):
-    return TRUE if args["item"] in args["array"].get_elements() else FALSE
-
-@builtin("$obj is truthy")
-def obj_is_truthy(args, context):
-    return TRUE if is_truthy(args["obj"]) else FALSE
 
 @arg("start", obj.Number)
 @arg("end", obj.Number)

@@ -17,10 +17,10 @@ for (item : my_collection) {
 
 new line
 
-# you can use the `indices of $collection` builtin to loop through indices of a collection
+# you can use the `range $collection` builtin to loop through indices of a collection
 word = "foo"
 
-for (i : indices of $word) {
+for (i : range $word) {
   print (index $i of $word)
 }
 
