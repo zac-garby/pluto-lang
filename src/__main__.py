@@ -85,7 +85,6 @@ def repl(ctx):
             sys.exit()
 
 def import_prelude(ctx):
-    print("Importing prelude")
     src_path = os.path.dirname(os.path.realpath(__file__))
     prelude_path = os.path.join(src_path, "lib/prelude.pluto")
     
