@@ -53,14 +53,15 @@ class Error(InternalObject):
     t = ERROR
 
     """represents an error thrown in execution"""
-    def __init__(self, msg):
+    def __init__(self, msg, tag="GeneralError"):
         self.type = ERROR
         self.msg = msg
+        self.tag = tag
 
     __eq__ = compare("msg")
 
     def __str__(self):
-        return "ERROR: %s" % self.msg
+        return "%s: %s" % (tag, self.msg)
 
 
 class ReturnValue(InternalObject):
