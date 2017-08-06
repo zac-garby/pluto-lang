@@ -17,27 +17,29 @@ class Builtin(object):
         Builtin.builtins.append(self)
 
 
-def builtin(pattern):
-    def builtin_decorator(fn):
-        Builtin(pattern, fn)
+def pattern(pattern):
+    def pattern_decorator(fn):
         setattr(fn, "pattern", pattern)
         return fn
+    
+    return pattern_decorator
 
-    return builtin_decorator
+def builtin(fn):
+    Builtin(getattr(fn, "pattern"), fn)
+    return fn
 
 def arg(name, expected_type):
-    def arg_decorator(fn):
-        def new_fn(args, context):
-            if isinstance(args[name].type, expected_type):
-                return err("the $%s parameter in `%s` must be of type %s, not %s" % (
+    def arg_decorator(fn):     
+        def new_fn(args, context):            
+            if not isinstance(args[name], expected_type):                
+                return err("the $%s parameter must be of type %s, not %s" % (
                     name,
-                    getattr(fn, "pattern"),
-                    expected_type,
+                    expected_type.t,
                     args[name].type
                 ))
 
             return fn(args, context)
-
+        
         return new_fn
 
     return arg_decorator
@@ -45,24 +47,36 @@ def arg(name, expected_type):
 
 ## Builtin definitions ##
 
-@builtin("print $obj")
+@builtin
+@pattern("round $n")
+@arg("n", obj.Number)
+def round_n(args, context):
+    n = args["n"]
+    
+    return obj.Number(round(n.value))
+
+@builtin
+@pattern("print $obj")
 def print_obj(args, context):
     print(args["obj"])
     return NULL
 
-@builtin("print $obj without newline")
+@builtin
+@pattern("print $obj without newline")
 def print_obj_without_newline(args, context):
     print(args["obj"], end="")
     return NULL
 
-@builtin("input")
+@builtin
+@pattern("input")
 def _input(args, context):
     try:
         return obj.String(input())
     except (KeyboardInterrupt, EOFError):
         return NULL
 
-@builtin("input with prompt $prompt")
+@builtin
+@pattern("input with prompt $prompt")
 def input_with_prompt_prompt(args, context):
     try:
         return obj.String(input(args["prompt"]))
@@ -75,8 +89,9 @@ def _run_block(block, args, context):
     ctx = context.enclose_with_args(args_dict)
     return evaluate(block.body, ctx)
 
+@builtin
+@pattern("do $block")
 @arg("block", obj.Block)
-@builtin("do $block")
 def do_block(args, context):
     block = args["block"]
 
@@ -88,9 +103,10 @@ def do_block(args, context):
 
     return _run_block(block, [], context)
 
+@builtin
+@pattern("do $block with $args")
 @arg("block", obj.Block)
 @arg("args", obj.Collection)
-@builtin("do $block with $args")
 def do_block_with_args(args, context):
     block = args["block"]
     b_args = args["args"].get_elements()
@@ -103,8 +119,9 @@ def do_block_with_args(args, context):
 
     return _run_block(block, b_args, context)
 
+@builtin
+@pattern("do $block on $arg")
 @arg("block", obj.Block)
-@builtin("do $block on $arg")
 def do_block_on_arg(args, context):
     block = args["block"]
     arg = args["arg"]
@@ -114,9 +131,10 @@ def do_block_on_arg(args, context):
     
     return _run_block(block, [arg], context)
 
+@builtin
+@pattern("map $block over $array")
 @arg("block", obj.Block)
 @arg("array", obj.Collection)
-@builtin("map $block over $array")
 def map_block_over_array(args, context):
     array = args["array"].get_elements()
     block = args["block"]
@@ -133,10 +151,10 @@ def map_block_over_array(args, context):
 
     return type(args["array"])(result)
 
+@builtin
+@pattern("left fold $array with $block")
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("fold $array with $block")
-@builtin("left fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     block = args["block"]
@@ -156,10 +174,10 @@ def fold_array_with_block(args, context):
 
     return result
 
+@builtin
+@pattern("left fold $array with $block from $start")
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("fold $array with $block from $start")
-@builtin("left fold $array with $block from $start")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     block = args["block"]
@@ -179,9 +197,10 @@ def fold_array_with_block(args, context):
 
     return result
 
+@builtin
+@pattern("right fold $array with $block")
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("right fold $array with $block")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     array.reverse()
@@ -200,9 +219,10 @@ def fold_array_with_block(args, context):
 
     return result
     
+@builtin
+@pattern("right fold $array with $block from $start")
 @arg("array", obj.Collection)
 @arg("block", obj.Block)
-@builtin("right fold $array with $block from $start")
 def fold_array_with_block(args, context):
     array = args["array"].get_elements()
     array.reverse()
@@ -220,9 +240,10 @@ def fold_array_with_block(args, context):
 
     return result
 
+@builtin
+@pattern("filter $array by $predicate")
 @arg("array", obj.Collection)
 @arg("predicate", obj.Block)
-@builtin("filter $array by $predicate")
 def filter_array_with_predicate(args, context):
     array = args["array"].get_elements()
     predicate = args["predicate"]
@@ -240,9 +261,10 @@ def filter_array_with_predicate(args, context):
 
     return type(args["array"])(filtered)
 
+@builtin
+@pattern("union of $a and $b")
 @arg("a", obj.Collection)
 @arg("b", obj.Collection)
-@builtin("union of $a and $b")
 def union_of_a_and_b(args, context):
     a = args["a"].get_elements()
     b = args["b"].get_elements()
@@ -255,9 +277,10 @@ def union_of_a_and_b(args, context):
 
     return type(args["a"])(result)
 
+@builtin
+@pattern("intersection of $a and $b")
 @arg("a", obj.Collection)
 @arg("b", obj.Collection)
-@builtin("intersection of $a and $b")
 def union_of_a_and_b(args, context):
     a = args["a"].get_elements()
     b = args["b"].get_elements()
@@ -266,9 +289,10 @@ def union_of_a_and_b(args, context):
 
     return type(args["a"])(result)
 
+@builtin
+@pattern("index $i of $array")
 @arg("i", obj.Number)
 @arg("array", obj.Collection)
-@builtin("index $i of $array")
 def index_i_of_array(args, context):
     i = args["i"]
     array = args["array"]
@@ -278,8 +302,9 @@ def index_i_of_array(args, context):
 
     return array.get_elements()[int(i.value)]
 
+@builtin
+@pattern("key $key of $obj")
 @arg("obj", obj.Object)
-@builtin("key $key of $obj")
 def key_of_obj(args, context):
     key = args["key"]
     obj = args["obj"]
@@ -289,18 +314,21 @@ def key_of_obj(args, context):
 
     return obj.pairs[key]
 
+@builtin
+@pattern("keys of $obj")
 @arg("obj", obj.Object)
-@builtin("keys of $obj")
 def keys_of_obj(args, context):
     return obj.Array(args["obj"].pairs.keys())
 
+@builtin
+@pattern("values of $obj")
 @arg("obj", obj.Object)
-@builtin("values of $obj")
 def values_of_obj(args, context):
     return obj.Array(args["obj"].pairs.values())
 
+@builtin
+@pattern("pairs of $obj")
 @arg("obj", obj.Object)
-@builtin("pairs of $obj")
 def pairs_of_obj(args, context):
     o = args["obj"]
     pairs = []
@@ -310,16 +338,10 @@ def pairs_of_obj(args, context):
 
     return obj.Array(pairs)
 
-@arg("n", obj.Number)
-@builtin("round $n")
-def round_n(args, context):
-    n = args["n"]
-    
-    return obj.Number(round(n.value))
-
+@builtin
+@pattern("$start to $end")
 @arg("start", obj.Number)
 @arg("end", obj.Number)
-@builtin("$start to $end")
 def start_to_end(args, context):
     start = args["start"]
     end = args["end"]
@@ -342,9 +364,10 @@ def start_to_end(args, context):
     else:
         return start
 
+@builtin
+@pattern("format $format with $args")
 @arg("format", obj.String)
 @arg("args", obj.Collection)
-@builtin("format $format with $args")
 def format_string_with_args(args, context):
     fmt = args["format"].value
     items = tuple(args["args"].get_elements())
@@ -354,9 +377,10 @@ def format_string_with_args(args, context):
     except TypeError:
         return err("Wrong number of arguments to format `%s`" % fmt)
 
+@builtin
+@pattern("printf $format with $args")
 @arg("format", obj.String)
 @arg("args", obj.Collection)
-@builtin("printf $format with $args")
 def printf_format_with_args(args, context):
     fmt = args["format"].value
     items = tuple(args["args"].get_elements())
