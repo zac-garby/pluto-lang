@@ -8,18 +8,14 @@ text = input with prompt ">> "
 
 if (text == null || text == "") {
   print "You didn't type anything!"
-} else {
-  result = 0
-
-  for (ch : text) {
-    result = match (ch) {
+} else {  
+  print (left fold $text with { |result, ch| ->
+    match (ch) {
       '+' => result + 1
       '-' => result - 1
       '*' => result * 2
       '/' => result / 2
     }
-  }
-  
-  print $result
+  } from 0)
 }
 

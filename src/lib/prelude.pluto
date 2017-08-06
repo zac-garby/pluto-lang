@@ -10,7 +10,7 @@ def new line {
 
 # Collections
 def len $collection {
-  fold $collection with { |acc, _| -> acc + 1 } from 0
+  left fold $collection with { |acc, _| -> acc + 1 } from 0
 }
 
 def append $item to $collection {
@@ -22,7 +22,7 @@ def range $collection {
 }
 
 def $collection contains $item {
-  fold $collection with { |acc, o| -> acc || o == item } from (false)
+  left fold $collection with { |acc, o| -> acc || o == item } from (false)
 }
 
 
