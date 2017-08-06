@@ -37,8 +37,6 @@ look at the **very** tiny standard library. A couple of them are
 quite long, but they're probably less used than the others so  the longer length doesn't matter, and improves
 readability significantly.
 
-Here's a screenshot of the REPL:
-
 ![Screenshot](screenshot.png)
 
 _(note: This language is **incredibly** slow, since it's written in Python. It doesn't matter, as it's just a prototype. However, I'm planning on rewriting in a faster language in the future)_
