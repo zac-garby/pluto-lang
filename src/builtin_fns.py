@@ -195,7 +195,7 @@ def fold_array_with_block(args, context):
 
     result = array[0]
 
-    for item in array[1:]:
+    for item in array:
         mapped = _run_block(block, [result, item], context)
 
         if mapped.type == obj.ERROR:
@@ -215,7 +215,7 @@ def fold_array_with_block(args, context):
     block = args["block"]
     result = args["start"]
 
-    for item in array[1:]:
+    for item in array:
         mapped = _run_block(block, [result, item], context)
 
         if mapped.type == obj.ERROR:
