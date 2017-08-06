@@ -1,9 +1,13 @@
 ### Constants
 
 # Error types
-GeneralError = "GeneralError"
-TypeError    = "TypeError"
-IOError      = "IOError"
+GeneralError        = "GeneralError"
+TypeError           = "TypeError"
+IOError             = "IOError"
+OutOfBoundsError    = "OutOfBoundsError"
+NotFoundError       = "NotFoundError"
+SyntaxError         = "SyntaxError"
+NotImplementedError = "NotImplementedError"
 
 
 ### Functions
