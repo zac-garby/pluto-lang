@@ -61,6 +61,8 @@ CLASS   = "class"
 EXTENDS = "extends"
 INIT    = "init"
 MATCH   = "match"
+TRY     = "try"
+CATCH   = "catch"
 
 class Token(object):
     """a single lexical token"""
@@ -98,6 +100,8 @@ keywords = {
     "class":   CLASS,
     "extends": EXTENDS,
     "init":    INIT,
-    "match":   MATCH
+    "match":   MATCH,
+    "try":     TRY,
+    "catch":   CATCH
 }
 
