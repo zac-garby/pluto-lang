@@ -366,7 +366,5 @@ There are loads of things to do. Heres a list for you:
  - Improve error messages
  - Add list (and object?) comprehensions
  - Maybe rename objects to maps or dictionaries
- - Allow programs to throw errors
- - Add error handling
  - (urgent) Fix ASI to allow trailing comments :(
  - Change syntax to reduce use of braces (maybe terminating with 'end'?)
