@@ -605,7 +605,6 @@ class Parser(object):
         if not self.expect(token.LBRACE):
             return None
         
-        self.next()
         expr.body = self.parse_block_statement()
         
         if not self.expect(token.CATCH):
@@ -613,11 +612,10 @@ class Parser(object):
                 
         if not self.expect(token.LPAREN):
             return None
-        
-        expr.err_name = self.parse_id(False)
-        
+
         self.next()
-        
+        expr.err_name = self.parse_id(False)
+                
         if not self.expect(token.RPAREN):
             return None
         

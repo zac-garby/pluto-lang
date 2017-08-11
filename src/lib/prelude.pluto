@@ -1,13 +1,67 @@
 ### Constants
 
 # Error types
-GeneralError        = "GeneralError"
-TypeError           = "TypeError"
-IOError             = "IOError"
-OutOfBoundsError    = "OutOfBoundsError"
-NotFoundError       = "NotFoundError"
-SyntaxError         = "SyntaxError"
-NotImplementedError = "NotImplementedError"
+General        = "GeneralError"
+Type           = "TypeError"
+IO             = "IOError"
+OutOfBounds    = "OutOfBoundsError"
+NotFound       = "NotFoundError"
+Syntax         = "SyntaxError"
+NotImplemented = "NotImplementedError"
+
+### Error classes
+
+# The base class of all errors
+class Error {}
+
+class GeneralError extends Error {
+  init $saying {
+    self.tag = General
+    self.msg = saying
+  }
+}
+
+class TypeError extends Error {
+  init $saying {
+    self.tag = Type
+    self.msg = saying
+  }
+}
+
+class IOError extends Error {
+  init $saying {
+    self.tag = IO
+    self.msg = saying
+  }
+}
+
+class OutOfBoundsError extends Error {
+  init $saying {
+    self.tag = OutOfBounds
+    self.msg = saying
+  }
+}
+
+class NotFoundError extends Error {
+  init $saying {
+    self.tag = NotFound
+    self.msg = saying
+  }
+}
+
+class SyntaxError extends Error {
+  init $saying {
+    self.tag = Syntax
+    self.msg = saying
+  }
+}
+
+class NotImplementedError extends Error {
+  init $saying {
+    self.tag = NotImplemented
+    self.msg = saying
+  }
+}
 
 
 ### Functions
