@@ -366,16 +366,16 @@ class TryExpression(Expression):
         self.arms = arms
     
     def tree(self, indent, name):
-        arms = _(indent) + n("arms") + "["
+        arms = _(indent + 1) + n("arms") + "["
         
         if len(self.arms) == 0:
             arms += "]"
 
         for (key, value) in self.arms:
             arms += "\n%sarm\n%s\n%s" % (
-                _(indent + 1),
-                (_(indent + 2) + "wildcard") if key == None else make_list_tree(indent + 2, key, "key"),
-                value.tree(indent + 2, "value")
+                _(indent + 2),
+                (_(indent + 3) + "wildcard") if key == None else make_list_tree(indent + 3, key, "key"),
+                value.tree(indent + 3, "value")
             )
         
         if len(self.arms) > 0:

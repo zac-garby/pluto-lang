@@ -531,7 +531,7 @@ def eval_match_expr(node, ctx):
 
 def eval_try_expr(node, ctx):
     val = evaluate(node.body, ctx)
-    if not is_err(val):
+    if val.type == obj.Instance and val.base.name == "Error":
         return val
     
     matched = None
@@ -553,7 +553,7 @@ def eval_try_expr(node, ctx):
                     "TypeError"
                 )
             
-            if e.value == val.tag:
+            if e.value == val.data["tag"].value:
                 m = True
         
         if m:
@@ -562,8 +562,8 @@ def eval_try_expr(node, ctx):
     
     if matched != None:
         err_obj = [
-            (obj.String("tag"), val.tag),
-            (obj.String("msg"), val.msg)
+            (obj.String("tag"), val.data["tag"]),
+            (obj.String("msg"), val.data["msg"])
         ]
         
         enclosed = ctx.enclose_with_args({
