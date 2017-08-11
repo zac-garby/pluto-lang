@@ -82,7 +82,8 @@ class Parser(object):
             token.LBRACE: self.parse_block_literal,
             token.WHILE:  self.parse_while_loop,
             token.FOR:    self.parse_for_loop,
-            token.MATCH:  self.parse_match_expr
+            token.MATCH:  self.parse_match_expr,
+            token.TRY:    self.parse_try_expr
         }
         
         self.arg_tokens = [k for k, v in self.prefixes.items() if k not in arg_blacklist] + [
@@ -555,19 +556,9 @@ class Parser(object):
         if not self.expect(token.LBRACE):
             return None
 
-        expr.arms = []
-        while not self.cur_is(token.RBRACE):
-            self.next()
-
-            arm = self.parse_match_arm()
-
-            if arm != None:
-                expr.arms.append(arm)
-            else:
-                return None
-
-            if self.peek_is(token.RBRACE):
-                self.next()
+        expr.arms = self.parse_match_arms()
+        if not expr.arms:
+            return None
 
         return expr
 
@@ -589,7 +580,53 @@ class Parser(object):
             right = self.parse_stmt()
 
         return (left, right)
+    
+    def parse_match_arms(self):
+        arms = []
+        
+        while not self.cur_is(token.RBRACE):
+            self.next()
 
+            arm = self.parse_match_arm()
+
+            if arm != None:
+                arms.append(arm)
+            else:
+                return None
+
+            if self.peek_is(token.RBRACE):
+                self.next()
+        
+        return arms
+
+    def parse_try_expr(self):
+        expr = ast.TryExpression(self.cur_tok, None, None, None)
+        
+        if not self.expect(token.LBRACE):
+            return None
+        
+        self.next()
+        expr.body = self.parse_block_statement()
+        
+        if not self.expect(token.CATCH):
+            return None
+                
+        if not self.expect(token.LPAREN):
+            return None
+        
+        expr.err_name = self.parse_id(False)
+        
+        self.next()
+        
+        if not self.expect(token.RPAREN):
+            return None
+        
+        if not self.expect(token.LBRACE):
+            return None
+        
+        expr.arms = self.parse_match_arms()
+        
+        return expr
 
     def parse_class_declaration(self):
         stmt = ast.ClassStatement(self.cur_tok, None, [], None)
