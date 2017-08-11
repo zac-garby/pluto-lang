@@ -4,7 +4,7 @@ def throws an error {
 
 try {
   throws an error
-} catch (tag) {
+} catch (err) {
   GeneralError => {
     print "An error ocurred"
   }

@@ -23,6 +23,7 @@ def evaluate(node, ctx):
     if t == ast.ClassStatement:       return eval_class_stmt(node, ctx)
     if t == ast.MethodCall:           return eval_method_call(node, ctx)
     if t == ast.MatchExpression:      return eval_match_expr(node, ctx)
+    if t == ast.TryExpression:        return eval_try_expr(node, ctx)
 
     # Literals
     if t == ast.Null:                 return NULL
@@ -527,6 +528,45 @@ def eval_match_expr(node, ctx):
         return unwrap_return_value(r)
     else:
         return NULL
+
+def eval_try_expr(node, ctx):
+    val = evaluate(node.body, ctx)
+    if not is_err(val):
+        return val
+    
+    matched = None
+    
+    for exprs, result in node.arms:
+        m = False
+        
+        if exprs == None:
+            m = True
+        
+        for expr in exprs:
+            e = evaluate(expr, ctx)
+            if is_err(e):
+                return e
+            
+            if e.type != obj.STRING:
+                return err(
+                    "All catch-arm predicate values must be strings. Found a %s" % val.type,
+                    "TypeError"
+                )
+            
+            if e.value == val.tag.value:
+                m = True
+        
+        if m:
+            matched = result
+            break
+    
+    if matched != None:
+        enclosed = ctx.enclose_with_args({
+            node.err_name.value: val
+        })
+        r = evaluate(matched, enclosed)
+    else:
+        return val
 
 def unwrap_return_value(o):
     if type(o) == obj.ReturnValue:
