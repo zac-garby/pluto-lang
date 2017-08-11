@@ -510,14 +510,14 @@ def eval_match_expr(node, ctx):
               
         if exprs == None:
             m = True
-        
-        for expr in exprs:
-            e = evaluate(expr, ctx)
-            if is_err(e):
-                return e
+        else:
+            for expr in exprs:
+                e = evaluate(expr, ctx)
+                if is_err(e):
+                    return e
             
-            if e == val:
-                m = True
+                if e == val:
+                    m = True
         
         if m:
             matched = result
@@ -539,22 +539,22 @@ def eval_try_expr(node, ctx):
     for exprs, result in node.arms:
         m = False
         
-        if exprs == None:
+        if not exprs:
             m = True
-        
-        for expr in exprs:
-            e = evaluate(expr, ctx)
-            if is_err(e):
-                return e
+        else:
+            for expr in exprs:
+                e = evaluate(expr, ctx)
+                if is_err(e):
+                    return e
             
-            if e.type != obj.STRING:
-                return err(
-                    "All catch-arm predicate values must be strings. Found a %s" % e.type,
-                    "TypeError"
-                )
+                if e.type != obj.STRING:
+                    return err(
+                        "All catch-arm predicate values must be strings. Found a %s" % e.type,
+                        "TypeError"
+                    )
             
-            if e.value == val.data["tag"].value:
-                m = True
+                if e.value == val.data["tag"].value:
+                    m = True
         
         if m:
             matched = result

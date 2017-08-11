@@ -1,5 +1,5 @@
 def throws an error {
-  GeneralError "An error :)"
+  IOError "An error :)"
 }
 
 try {
@@ -9,6 +9,8 @@ try {
     print "An error occurred. The message was:"
     print (err.msg)
   }
+  
+  * => {
+    print (err.tag)
+  }
 }
-
-print "After the try-catch"
