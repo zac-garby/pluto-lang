@@ -605,7 +605,6 @@ class Parser(object):
         if not self.expect(token.LBRACE):
             return None
         
-        self.next()
         expr.body = self.parse_block_statement()
         
         if not self.expect(token.CATCH):
