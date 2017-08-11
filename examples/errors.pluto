@@ -6,6 +6,7 @@ try {
   throws an error
 } catch (err) {
   GeneralError => {
-    print "An error ocurred"
+    print "An error occurred. The message was:"
+    print (err.msg)
   }
 }

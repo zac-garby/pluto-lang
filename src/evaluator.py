@@ -561,10 +561,17 @@ def eval_try_expr(node, ctx):
             break
     
     if matched != None:
+        err_obj = [
+            (obj.String("tag"), val.tag),
+            (obj.String("msg"), val.msg)
+        ]
+        
         enclosed = ctx.enclose_with_args({
-            node.err_name.value: val
+            node.err_name.value: obj.Object(err_obj)
         })
+
         r = evaluate(matched, enclosed)
+        return unwrap_return_value(r)
     else:
         return val
 
