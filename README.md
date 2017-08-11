@@ -371,6 +371,7 @@ function in which something can go wrong, and you want to let other people know.
 constructors, the most common being `GeneralError`:
 
 ```r
+GeneralError "This is an error!"
 ```
 
 A `GeneralError` signifies a generic, possibly unknown, error, but there are more types available to you. These are
@@ -380,6 +381,8 @@ their constructors:
 GeneralError $msg
 TypeError $msg
 IOError $msg
+OutOfBoundsError $msg
+NotFoundError $msg
 SyntaxError $msg
 NotImplementedError $msg
 ```
