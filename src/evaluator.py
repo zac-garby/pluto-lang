@@ -549,7 +549,7 @@ def eval_try_expr(node, ctx):
             
             if e.type != obj.STRING:
                 return err(
-                    "All catch-arm predicate values must be strings. Found a %s" % val.type,
+                    "All catch-arm predicate values must be strings. Found a %s" % e.type,
                     "TypeError"
                 )
             
