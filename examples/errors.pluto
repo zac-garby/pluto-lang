@@ -1,5 +1,5 @@
 def throws an error {
-  throw GeneralError "An error :)" # throw $tag $message
+  throw $GeneralError "An error :)"
 }
 
 try {
