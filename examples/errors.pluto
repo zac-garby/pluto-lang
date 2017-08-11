@@ -1,12 +1,14 @@
 def throws an error {
-  throw $GeneralError "An error :)"
+  GeneralError "An error :)"
 }
 
 try {
   throws an error
 } catch (err) {
-  GeneralError => {
+  General => {
     print "An error occurred. The message was:"
     print (err.msg)
   }
 }
+
+print "After the try-catch"

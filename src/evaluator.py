@@ -553,7 +553,7 @@ def eval_try_expr(node, ctx):
                     "TypeError"
                 )
             
-            if e.value == val.tag.value:
+            if e.value == val.tag:
                 m = True
         
         if m:
