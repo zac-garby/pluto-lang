@@ -321,6 +321,71 @@ although I'd like to change this at some point.
 You can also use inheritance in your classes. I'll probably add an example here at some point, but for now, have a look
 at `examples/classes.pluto` to see how.
 
+## Error handling
+
+A lot of the time when programming, you'll get errors, such as `This argument is of an unexpected type`:
+
+```r
+do "This is not a block"
+```
+
+Since the string `"This is not a block"` isn't a block (remember: the `do $` function executes a block), an error
+is thrown:
+
+```r
+TypeError: the $block parameter must be of type <block>, not <string>
+```
+
+Which is expected. But what if you don't care about this problem? Maybe you want to do something when you encounter an
+error; or, just skip past it. To do that, you'd use a _try-catch_ block:
+
+```r
+try {
+  do "This is not a block"
+} catch (err) {
+  Type => {
+    print "An error occurred!"
+  }
+}
+```
+
+This piece of code, instead of giving you an error message, will just print `"An error occurred!"`. This has the same
+powerful syntax as _match_ expressions, so you can write code like this:
+
+```r
+try { ... } catch (err) {
+  Type, IO => {
+    print "A type or IO error occurred!"
+  }
+  
+  * => {
+    print "Some other error occurred"
+  }
+}
+```
+
+### Throwing errors
+
+As well as catching already-thrown errors, Pluto also allows you to throw your own. This would be useful if you write a
+function in which something can go wrong, and you want to let other people know. You throw an error using error
+constructors, the most common being `GeneralError`:
+
+```r
+```
+
+A `GeneralError` signifies a generic, possibly unknown, error, but there are more types available to you. These are
+their constructors:
+
+```r
+GeneralError $msg
+TypeError $msg
+IOError $msg
+SyntaxError $msg
+NotImplementedError $msg
+```
+
+Which can then be caught in exactly the same way - using the constructor name without the `Error` prefix.
+
 ## How??
 
 To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
