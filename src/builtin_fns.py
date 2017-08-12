@@ -32,7 +32,7 @@ def arg(name, expected_type):
     def arg_decorator(fn):     
         def new_fn(args, context):            
             if not isinstance(args[name], expected_type):                
-                return err("the $%s parameter must be of type %s, not %s" % (
+                return err(context, "the $%s parameter must be of type %s, not %s" % (
                     name,
                     expected_type.t,
                     args[name].type
