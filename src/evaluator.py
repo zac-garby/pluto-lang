@@ -79,7 +79,7 @@ def evaluate(node, ctx):
 
     if t == ast.PrefixExpression:
         right = evaluate(node.right, ctx)
-        return right if is_err(right) else eval_prefix(node.operator, right)
+        return right if is_err(right) else eval_prefix(ctx, node.operator, right)
 
     if t == ast.InfixExpression:
         left = evaluate(node.left, ctx)
@@ -102,7 +102,7 @@ def evaluate(node, ctx):
                 o[node.name.right.value] = right
                 return right
             else:
-                return err("an identifier is expected to follow a dot operator", "SyntaxError")
+                return err(ctx, "an identifier is expected to follow a dot operator", "SyntaxError")
         
         return eval_assign(node.name, right, ctx)
 
@@ -116,14 +116,19 @@ def evaluate(node, ctx):
         if type(node.right) == ast.Identifier:
             return left[node.right.value]
         
-        return err("an identifier is expected to follow a dot operator", "SyntaxError")
+        return err(ctx, "an identifier is expected to follow a dot operator", "SyntaxError")
 
-    return err("evaluation for %s not yet implemented" % t, "NotImplementedError")
+    return err(ctx, "evaluation for %s not yet implemented" % t, "NotImplementedError")
 
-err = obj.Error
+def err(ctx, msg, tag):
+    e = obj.Instance(ctx["Error"])
+    e["tag"] = obj.String(tag)
+    e["msg"] = obj.String(msg)
+    
+    return e
 
 def is_err(o):
-    return False if o == None else type(o) == obj.Error
+    return False if o == None else type(o) == obj.Instance and o.base.name == "Error"
 
 def eval_exprs(exprs, ctx):
     result = []
@@ -178,20 +183,20 @@ def eval_id(node, ctx):
     if val != None:
         return val
 
-    return err("`%s` is not defined in the current context" % node.value, "NotFoundError")
+    return err(ctx, "`%s` is not defined in the current context" % node.value, "NotFoundError")
 
-def eval_prefix(op, right):
+def eval_prefix(op, right, ctx):
     if op == "-": return eval_minus_prefix(right)
     if op == "+": return right
-    return err("unknown operator: %s%s", op, right.type, "NotFoundError")
+    return err(ctx, "unknown operator: %s%s", op, right.type, "NotFoundError")
 
-def eval_minus_prefix(right):
-    if right.type != obj.NUMBER: return err("unknown operator: -%s" % right.type, "NotFoundError")
+def eval_minus_prefix(right, ctx):
+    if right.type != obj.NUMBER: return err(ctx, "unknown operator: -%s" % right.type, "NotFoundError")
     return obj.Number(-right.value)
 
 def eval_assign(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier" % type(left), "SyntaxError")
+        return err(ctx, "cannot assign to %s, expected an identifier" % type(left), "SyntaxError")
 
     ctx[left.value] = right
 
@@ -199,7 +204,7 @@ def eval_assign(left, right, ctx):
 
 def eval_declare(left, right, ctx):
     if type(left) != ast.Identifier:
-        return err("cannot assign to %s, expected an identifier" % type(left), "SyntaxError")
+        return err(ctx, "cannot assign to %s, expected an identifier" % type(left), "SyntaxError")
 
     ctx.store[left.value] = right
 
@@ -219,17 +224,17 @@ def eval_infix(op, left, right, ctx):
         return right if left == NULL else left
 
     if type(left) == obj.Number and type(right) == obj.Number:
-        return eval_number_infix(op, left, right)
+        return eval_number_infix(op, left, right, ctx)
 
     if (type(left) == obj.Char and type(right) == obj.Char or
        type(left) == obj.String and type(right) == obj.Char or
        type(left) == obj.Char and type(right) == obj.String):
-        return eval_char_string_infix(op, left, right)
+        return eval_char_string_infix(op, left, right, ctx)
 
     if (type(left) == obj.Char and type(right) == obj.Number):
         return obj.String(left.value * math.floor(right.value))
 
-    if isinstance(left, obj.Collection) and type(right) == obj.Number:
+    if isinstance(left, obj.Collection) and type(right) == obj.Number and op == "*":
         result = []
         elems = left.get_elements()
         n = math.floor(right.value)
@@ -239,18 +244,18 @@ def eval_infix(op, left, right, ctx):
 
         return type(left)(result)
 
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+    return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
 
-def eval_char_string_infix(op, left, right):
+def eval_char_string_infix(op, left, right, ctx):
     l = left.value
     r = right.value
 
     if op == "+": return obj.String(l + r)
     if op == "-": return obj.String([ch for ch in l if ch != r])
 
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+    return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
 
-def eval_number_infix(op, left, right):
+def eval_number_infix(op, left, right, ctx):
     l = left.value
     r = right.value
 
@@ -269,7 +274,7 @@ def eval_number_infix(op, left, right):
     if op == "<=": return bool_obj(l <= r)
     if op == ">=": return bool_obj(l >= r)
 
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+    return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
 
 def eval_collection_infix(op, left, right, ctx):
     l = left.get_elements()
@@ -291,7 +296,7 @@ def eval_collection_infix(op, left, right, ctx):
 
         return type(left)(result)
 
-    return err("unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+    return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
 
 def eval_if(expr, ctx):
     condition = evaluate(expr.condition, ctx)
@@ -316,7 +321,7 @@ def eval_function_call(node, ctx):
     p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
 
     if function == None:
-        return err("no function matching the pattern: %s" % p_string, "NotFoundError")
+        return err(ctx, "no function matching the pattern: %s" % p_string, "NotFoundError")
 
     args = {}
 
@@ -394,7 +399,7 @@ def eval_for_loop(node, ctx):
         items = collection.get_elements()
 
     if items == None:
-        return err("cannot use a for loop over a collection of type %s" % collection.type, "TypeError")
+        return err(ctx, "cannot use a for loop over a collection of type %s" % collection.type, "TypeError")
 
     for item in items:
         enclosed = ctx.enclose_with_args({
@@ -476,7 +481,7 @@ def eval_method_call(node, ctx):
     
     if function == None:
         p_string = p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
-        return err("could not find a method of %s matching the pattern '%s'" % (instance.base.name, p_string), "NotFoundError")
+        return err(ctx, "could not find a method of %s matching the pattern '%s'" % (instance.base.name, p_string), "NotFoundError")
     
     args = {}
     
@@ -548,7 +553,7 @@ def eval_try_expr(node, ctx):
                     return e
             
                 if e.type != obj.STRING:
-                    return err(
+                    return err(ctx, 
                         "All catch-arm predicate values must be strings. Found a %s" % e.type,
                         "TypeError"
                     )

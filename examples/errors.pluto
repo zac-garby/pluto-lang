@@ -1,5 +1,5 @@
 def throws an error {
-  IOError "An error :)"
+  Error $IO "An error :)"
 }
 
 try {

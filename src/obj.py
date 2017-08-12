@@ -332,7 +332,7 @@ class Instance(InternalObject):
         self.data = {}
 
     def __str__(self):
-        return "<instance of %s>" % self.base
+        return "%s: %s" % (self.base.name, "".join(str(o) + " " for o in self.data.values())[:-2])
     
     def __getitem__(self, key):
         return self.data.get(key, Null())
