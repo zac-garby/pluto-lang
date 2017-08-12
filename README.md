@@ -238,11 +238,17 @@ A few operators are defined on collections:
 Maps are similar to dictionaries in Python, or objects in JavaScript:
 
 ```r
-a_map = [ "x": 3,
-              "y": -7,
-              true: "A boolean can also be a key ...",
-              3: "... as can a number!" ]
+a_map = [
+  "x": 3,
+  "y": -7,
+  true: "A boolean can also be a key ...",
+  3: "... as can a number!",
+]
 ```
+
+**Something quite important in this example is that there is a trailing comma in the map literal. This is because the**
+**literal spans multiple lines, so automatic semicolon insertion would insert a semicolon in place of the last comma, had**
+**it not been put there explicitly. For this reason, commas are always allowed in map and array literals.**
 
 The syntax is similar to that of an array literal, however between each comma is a `key: value` mapping. You can access
 a value at a certain key with the `key $key of $obj` builtin:
