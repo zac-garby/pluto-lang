@@ -387,7 +387,8 @@ Syntax
 NotImplemented
 ```
 
-Which can then be caught in exactly the same way.
+Which can then be caught in exactly the same way. Since they are literally just strings defined in the Prelude, you are
+free to make your own error tags. They don't even have to be strings - but it's usually better for them to be.
 
 ## How??
 
