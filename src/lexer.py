@@ -93,7 +93,6 @@ line_endings = [
 
 
 def lex(string, col=1, line=1):
-    string += ";"
     index = 0
 
     def should_insert_semi(l):
