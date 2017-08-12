@@ -19,12 +19,16 @@ def main():
     parser.add_argument("-t", "--tree", action="store_true", default=False, help="print the parse tree")
     parser.add_argument("-i", "--interactive", action="store_true", default=False, help="enter interactive mode after the file has been run")
     parser.add_argument("-v", "--version", action="version", version="Pluto, early beta version")
+    parser.add_argument("-n", "--no-prelude", action="store_true", dest="no_prelude", help="don't load the prelude")
 
     args = parser.parse_args()
 
     if args.file == None:
         ctx = c.Context()
-        import_prelude(ctx)
+        
+        if not args.no_prelude:
+            import_prelude(ctx)
+        
         repl(ctx)
     else:
         try:
@@ -43,7 +47,10 @@ def main():
                 return
 
             ctx = c.Context()
-            import_prelude(ctx)
+            
+            if not args.no_prelude:
+                import_prelude(ctx)
+            
             execute(text, False, ctx)
 
             if args.interactive:
