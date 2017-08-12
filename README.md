@@ -404,6 +404,7 @@ Argument            | Description
 `-t, --tree`        | Parses the file and prints the parse tree
 `-i, --interactive` | Runs the file and enters interactive mode afterwards
 `-h, --help`        | Shows a useful help menu
+`-n, --no-prelude`  | Doesn't load the prelude
 `-v, --version`     | Shows the current version
 
 ## Contributions
