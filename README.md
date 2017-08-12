@@ -438,4 +438,3 @@ There are loads of things to do. Heres a list for you:
  - Maybe rename objects to maps or dictionaries
  - Change syntax to reduce use of braces (maybe terminating with 'end'?)
  - Add some kind of meta-programming support
- - Make a try-catch expression a builtin function, (written in Pluto?)
