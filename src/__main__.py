@@ -72,7 +72,7 @@ def execute(text, print_result, ctx):
     else:
         result = e.evaluate(program, ctx)
 
-        if (print_result and type(result) != o.Null) or type(result) == o.Error:
+        if (print_result and type(result) != o.Null) or e.is_err(result):
             print(result)
 
 def repl(ctx):

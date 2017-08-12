@@ -128,7 +128,7 @@ def err(ctx, msg, tag):
     return e
 
 def is_err(o):
-    return False if o == None else type(o) == obj.Error
+    return False if o == None else type(o) == obj.Instance and o.base.name == "Error"
 
 def eval_exprs(exprs, ctx):
     result = []
