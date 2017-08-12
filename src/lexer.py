@@ -145,7 +145,11 @@ def lex(string, col=1, line=1):
                     while index < len(string) and string[index].isspace() and string[index] != "\n":
                         index += 1
                     
-                    if t in line_endings and index < len(string) and string[index] in "\n}":
+                    if index < len(string) and string[index] == "#":
+                        while index < len(string) and string[index] != "\n":
+                            index += 1
+                    
+                    if (t in line_endings and index < len(string) and string[index] in "\n}") or index >= len(string):
                         yield token.Token(token.SEMI, ";", (line, col), (line, col))
 
                     break
