@@ -309,7 +309,7 @@ def index_i_of_array(args, context):
 
 @builtin
 @pattern("key $key of $obj")
-@arg("obj", obj.Object)
+@arg("obj", obj.Map)
 def key_of_obj(args, context):
     key = args["key"]
     obj = args["obj"]
@@ -321,19 +321,19 @@ def key_of_obj(args, context):
 
 @builtin
 @pattern("keys of $obj")
-@arg("obj", obj.Object)
+@arg("obj", obj.Map)
 def keys_of_obj(args, context):
     return obj.Array(args["obj"].pairs.keys())
 
 @builtin
 @pattern("values of $obj")
-@arg("obj", obj.Object)
+@arg("obj", obj.Map)
 def values_of_obj(args, context):
     return obj.Array(args["obj"].pairs.values())
 
 @builtin
 @pattern("pairs of $obj")
-@arg("obj", obj.Object)
+@arg("obj", obj.Map)
 def pairs_of_obj(args, context):
     o = args["obj"]
     pairs = []

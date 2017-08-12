@@ -50,7 +50,7 @@ def evaluate(node, ctx):
 
         return obj.Array(elements)
 
-    if t == ast.Object:
+    if t == ast.Map:
         keys = eval_exprs(node.pairs.keys(), ctx)
         if len(keys) == 1 and is_err(keys[0]):
             return keys[0]
@@ -59,7 +59,7 @@ def evaluate(node, ctx):
         if len(values) == 1 and is_err(values[0]):
             return values[0]
 
-        return obj.Object(list(zip(keys, values)))
+        return obj.Map(list(zip(keys, values)))
 
     if t == ast.Tuple:
         elements = eval_exprs(node.value, ctx)
@@ -576,7 +576,7 @@ def eval_try_expr(node, ctx):
         ]
         
         enclosed = ctx.enclose_with_args({
-            node.err_name.value: obj.Object(err_obj)
+            node.err_name.value: obj.Map(err_obj)
         })
 
         r = evaluate(matched, enclosed)

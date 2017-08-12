@@ -15,7 +15,7 @@ ARRAY    = "<array>"
 NULL     = "<null>"
 BLOCK    = "<block>"
 TUPLE    = "<tuple>"
-OBJECT   = "<object>"
+MAP      = "<map>"
 CLASS    = "<class>"
 INIT     = "<init method>"
 METH     = "<method>"
@@ -154,12 +154,12 @@ class Tuple(Collection):
         return self.value
 
 
-class Object(InternalObject):
-    t = OBJECT
+class Map(InternalObject):
+    t = MAP
     
-    """an object, similar to a dictionary in python"""
+    """an map, similar to a dictionary in python"""
     def __init__(self, pairs):
-        self.type = OBJECT
+        self.type = MAP
         self.pairs = dict(pairs)
 
     __eq__ = compare("pairs")

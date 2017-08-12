@@ -145,14 +145,14 @@ class Array(Expression):
         )
 
 
-class Object(Expression):
-    """an object literal: [a: b, x: y]"""
+class Map(Expression):
+    """a map literal: [a: b, x: y]"""
     def __init__(self, token, pairs):
         self.token = token
         self.pairs = pairs
 
     def tree(self, indent, name):
-        return "%sobject\n%s" % (
+        return "%smap\n%s" % (
             _(indent) + n(name),
             make_dict_tree(indent + 1, self.pairs, "pairs")
         )

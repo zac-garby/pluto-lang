@@ -233,12 +233,12 @@ A few operators are defined on collections:
  - `&` or `&&` - returns the intersection of the two collections
  - `|` or `||` - returns the union of the two collections
  
-## Objects
+## Maps
 
-Objects are similar to dictionaries in Python, or objects in JavaScript:
+Maps are similar to dictionaries in Python, or objects in JavaScript:
 
 ```r
-an_object = [ "x": 3,
+a_map = [ "x": 3,
               "y": -7,
               true: "A boolean can also be a key ...",
               3: "... as can a number!" ]
@@ -248,16 +248,16 @@ The syntax is similar to that of an array literal, however between each comma is
 a value at a certain key with the `key $key of $obj` builtin:
 
 ```r
-key "y" of $an_object
+key "y" of $a_map
 ```
 
 Which, of course, returns `-7`.
 
-### Objects as collections
+### Maps as collections
 
-Objects are not collections. This is because there's no good option for what the elements should be. The keys? The
+Maps are not collections. This is because there's no good option for what the elements should be. The keys? The
 values? Or even, an array containing tuples in the format `(key, value)`. All of these are equally useful, so instead
-of making objects collections directly, three builtins are defined:
+of making maps collections directly, three builtins are defined:
 
 ```r
 keys of $obj
@@ -434,7 +434,6 @@ There are loads of things to do. Heres a list for you:
  - Add more functional/higher order functions
  - Add operator overloading
  - Improve error messages
- - Add list (and object?) comprehensions
- - Maybe rename objects to maps or dictionaries
+ - Add list (and map?) comprehensions
  - Change syntax to reduce use of braces (maybe terminating with 'end'?)
  - Add some kind of meta-programming support

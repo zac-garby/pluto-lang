@@ -67,7 +67,7 @@ class Parser(object):
             token.TRUE:    self.parse_bool,
             token.FALSE:   self.parse_bool,
             token.NULL:    self.parse_null,
-            token.LSQUARE: self.parse_array_or_object,
+            token.LSQUARE: self.parse_array_or_map,
             token.STR:     self.parse_string,
             token.CHAR:    self.parse_char,
 
@@ -332,12 +332,12 @@ class Parser(object):
 
         return expr
 
-    def parse_array_or_object(self):
+    def parse_array_or_map(self):
         self.next()
 
         if self.peek_is(token.COLON) or self.cur_is(token.COLON):
             pairs = self.parse_expr_pairs(token.RSQUARE)
-            return ast.Object(self.cur_tok, pairs)
+            return ast.Map(self.cur_tok, pairs)
         else:
             return ast.Array(self.cur_tok, self.parse_expr_list(token.RSQUARE))
 
@@ -469,7 +469,7 @@ class Parser(object):
                 token.FALSE:   lambda: arg(self.parse_bool()),
                 token.STR:     lambda: arg(self.parse_string()),
                 token.PARAM:   lambda: arg(ast.Identifier(self.cur_tok)),
-                token.LSQUARE: lambda: arg(self.parse_array_or_object()),
+                token.LSQUARE: lambda: arg(self.parse_array_or_map()),
                 token.LBRACE:  lambda: arg(self.parse_block_literal()),
             }
 
