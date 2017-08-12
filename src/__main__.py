@@ -18,8 +18,8 @@ def main():
     parser.add_argument("-p", "--parse", action="store_true", default=False, help="just parse the file - don't execute it")
     parser.add_argument("-t", "--tree", action="store_true", default=False, help="print the parse tree")
     parser.add_argument("-i", "--interactive", action="store_true", default=False, help="enter interactive mode after the file has been run")
-    parser.add_argument("-v", "--version", action="version", version="Pluto, early beta version")
     parser.add_argument("-n", "--no-prelude", action="store_true", dest="no_prelude", help="don't load the prelude")
+    parser.add_argument("-v", "--version", action="version", version="Pluto, early beta version")
 
     args = parser.parse_args()
 
