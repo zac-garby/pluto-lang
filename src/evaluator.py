@@ -122,8 +122,8 @@ def evaluate(node, ctx):
 
 def err(ctx, msg, tag):
     e = obj.Instance(ctx["Error"])
-    e["msg"] = obj.String(msg)
     e["tag"] = obj.String(tag)
+    e["msg"] = obj.String(msg)
     
     return e
 
