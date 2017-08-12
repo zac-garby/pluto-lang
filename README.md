@@ -367,27 +367,27 @@ try { ... } catch (err) {
 ### Throwing errors
 
 As well as catching already-thrown errors, Pluto also allows you to throw your own. This would be useful if you write a
-function in which something can go wrong, and you want to let other people know. You throw an error using error
-constructors, the most common being `GeneralError`:
+function in which something can go wrong, and you want to let other people know. You throw an error using the error
+constructor, a tag, and a message:
 
 ```r
-GeneralError "This is an error!"
+Error $General "This is an error!"
 ```
 
-A `GeneralError` signifies a generic, possibly unknown, error, but there are more types available to you. These are
-their constructors:
+A `General` error signifies a generic, possibly unknown, error, but there are more types available to you. These are
+their names:
 
 ```r
-GeneralError $msg
-TypeError $msg
-IOError $msg
-OutOfBoundsError $msg
-NotFoundError $msg
-SyntaxError $msg
-NotImplementedError $msg
+General
+Type
+IO
+OutOfBounds
+NotFound
+Syntax
+NotImplemented
 ```
 
-Which can then be caught in exactly the same way - using the constructor name without the `Error` prefix.
+Which can then be caught in exactly the same way.
 
 ## How??
 
