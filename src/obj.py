@@ -49,21 +49,6 @@ def hasher():
     return (lambda self: hash(repr(self)))
 
 
-class Error(InternalObject):
-    t = ERROR
-
-    """represents an error thrown in execution"""
-    def __init__(self, msg, tag="GeneralError"):
-        self.type = ERROR
-        self.msg = msg
-        self.tag = tag
-
-    __eq__ = compare("msg")
-
-    def __str__(self):
-        return "%s: %s" % (self.tag, self.msg)
-
-
 class ReturnValue(InternalObject):
     t = RETURN_VALUE
     
