@@ -4,7 +4,7 @@ print `
    *   Multiplies by 2
    /   Divides by 2
 `
-text = input with prompt ">> "
+text = prompt ">> "
 
 if (text == null || text == "") {
   print "You didn't type anything!"

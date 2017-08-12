@@ -3,7 +3,7 @@ input = ""
 
 # while-loops are exactly as you'd expect
 while (input != "quit") {
-  input = input with prompt ">> "
+  input = prompt ">> "
 }
 
 new line

@@ -84,8 +84,8 @@ def _input(args, context):
         return NULL
 
 @builtin
-@pattern("input with prompt $prompt")
-def input_with_prompt_prompt(args, context):
+@pattern("prompt $prompt")
+def prompt_prompt(args, context):
     try:
         return obj.String(input(args["prompt"]))
     except (KeyboardInterrupt, EOFError):
