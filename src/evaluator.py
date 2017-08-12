@@ -122,6 +122,10 @@ def evaluate(node, ctx):
 
 def err(ctx, msg, tag):
     e = obj.Instance(ctx["Error"])
+    if e.base == None:
+        print("Since the prelude isn't loaded, errors cannot be thrown!")
+        return NULL
+    
     e["tag"] = obj.String(tag)
     e["msg"] = obj.String(msg)
     
