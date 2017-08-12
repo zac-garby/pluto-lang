@@ -56,6 +56,14 @@ def round_n(args, context):
     return obj.Number(round(n.value))
 
 @builtin
+@pattern("type of $instance")
+@arg("instance", obj.Instance)
+def type_of_instance(args, context):
+    instance = args["instance"]
+    
+    return instance.base
+
+@builtin
 @pattern("print $obj")
 def print_obj(args, context):
     print(args["obj"])
