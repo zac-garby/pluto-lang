@@ -487,6 +487,10 @@ def eval_class_stmt(node, ctx):
         o.parent = evaluate(node.parent, ctx)
         if is_err(o.parent):
             return o.parent
+    elif node.name.value != "Base":
+        o.parent = ctx["Base"]
+        if o.parent == None:
+            print("The prelude isn't loaded, so Base isn't defined, therefore %s will experience unexpected behaviour!" % node.name.value)
     
     for mnode in node.methods:
         fn = obj.Function(mnode.pattern, mnode.body, ctx)
