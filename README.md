@@ -391,6 +391,7 @@ OutOfBounds
 NotFound
 Syntax
 NotImplemented
+Assertion
 ```
 
 Which can then be caught in exactly the same way. Since they are literally just strings defined in the Prelude, you are

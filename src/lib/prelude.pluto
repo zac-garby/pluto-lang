@@ -8,6 +8,7 @@ OutOfBounds    = "OutOfBoundsError"
 NotFound       = "NotFoundError"
 Syntax         = "SyntaxError"
 NotImplemented = "NotImplementedError"
+Assertion      = "AssertionError"
 
 ### Classes
 
@@ -43,6 +44,20 @@ def new line {
   print ""
 }
 
+#| Throws an error if $predicate returns `false`
+def assert $predicate {
+  if (!do $predicate) {
+    Error $Assertion "An assertion failed!"
+  }
+}
+
+#| Throws an error if $predicate returns `false`,
+#| with a given message ($msg)
+def assert $predicate else $msg {
+  if (!do $predicate) {
+    Error $Assertion $msg
+  }
+}
 
 # Collections
 
