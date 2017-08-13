@@ -132,7 +132,6 @@ def evaluate(node, ctx):
         
     if t == ast.DotExpression:
         left = evaluate(node.left, ctx)
-        if is_err(left): return left
         
         if type(node.right) == ast.Identifier:
             try:
