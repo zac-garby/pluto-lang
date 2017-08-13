@@ -11,7 +11,7 @@ NotImplemented = "NotImplementedError"
 
 ### Error classes
 
-# The base class of all errors
+#| The error class.
 class Error {
   init $tag $msg {
     self.tag = tag
@@ -23,50 +23,70 @@ class Error {
 ### Functions
 
 # Misc
+
+#| Returns true if $obj is truthy,
+#| otherwise false
 def $obj is truthy {
   if (obj) { true } else { false }
 }
 
+#| Outputs a newline
 def new line {
   print ""
 }
 
 
 # Collections
+
+#| Returns the amount of elements
+#| in $collection.
 def len $collection {
   left fold $collection with { |acc, _| -> acc + 1 } from 0
 }
 
+#| Returns $collection with $item
+#| appended to the end.
 def append $item to $collection {
   collection + [item]
 }
 
+#| Returns an array of integers representing
+#| each index in a collection.
 def range $collection {
   \0 to (len $collection)
 }
 
+#| Returns a boolean indicating whether
+#| $collection contains an element equal
+#| to $item.
 def $collection contains $item {
   left fold $collection with { |acc, o| -> acc || o == item } from (false)
 }
 
 
 # Maths
+
+#| Calculates the square root of $n.
 def square root of $n {
   n ** (1 / 2)
 }
 
+#| Calculates the $root'th root of $n.
 def $root st root of $n {
   n ** (1 / root)
 }
 
+#| Calculates the $root'th root of $n.
 def $root nd root of $n {
   n ** (1 / root)
 }
 
+#| Calculates the $root'th root of $n.
 def $root rd root of $n {
   n ** (1 / root)
 }
 
+#| Calculates the $root'th root of $n.
 def $root th root of $n {
   n ** (1 / root)
 }
