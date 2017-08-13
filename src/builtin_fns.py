@@ -3,7 +3,7 @@ import math
 import obj
 import ast
 import context
-from evaluator import NULL, TRUE, FALSE, evaluate, err, is_truthy
+from evaluator import NULL, TRUE, FALSE, evaluate, err, is_truthy, is_err
 
 
 class Builtin(object):
@@ -149,7 +149,7 @@ def map_block_over_array(args, context):
     for item in array:
         mapped = _run_block(block, [item], context)
 
-        if mapped.type == obj.ERROR:
+        if is_err(mapped):
             return mapped
 
         result.append(mapped)
@@ -172,7 +172,7 @@ def fold_array_with_block(args, context):
     for item in array[1:]:
         mapped = _run_block(block, [result, item], context)
 
-        if mapped.type == obj.ERROR:
+        if is_err(mapped):
             return mapped
 
         result = mapped
@@ -195,7 +195,7 @@ def fold_array_with_block(args, context):
     for item in array:
         mapped = _run_block(block, [result, item], context)
 
-        if mapped.type == obj.ERROR:
+        if is_err(mapped):
             return mapped
 
         result = mapped
@@ -217,7 +217,7 @@ def fold_array_with_block(args, context):
     for item in array[1:]:
         mapped = _run_block(block, [result, item], context)
 
-        if mapped.type == obj.ERROR:
+        if is_err(mapped):
             return mapped
 
         result = mapped
@@ -238,7 +238,7 @@ def fold_array_with_block(args, context):
     for item in array:
         mapped = _run_block(block, [result, item], context)
 
-        if mapped.type == obj.ERROR:
+        if is_err(mapped):
             return mapped
 
         result = mapped
@@ -258,7 +258,7 @@ def filter_array_with_predicate(args, context):
     for item in array:
         result = _run_block(predicate, [item], context)
 
-        if result.type == obj.ERROR:
+        if is_err(result):
             return result
 
         if is_truthy(result):

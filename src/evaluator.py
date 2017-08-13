@@ -10,6 +10,27 @@ FALSE = obj.Boolean(False)
 NEXT  = obj.Next()
 BREAK = obj.Break()
 
+overloadable_infixes = {
+    "+":  "__plus $",
+    "-":  "__minus $",
+    "*":  "__times $",
+    "/":  "__divide $",
+    "**": "__exp $",
+    "//": "__f_div $",
+    "%":  "__mod $",
+    "==": "__eq $",
+    "||": "__or $",
+    "&&": "__and $",
+    "|":  "__b_or $",
+    "&":  "__b_and $",
+    ".":  "__get $"
+}
+
+overloadable_prefixes = {
+    "+": "__no_op",
+    "-": "__negate"
+}
+
 def evaluate(node, ctx):
     t = type(node)
 
@@ -79,7 +100,7 @@ def evaluate(node, ctx):
 
     if t == ast.PrefixExpression:
         right = evaluate(node.right, ctx)
-        return right if is_err(right) else eval_prefix(ctx, node.operator, right)
+        return right if is_err(right) else eval_prefix(node.operator, right, ctx)
 
     if t == ast.InfixExpression:
         left = evaluate(node.left, ctx)
@@ -111,10 +132,12 @@ def evaluate(node, ctx):
         
     if t == ast.DotExpression:
         left = evaluate(node.left, ctx)
-        if is_err(left): return left
         
         if type(node.right) == ast.Identifier:
-            return left[node.right.value]
+            try:
+                return left[node.right.value]
+            except:
+                return err(ctx, "cannot access fields of %s" % left.type, "TypeError")
         
         return err(ctx, "an identifier is expected to follow a dot operator", "SyntaxError")
 
@@ -190,9 +213,28 @@ def eval_id(node, ctx):
     return err(ctx, "`%s` is not defined in the current context" % node.value, "NotFoundError")
 
 def eval_prefix(op, right, ctx):
-    if op == "-": return eval_minus_prefix(right)
+    if isinstance(right, obj.Instance):
+        return eval_instance_prefix(op, right, ctx)
+    
+    if op == "-": return eval_minus_prefix(right, ctx)
     if op == "+": return right
     return err(ctx, "unknown operator: %s%s", op, right.type, "NotFoundError")
+
+def eval_instance_prefix(op, right, ctx):
+    fn_name = overloadable_prefixes[op]
+    method = right.base.get_method(fn_name)
+    
+    if method:
+        fn_pattern = fn_name.split()
+        method_pattern = method.fn.pattern
+        
+        args = {"self": right}
+
+        enclosed = ctx.enclose_with_args(args)
+
+        return evaluate(method.fn.body, enclosed)
+    
+    return err(ctx, "unknown operator: %s %s" % (op, right.base), "NotFoundError")
 
 def eval_minus_prefix(right, ctx):
     if right.type != obj.NUMBER: return err(ctx, "unknown operator: -%s" % right.type, "NotFoundError")
@@ -217,6 +259,9 @@ def eval_declare(left, right, ctx):
 def eval_infix(op, left, right, ctx):
     if isinstance(left, obj.Collection) and isinstance(right, obj.Collection):
         return eval_collection_infix(op, left, right, ctx)
+        
+    if isinstance(left, obj.Instance):
+        return eval_instance_infix(op, left, right, ctx)
 
     # Boolean operators
     if op == "&&": return bool_obj(is_truthy(left) and is_truthy(right))
@@ -249,6 +294,30 @@ def eval_infix(op, left, right, ctx):
         return type(left)(result)
 
     return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+
+def eval_instance_infix(op, left, right, ctx):
+    fn_name = overloadable_infixes[op]
+    method = left.base.get_method(fn_name)
+    
+    if method:
+        fn_pattern = fn_name.split()
+        method_pattern = method.fn.pattern
+        args = {}
+        
+        for i in range(len(method_pattern)):
+            item = method_pattern[i]
+            f_item = fn_pattern[i]
+
+            if type(item) == ast.Parameter:
+                args[item.name] = right
+        
+        args["self"] = left
+
+        enclosed = ctx.enclose_with_args(args)
+
+        return evaluate(method.fn.body, enclosed)
+    
+    return err(ctx, "unknown operator: %s %s %s" % (left.base, op, right.type), "NotFoundError")
 
 def eval_char_string_infix(op, left, right, ctx):
     l = left.value
@@ -426,6 +495,10 @@ def eval_class_stmt(node, ctx):
         o.parent = evaluate(node.parent, ctx)
         if is_err(o.parent):
             return o.parent
+    elif node.name.value != "Base":
+        o.parent = ctx["Base"]
+        if o.parent == None:
+            print("The prelude isn't loaded, so Base isn't defined, therefore %s will experience unexpected behaviour!" % node.name.value)
     
     for mnode in node.methods:
         fn = obj.Function(mnode.pattern, mnode.body, ctx)
@@ -487,7 +560,7 @@ def eval_method_call(node, ctx):
             break
     
     if function == None:
-        p_string = p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
+        p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
         return err(ctx, "could not find a method of %s matching the pattern '%s'" % (instance.base.name, p_string), "NotFoundError")
     
     args = {}

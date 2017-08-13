@@ -9,13 +9,21 @@ NotFound       = "NotFoundError"
 Syntax         = "SyntaxError"
 NotImplemented = "NotImplementedError"
 
-### Error classes
+### Classes
+
+#| The base class, from which every other
+#| class inherits
+class Base {}
 
 #| The error class.
 class Error {
   init $tag $msg {
     self.tag = tag
     self.msg = msg
+  }
+  
+  def string {
+    format "%s: %s" with (self.tag, self.msg)
   }
 }
 

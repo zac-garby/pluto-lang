@@ -1,3 +1,6 @@
+import ast
+import evaluator
+
 # Types which the user should never directly see
 RETURN_VALUE = "<!return value>"
 FUNCTION     = "<!function>"
@@ -304,7 +307,25 @@ class Class(InternalObject):
             methods = self.parent.get_methods()
         
         return [meth for meth in self.methods if isinstance(meth, Method)] + methods
-
+    
+    def get_method(self, pattern):
+        # pattern is a string, eg: "print $"
+        fn_pattern = pattern.split()
+    
+        for method in self.get_methods():
+            method_pattern = method.fn.pattern
+        
+            if len(fn_pattern) != len(method_pattern):
+                continue
+        
+            is_match = True
+            for i in range(len(method_pattern)):
+                if not (fn_pattern[i] == "$" and type(method_pattern[i]) == ast.Parameter or
+                        type(method_pattern[i]) == ast.Identifier and fn_pattern[i] == method_pattern[i].value):
+                    is_match = False
+            
+            if is_match:
+                return method
 
 class Instance(InternalObject):
     t = INSTANCE
@@ -316,7 +337,15 @@ class Instance(InternalObject):
         self.data = {}
 
     def __str__(self):
-        return "%s: %s" % (self.base.name, "".join(str(o) + " " for o in self.data.values())[:-1])
+        string_method = self.base.get_method("string")
+        
+        if string_method:
+            args = {"self": self}
+            enclosed = string_method.fn.context.enclose_with_args(args)
+    
+            return str(evaluator.evaluate(string_method.fn.body, enclosed))
+        else:
+            return "%s (%s)" % (self.base.name, "".join(str(o) + ", " for o in self.data.values())[:-2])
     
     def __getitem__(self, key):
         return self.data.get(key, Null())
