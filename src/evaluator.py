@@ -100,7 +100,7 @@ def evaluate(node, ctx):
 
     if t == ast.PrefixExpression:
         right = evaluate(node.right, ctx)
-        return right if is_err(right) else eval_prefix(ctx, node.operator, right)
+        return right if is_err(right) else eval_prefix(node.operator, right, ctx)
 
     if t == ast.InfixExpression:
         left = evaluate(node.left, ctx)
@@ -213,7 +213,7 @@ def eval_id(node, ctx):
     return err(ctx, "`%s` is not defined in the current context" % node.value, "NotFoundError")
 
 def eval_prefix(op, right, ctx):
-    if op == "-": return eval_minus_prefix(right)
+    if op == "-": return eval_minus_prefix(right, ctx)
     if op == "+": return right
     return err(ctx, "unknown operator: %s%s", op, right.type, "NotFoundError")
 
