@@ -1,3 +1,5 @@
+import ast
+
 # Types which the user should never directly see
 RETURN_VALUE = "<!return value>"
 FUNCTION     = "<!function>"
@@ -304,7 +306,25 @@ class Class(InternalObject):
             methods = self.parent.get_methods()
         
         return [meth for meth in self.methods if isinstance(meth, Method)] + methods
-
+    
+    def get_method(self, pattern):
+        # pattern is a string, eg: "print $"
+        fn_pattern = pattern.split()
+    
+        for method in self.get_methods():
+            method_pattern = method.fn.pattern
+        
+            if len(fn_pattern) != len(method_pattern):
+                continue
+        
+            is_match = True
+            for i in range(len(method_pattern)):
+                if not (fn_pattern[i] == "$" and type(method_pattern[i]) == ast.Parameter or
+                        type(method_pattern[i]) == ast.Identifier and fn_pattern[i] == method_pattern[i].value):
+                    is_match = False
+            
+            if is_match:
+                return method
 
 class Instance(InternalObject):
     t = INSTANCE

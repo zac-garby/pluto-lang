@@ -279,35 +279,25 @@ def eval_infix(op, left, right, ctx):
 
 def eval_instance_infix(op, left, right, ctx):
     fn_name = overloadable_infixes[op]
-    fn_pattern = fn_name.split()
+    method = left.base.get_method(fn_name)
     
-    for method in left.base.get_methods():
+    if method:
+        fn_pattern = fn_name.split()
         method_pattern = method.fn.pattern
+        args = {}
         
-        if len(fn_pattern) != len(method_pattern):
-            continue
-        
-        is_match = True
         for i in range(len(method_pattern)):
-            if not (fn_pattern[i] == "$" and type(method_pattern[i]) == ast.Parameter or
-                    type(method_pattern[i]) == ast.Identifier and fn_pattern[i] == method_pattern[i].value):
-                is_match = False
-        
-        if is_match:
-            args = {}
-            
-            for i in range(len(method_pattern)):
-                item = method_pattern[i]
-                f_item = fn_pattern[i]
+            item = method_pattern[i]
+            f_item = fn_pattern[i]
 
-                if type(item) == ast.Parameter:
-                    args[item.name] = right
-            
-            args["self"] = left
-    
-            enclosed = ctx.enclose_with_args(args)
-    
-            return evaluate(method.fn.body, enclosed)
+            if type(item) == ast.Parameter:
+                args[item.name] = right
+        
+        args["self"] = left
+
+        enclosed = ctx.enclose_with_args(args)
+
+        return evaluate(method.fn.body, enclosed)
     
     return err(ctx, "unknown operator: %s %s %s" % (left.base, op, right.type), "NotFoundError")
 
