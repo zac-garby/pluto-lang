@@ -92,8 +92,7 @@ def evaluate(node, ctx):
 
     if t == ast.AssignExpression:
         right = evaluate(node.value, ctx)
-        if is_err(right):
-            return right
+        if is_err(right): return right
         
         if type(node.name) == ast.DotExpression:
             o = evaluate(node.name.left, ctx)
@@ -112,6 +111,7 @@ def evaluate(node, ctx):
         
     if t == ast.DotExpression:
         left = evaluate(node.left, ctx)
+        if is_err(left): return left
         
         if type(node.right) == ast.Identifier:
             return left[node.right.value]
@@ -176,7 +176,7 @@ def eval_block_stmt(block, ctx):
     for stmt in block.statements:
         result = evaluate(stmt, ctx)
 
-        if result != None and result.type in [obj.RETURN_VALUE, obj.ERROR, obj.NEXT, obj.BREAK]:
+        if is_err(result) or result != None and result.type in [obj.RETURN_VALUE, obj.NEXT, obj.BREAK]:
             return result
 
     return result
@@ -460,6 +460,9 @@ def eval_class_stmt(node, ctx):
 
 def eval_method_call(node, ctx):
     instance = evaluate(node.instance, ctx)
+    if is_err(instance):
+        return instance
+    
     pattern = node.pattern
     function = None
     
@@ -504,8 +507,7 @@ def eval_method_call(node, ctx):
     
     enclosed = ctx.enclose_with_args(args)
     
-    result = evaluate(function.fn.body, enclosed)
-    return result
+    return evaluate(function.fn.body, enclosed)
 
 def eval_match_expr(node, ctx):
     val = evaluate(node.expr, ctx)
@@ -540,7 +542,8 @@ def eval_match_expr(node, ctx):
 
 def eval_try_expr(node, ctx):
     val = evaluate(node.body, ctx)
-    if val.type == obj.Instance and val.base.name == "Error":
+    
+    if not (val.type == obj.INSTANCE and val.base.name == "Error"):
         return val
     
     matched = None
@@ -561,22 +564,22 @@ def eval_try_expr(node, ctx):
                         "All catch-arm predicate values must be strings. Found a %s" % e.type,
                         "TypeError"
                     )
-            
-                if e.value == val.data["tag"].value:
+                
+                if e == val["tag"]:
                     m = True
         
         if m:
             matched = result
             break
     
-    if matched != None:
-        err_obj = [
-            (obj.String("tag"), val.data["tag"]),
-            (obj.String("msg"), val.data["msg"])
-        ]
+    if matched != None:        
+        err_obj = obj.Map([
+            (obj.String("tag"), val["tag"]),
+            (obj.String("msg"), val["msg"])
+        ])
         
         enclosed = ctx.enclose_with_args({
-            node.err_name.value: obj.Map(err_obj)
+            node.err_name.value: err_obj
         })
 
         r = evaluate(matched, enclosed)
