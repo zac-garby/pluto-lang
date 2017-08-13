@@ -444,3 +444,4 @@ There are loads of things to do. Heres a list for you:
  - Change syntax to reduce use of braces (maybe terminating with 'end'?)
  - Add some kind of meta-programming support
  - Add a literate Pluto file type
+ - Allow blocks to be curried, and hence partially applied
