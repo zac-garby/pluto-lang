@@ -438,10 +438,10 @@ There are loads of things to do. Heres a list for you:
  - Add more examples
  - Convert some language constructs to builtin functions
  - Add more functional/higher order functions
- - Add operator overloading
  - Improve error messages
  - Add list (and map?) comprehensions
  - Change syntax to reduce use of braces (maybe terminating with 'end'?)
  - Add some kind of meta-programming support
  - Add a literate Pluto file type
  - Allow blocks to be curried, and hence partially applied
+ - Add stacktraces in errors
