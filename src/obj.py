@@ -1,5 +1,4 @@
 # Types which the user should never directly see
-ERROR        = "<!error>"
 RETURN_VALUE = "<!return value>"
 FUNCTION     = "<!function>"
 
