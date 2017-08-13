@@ -238,6 +238,9 @@ def eval_declare(left, right, ctx):
 def eval_infix(op, left, right, ctx):
     if isinstance(left, obj.Collection) and isinstance(right, obj.Collection):
         return eval_collection_infix(op, left, right, ctx)
+        
+    if isinstance(left, obj.Instance):
+        return eval_instance_infix(op, left, right, ctx)
 
     # Boolean operators
     if op == "&&": return bool_obj(is_truthy(left) and is_truthy(right))
@@ -270,6 +273,40 @@ def eval_infix(op, left, right, ctx):
         return type(left)(result)
 
     return err(ctx, "unknown operator: %s %s %s" % (left.type, op, right.type), "NotFoundError")
+
+def eval_instance_infix(op, left, right, ctx):
+    fn_name = overloadable_infixes[op]
+    fn_pattern = fn_name.split()
+    
+    for method in left.base.get_methods():
+        method_pattern = method.fn.pattern
+        
+        if len(fn_pattern) != len(method_pattern):
+            continue
+        
+        is_match = True
+        for i in range(len(method_pattern)):
+            if not (fn_pattern[i] == "$" and type(method_pattern[i]) == ast.Parameter or
+                    type(method_pattern[i]) == ast.Identifier and fn_pattern[i] == method_pattern[i].value):
+                is_match = False
+        
+        if is_match:
+            args = {}
+            
+            for i in range(len(method_pattern)):
+                item = method_pattern[i]
+                f_item = fn_pattern[i]
+
+                if type(item) == ast.Parameter:
+                    args[item.name] = right
+            
+            args["self"] = left
+    
+            enclosed = ctx.enclose_with_args(args)
+    
+            return evaluate(method.fn.body, enclosed)
+    
+    return err(ctx, "unknown operator: %s %s %s" % (left.base, op, right.type), "NotFoundError")
 
 def eval_char_string_infix(op, left, right, ctx):
     l = left.value
@@ -508,7 +545,7 @@ def eval_method_call(node, ctx):
             break
     
     if function == None:
-        p_string = p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
+        p_string = "".join((e.value if type(e) == ast.Identifier else "$") + " " for e in node.pattern)[:-1]
         return err(ctx, "could not find a method of %s matching the pattern '%s'" % (instance.base.name, p_string), "NotFoundError")
     
     args = {}
