@@ -71,7 +71,8 @@ lexical_dictionary = [
     (r":",                     o(token.COLON)),
     (r"%",                     o(token.MOD)),
     (r"\?",                    o(token.Q_MARK)),
-    (r"\.",                    o(token.DOT))
+    (r"\.",                    o(token.DOT)),
+    (r"!",                     o(token.BANG))
 ]
 
 line_endings = [

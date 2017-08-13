@@ -13,7 +13,7 @@ LESSGREATER = 8  # < or > or <= or >=
 SUM         = 9  # + or -
 PRODUCT     = 10 # * or / or %
 EXP         = 11 # ** or //
-PREFIX      = 12 # -x
+PREFIX      = 12 # -x or !x
 METHOD_CALL = 13 # instance: pattern
 DOT         = 14 # x.y
 
@@ -39,7 +39,8 @@ precedences = {
     token.GTE:     LESSGREATER,
     token.Q_MARK:  QUESTION,
     token.COLON:   METHOD_CALL,
-    token.DOT:     DOT
+    token.DOT:     DOT,
+    token.BANG:    PREFIX
 }
 
 arg_blacklist = [
@@ -74,6 +75,7 @@ class Parser(object):
             # Prefix operators
             token.MINUS: self.parse_prefix,
             token.PLUS:  self.parse_prefix,
+            token.BANG:  self.parse_prefix,
 
             # Constructs
             token.LPAREN: self.parse_grouped_expr,

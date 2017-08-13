@@ -28,7 +28,8 @@ overloadable_infixes = {
 
 overloadable_prefixes = {
     "+": "__no_op",
-    "-": "__negate"
+    "-": "__negate",
+    "!": "__invert"
 }
 
 def evaluate(node, ctx):
@@ -218,7 +219,8 @@ def eval_prefix(op, right, ctx):
     
     if op == "-": return eval_minus_prefix(right, ctx)
     if op == "+": return right
-    return err(ctx, "unknown operator: %s%s", op, right.type, "NotFoundError")
+    if op == "!": return bool_obj(not is_truthy(right))
+    return err(ctx, "unknown operator: %s%s" % (op, right.type), "NotFoundError")
 
 def eval_instance_prefix(op, right, ctx):
     fn_name = overloadable_prefixes[op]

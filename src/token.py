@@ -43,6 +43,7 @@ COLON   = "colon"                 # :
 Q_MARK  = "question-mark"         # ?
 DOT     = "dot"                   # .
 F_ARROW = "fat-arrow"             # =>
+BANG    = "bang"                  # !
 
 # Keywords
 DEF     = "def"
