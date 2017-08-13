@@ -135,7 +135,10 @@ def evaluate(node, ctx):
         if is_err(left): return left
         
         if type(node.right) == ast.Identifier:
-            return left[node.right.value]
+            try:
+                return left[node.right.value]
+            except:
+                return err(ctx, "cannot access fields of %s" % left.type, "TypeError")
         
         return err(ctx, "an identifier is expected to follow a dot operator", "SyntaxError")
 
