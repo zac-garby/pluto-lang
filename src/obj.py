@@ -1,4 +1,5 @@
 import ast
+import evaluator
 
 # Types which the user should never directly see
 RETURN_VALUE = "<!return value>"
@@ -336,7 +337,15 @@ class Instance(InternalObject):
         self.data = {}
 
     def __str__(self):
-        return "%s (%s)" % (self.base.name, "".join(str(o) + ", " for o in self.data.values())[:-2])
+        string_method = self.base.get_method("string")
+        
+        if string_method:
+            args = {"self": self}
+            enclosed = string_method.fn.context.enclose_with_args(args)
+    
+            return str(evaluator.evaluate(string_method.fn.body, enclosed))
+        else:
+            return "%s (%s)" % (self.base.name, "".join(str(o) + ", " for o in self.data.values())[:-2])
     
     def __getitem__(self, key):
         return self.data.get(key, Null())
