@@ -21,6 +21,10 @@ class Error {
     self.tag = tag
     self.msg = msg
   }
+  
+  def string {
+    format "%s: %s" with (self.tag, self.msg)
+  }
 }
 
 
