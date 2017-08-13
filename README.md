@@ -397,6 +397,23 @@ Assertion
 Which can then be caught in exactly the same way. Since they are literally just strings defined in the Prelude, you are
 free to make your own error tags. They don't even have to be strings - but it's usually better for them to be.
 
+### Assertions
+
+Another (very useful) way of throwing errors is through the assertion builtins:
+
+```r
+assert $predicate
+assert $predicate else $msg
+
+# (where $predicate is a block)
+```
+
+The first one, `assert $predicate`, will throw an error if `$predicate` returns a falsey value. The error will have the
+tag `Assertion`, and the message will be `"An assertion failed!"`.
+
+The second one is very similar. It has the exact same semantics, except instead of the default message `"An assertion failed!"`,
+`$msg` is used.
+
 ## How??
 
 To use it, clone the repository and run `__main__.py`. Giving it no arguments will run the REPL, in which you can enter
