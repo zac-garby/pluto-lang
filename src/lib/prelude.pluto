@@ -13,11 +13,7 @@ NotImplemented = "NotImplementedError"
 
 #| The base class, from which every other
 #| class inherits
-class Base {
-  def string {
-    "?"
-  }
-}
+class Base {}
 
 #| The error class.
 class Error {
