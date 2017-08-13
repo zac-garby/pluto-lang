@@ -10,6 +10,27 @@ FALSE = obj.Boolean(False)
 NEXT  = obj.Next()
 BREAK = obj.Break()
 
+overloadable_infixes = {
+    "+":  "__plus $",
+    "-":  "__minus $",
+    "*":  "__times $",
+    "/":  "__divide $",
+    "**": "__exp $",
+    "//": "__f_div $",
+    "%":  "__mod $",
+    "==": "__eq $",
+    "||": "__or $",
+    "&&": "__and $",
+    "|":  "__b_or $",
+    "&":  "__b_and $",
+    ".":  "__get $"
+}
+
+overloadable_prefixes = {
+    "+": "__no_op",
+    "-": "__negate"
+}
+
 def evaluate(node, ctx):
     t = type(node)
 
