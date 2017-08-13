@@ -15,7 +15,7 @@ NotImplemented = "NotImplementedError"
 #| class inherits
 class Base {
   def string {
-    "I've yet to implement this..."
+    "?"
   }
 }
 
