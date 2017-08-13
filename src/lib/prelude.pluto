@@ -9,7 +9,15 @@ NotFound       = "NotFoundError"
 Syntax         = "SyntaxError"
 NotImplemented = "NotImplementedError"
 
-### Error classes
+### Classes
+
+#| The base class, from which every other
+#| class inherits
+class Base {
+  def string {
+    "I've yet to implement this..."
+  }
+}
 
 #| The error class.
 class Error {
