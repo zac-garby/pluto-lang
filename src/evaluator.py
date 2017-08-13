@@ -213,9 +213,28 @@ def eval_id(node, ctx):
     return err(ctx, "`%s` is not defined in the current context" % node.value, "NotFoundError")
 
 def eval_prefix(op, right, ctx):
+    if isinstance(right, obj.Instance):
+        return eval_instance_prefix(op, right, ctx)
+    
     if op == "-": return eval_minus_prefix(right, ctx)
     if op == "+": return right
     return err(ctx, "unknown operator: %s%s", op, right.type, "NotFoundError")
+
+def eval_instance_prefix(op, right, ctx):
+    fn_name = overloadable_prefixes[op]
+    method = right.base.get_method(fn_name)
+    
+    if method:
+        fn_pattern = fn_name.split()
+        method_pattern = method.fn.pattern
+        
+        args = {"self": right}
+
+        enclosed = ctx.enclose_with_args(args)
+
+        return evaluate(method.fn.body, enclosed)
+    
+    return err(ctx, "unknown operator: %s %s" % (op, right.base), "NotFoundError")
 
 def eval_minus_prefix(right, ctx):
     if right.type != obj.NUMBER: return err(ctx, "unknown operator: -%s" % right.type, "NotFoundError")

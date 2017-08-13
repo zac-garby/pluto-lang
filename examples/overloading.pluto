@@ -15,6 +15,10 @@ class Vector {
     Vector at (self.x - other.x) (self.y - other.y)
   }
   
+  def __negate {
+    Vector at (-self.x) (-self.y)
+  }
+  
   # Similar to __str__
   # Returns a string representation of the vector
   def string {
@@ -37,3 +41,11 @@ print ((a: __plus $b): string)
 # What you can do instead
 # The 'a + b' is syntactical sugar, and the :string is implied
 print (a + b)
+
+# You can also overload prefix operators:
+
+print (-a)
+
+# is the same as
+
+print (a: __negate)
