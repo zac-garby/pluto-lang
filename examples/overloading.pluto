@@ -1,0 +1,39 @@
+class Vector {
+  init at $x $y {
+    self.x = x
+    self.y = y
+  }
+  
+  # Overloads 'self + <anything>'
+  # Since anything can be added, it is a good idea
+  # to check the type of $other
+  def __plus $other {
+    Vector at (self.x + other.x) (self.y + other.y)
+  }
+  
+  def __minus $other {
+    Vector at (self.x - other.x) (self.y - other.y)
+  }
+  
+  # Similar to __str__
+  # Returns a string representation of the vector
+  def string {
+    format "(%s, %s)" with (self.x, self.y)
+  }
+  
+  # Similar to the internal get_elements
+  # Returns an array of the elements in the vector
+  def elements {
+    [self.x, self.y]
+  }
+}
+
+a = Vector at 5 2
+b = Vector at 4 8
+
+# What you currently have to do to call the functions
+print ((a: __plus $b): string)
+
+# What you'll be able to do instead
+#   print (a + b)
+# The 'a + b' is syntactical sugar, and the :string is implied
