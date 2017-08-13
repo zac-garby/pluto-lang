@@ -24,12 +24,6 @@ class Vector {
   def string {
     format "(%s, %s)" with (self.x, self.y)
   }
-  
-  # Similar to the internal get_elements
-  # Returns an array of the elements in the vector
-  def elements {
-    [self.x, self.y]
-  }
 }
 
 a = Vector at 5 2
