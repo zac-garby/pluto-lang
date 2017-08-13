@@ -31,9 +31,9 @@ class Vector {
 a = Vector at 5 2
 b = Vector at 4 8
 
-# What you currently have to do to call the functions
+# What you used to have to do
 print ((a: __plus $b): string)
 
-# What you'll be able to do instead
-#   print (a + b)
+# What you can do instead
 # The 'a + b' is syntactical sugar, and the :string is implied
+print (a + b)
