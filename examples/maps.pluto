@@ -1,8 +1,8 @@
 my_map = [ "x": 10,
-              "y": 5,
-              "z": 15,
-              true: "True!",
-              3: "Three" ]
+           "y": 5,
+           "z": 15,
+           true: "True!",
+           3: "Three" ]
 
 ten = key "x" of $my_map
 
