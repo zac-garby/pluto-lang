@@ -1,3 +1,8 @@
+# This is the **old, Python version** of Pluto.
+## Find the new version [here!](https://github.com/Zac-Garby/pluto)
+
+---
+
 ## What?
 
 Pluto is a language with a cool function definition/call syntax. Basically, instead of functions
